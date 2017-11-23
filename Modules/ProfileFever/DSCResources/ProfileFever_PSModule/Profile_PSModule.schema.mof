@@ -1,0 +1,8 @@
+[ClassVersion("1.0.0"), FriendlyName("PSModule")]
+class ProfileFever_PSModule : OMI_BaseResource
+{
+  [write,ValueMap{"Present", "Absent"},Values{"Present", "Absent"}] string Ensure;
+  [key] String Name;
+  [key] string Version;
+  [write] string Repository;
+};

@@ -1,0 +1,11 @@
+[ClassVersion("1.0.0"), FriendlyName("PSRepository")]
+class ProfileFever_PSRepository : OMI_BaseResource
+{
+  [key] String Name;
+  [write,ValueMap{"Present", "Absent"},Values{"Present", "Absent"}] string Ensure;
+  [write,ValueMap{"Trusted", "Untrusted"},Values{"Trusted", "Untrusted"}] string InstallationPolicy;
+  [required] string SourceLocation;
+  [write] string PublishLocation;
+  [write] string ScriptSourceLocation;
+  [write] string ScriptPublishLocation;
+};
