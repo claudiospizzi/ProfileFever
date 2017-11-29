@@ -1,7 +1,12 @@
 
 Properties {
 
-    $ModuleNames = 'ProfileFever'
+    $ModuleNames    = 'ProfileFever'
 
-    $GitHubRepoName = 'ProfileFever'
+    $GalleryEnabled = $true
+    $GalleryKey     = $Env:PSGalleryKey
+
+    $GitHubEnabled  = $true
+    $GitHubRepoName = 'claudiospizzi/ProfileFever'
+    $GitHubKey      = $Env:GitHubToken
 }
