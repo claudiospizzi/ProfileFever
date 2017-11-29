@@ -3,7 +3,7 @@
     RootModule = 'ProfileFever.psm1'
 
     # Version number of this module.
-    ModuleVersion = '0.0.1'
+    ModuleVersion = '0.0.2'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -77,7 +77,10 @@
     # AliasesToExport = @()
 
     # DSC resources to export from this module
-    # DscResourcesToExport = @()
+    DscResourcesToExport = @(
+        'PSModule'
+        'PSRepository'
+    )
 
     # List of all modules packaged with this module
     # ModuleList = @()
