@@ -38,6 +38,8 @@ function Get-TargetResource
         $ScriptPublishLocation = ''
     )
 
+    Write-Verbose "Get the repository state: Name = $Name"
+
     try
     {
         $repository = Get-PSRepository -Name $Name -ErrorAction Stop
@@ -72,6 +74,7 @@ function Set-TargetResource
 {
     [CmdletBinding()]
     [OutputType([void])]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseShouldProcessForStateChangingFunctions", "")]
     param
     (
         [parameter(Mandatory = $true)]
@@ -113,6 +116,8 @@ function Set-TargetResource
         # Register the repository, if it's not already
         if ($repository.Ensure -eq 'Absent')
         {
+            Write-Verbose "Register the repository: Name = $Name"
+
             Register-PSRepository -Name $Name -SourceLocation $SourceLocation
         }
 
@@ -151,6 +156,8 @@ function Set-TargetResource
         # Unregister the repository, if it's not already
         if ($repository.Ensure -eq 'Present')
         {
+            Write-Verbose "Unregister the repository: Name = $Name"
+
             Unregister-PSRepository -Name $Name
         }
     }
@@ -194,6 +201,8 @@ function Test-TargetResource
     )
 
     $repository = Get-TargetResource @PSBoundParameters
+
+    Write-Verbose "Test the repository state: Name = $Name"
 
     if ($Ensure -eq 'Present')
     {

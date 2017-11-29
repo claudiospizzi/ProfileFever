@@ -32,6 +32,8 @@ function Get-TargetResource
         $Version = Get-LatestModuleVersion -Name $Name -Repository $Repository
     }
 
+    Write-Verbose "Get the current state: Name = $Name, Version = $Version"
+
     try
     {
         $module = Get-InstalledModule -Name $Name -RequiredVersion $Version -ErrorAction Stop
@@ -60,6 +62,7 @@ function Set-TargetResource
 {
     [CmdletBinding()]
     [OutputType([void])]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseShouldProcessForStateChangingFunctions", "")]
     param
     (
         [parameter(Mandatory = $false)]
@@ -92,6 +95,8 @@ function Set-TargetResource
     # The module must be present
     if ($Ensure -eq 'Present' -and $module.Ensure -eq 'Absent')
     {
+        Write-Verbose "Ensure the module is installed: Name = $Name, Version = $Version"
+
         # Install the target version
         Install-ModuleVersion -Name $Name -Version $Version -Repository $Repository
     }
@@ -99,6 +104,8 @@ function Set-TargetResource
     # The module must be absent
     if ($Ensure -eq 'Absent' -and $module.Ensure -eq 'Present')
     {
+        Write-Verbose "Ensure the module is not installed: Name = $Name, Version = $Version"
+
         # Remove the installed module version because it's present
         Uninstall-ModuleVersion -Name $Name -Version $Version
     }
@@ -136,6 +143,8 @@ function Test-TargetResource
     }
 
     $module = Get-TargetResource @PSBoundParameters
+
+    Write-Verbose "Test the current state: Name = $Name, Version = $Version"
 
     if ($Ensure -eq 'Present')
     {
