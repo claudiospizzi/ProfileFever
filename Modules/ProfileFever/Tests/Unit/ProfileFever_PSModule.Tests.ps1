@@ -8,35 +8,44 @@ $resourcePath = "$modulePath\DSCResources\$moduleName`_$resourceName"
 Remove-Module -Name "$moduleName`_$resourceName" -ErrorAction SilentlyContinue
 Import-Module "$resourcePath\$moduleName`_$resourceName.psm1"
 
-Describe $resourceName {
+InModuleScope "$moduleName`_$resourceName" {
 
-    Context 'Get' {
+    Describe 'PSModule' {
 
-        Mock Get-InstalledModule -ParameterFilter { $Name -eq 'TestModule' } { [PSCustomObject] @{ Name = 'TestModule'; Version = '1.0.0'; Repository = 'PSGallery' } }
-        Mock Get-InstalledModule -ParameterFilter { $Name -ne 'TestModule' } { throw 'Not found!' }
+        Context 'Get' {
 
-        It 'should return as present' {
+            Mock Get-InstalledModule -ParameterFilter { $Name -eq 'TestModule' } {
+                [PSCustomObject] @{
+                    Name       = 'TestModule'
+                    Version    = '1.0.0'
+                    Repository = 'PSGallery'
+                }
+            }
+            Mock Get-InstalledModule -ParameterFilter { $Name -ne 'TestModule' } { throw 'Not found!' }
 
-            # Act
-            $resource = Get-TargetResource -Name 'TestModule' -Version '1.0.0'
+            It 'should return as present' {
 
-            # Assert
-            $resource.Ensure     | Should -Be 'Present'
-            $resource.Name       | Should -Be 'TestModule'
-            $resource.Version    | Should -Be '1.0.0'
-            $resource.Repository | Should -Be 'PSGallery'
-        }
+                # Act
+                $resource = Get-TargetResource -Name 'TestModule' -Version '1.0.0'
 
-        It 'should return as absent' {
+                # Assert
+                $resource.Ensure     | Should -Be 'Present'
+                $resource.Name       | Should -Be 'TestModule'
+                $resource.Version    | Should -Be '1.0.0'
+                $resource.Repository | Should -Be 'PSGallery'
+            }
 
-            # Act
-            $resource = Get-TargetResource -Name 'Demo' -Version '0.0.1'
+            It 'should return as absent' {
 
-            # Assert
-            $resource.Ensure     | Should -Be 'Absent'
-            $resource.Name       | Should -Be 'Demo'
-            $resource.Version    | Should -Be '0.0.1'
-            $resource.Repository | Should -Be ''
+                # Act
+                $resource = Get-TargetResource -Name 'Demo' -Version '0.0.1'
+
+                # Assert
+                $resource.Ensure     | Should -Be 'Absent'
+                $resource.Name       | Should -Be 'Demo'
+                $resource.Version    | Should -Be '0.0.1'
+                $resource.Repository | Should -Be ''
+            }
         }
     }
 }
