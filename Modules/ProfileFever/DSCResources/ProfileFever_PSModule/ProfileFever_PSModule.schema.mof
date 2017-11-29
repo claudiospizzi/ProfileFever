@@ -3,6 +3,6 @@ class ProfileFever_PSModule : OMI_BaseResource
 {
   [write,ValueMap{"Present", "Absent"},Values{"Present", "Absent"}] string Ensure;
   [key] String Name;
-  [key] string Version;
+  [write] string Version;
   [write] string Repository;
 };

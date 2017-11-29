@@ -16,9 +16,9 @@ function Get-TargetResource
         [System.String]
         $Name,
 
-        [parameter(Mandatory = $true)]
+        [parameter(Mandatory = $false)]
         [System.String]
-        $Version,
+        $Version = 'latest',
 
         [parameter(Mandatory = $false)]
         [ValidateNotNullOrEmpty()]
@@ -74,9 +74,9 @@ function Set-TargetResource
         [System.String]
         $Name,
 
-        [parameter(Mandatory = $true)]
+        [parameter(Mandatory = $false)]
         [System.String]
-        $Version,
+        $Version = 'latest',
 
         [parameter(Mandatory = $false)]
         [ValidateNotNullOrEmpty()]
@@ -126,9 +126,9 @@ function Test-TargetResource
         [System.String]
         $Name,
 
-        [parameter(Mandatory = $true)]
+        [parameter(Mandatory = $false)]
         [System.String]
-        $Version,
+        $Version = 'latest',
 
         [parameter(Mandatory = $false)]
         [ValidateNotNullOrEmpty()]
