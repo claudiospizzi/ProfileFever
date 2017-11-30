@@ -5,6 +5,7 @@
 #>
 function Update-Workspace
 {
+    [CmdletBinding(SupportsShouldProcess = $true)]
     param
     (
         [Parameter(Mandatory = $false)]
@@ -32,5 +33,8 @@ function Update-Workspace
         }
     }
 
-    $projectList | ConvertTo-Json | Set-Content -Path $ProjectListPath
+    if ($PSCmdlet.ShouldProcess($ProjectListPath, 'Update Project List'))
+    {
+        $projectList | ConvertTo-Json | Set-Content -Path $ProjectListPath
+    }
 }
