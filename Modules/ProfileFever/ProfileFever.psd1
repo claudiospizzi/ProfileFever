@@ -65,6 +65,27 @@
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
     FunctionsToExport = @(
+        # Common
+        'Show-HostHeadline'
+        'Import-ProfileConfig'
+        # Fun
+        'Start-RickAstley'
+        # Prompt
+        'Enable-Prompt'
+        'Disable-Prompt'
+        'Enable-PromptGit'
+        'Disable-PromptGit'
+        'Enable-PromptAlias'
+        'Disable-PromptAlias'
+        'Enable-PromptTimeSpan'
+        'Disable-PromptTimeSpan'
+        'Show-PromptAliasSuggestion'
+        'Show-PromptLastCommandDuration'
+        # Stream
+        'Enable-Verbose'
+        'Disable-Verbose'
+        'Enable-Information'
+        'Disable-Information'
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
@@ -74,7 +95,18 @@
     # VariablesToExport = @()
 
     # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-    # AliasesToExport = @()
+    AliasesToExport = @(
+        'ev'
+        'dv'
+        'ei'
+        'di'
+        'egit'
+        'dgit'
+        'ealias'
+        'dalias'
+        'etimestamp'
+        'dtimestamp'
+    )
 
     # DSC resources to export from this module
     DscResourcesToExport = @(
