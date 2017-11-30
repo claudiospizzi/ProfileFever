@@ -8,44 +8,44 @@
 
     The build script contains the following tasks:
     - Init
-        Create folders, which are used by the build system: tst/ and bin/.
+      Create folders, which are used by the build system: tst/ and bin/.
     - Clean
-        Clean the content of build paths to ensure no side effects.
+      Clean the content of build paths to ensure no side effects.
     - Compile
-        If required, compile the Visual Studio Solutions. Ensure that the build
-        system copies the result into the target Module folder.
+      If required, compile the Visual Studio Solutions. Ensure that the build
+      system copies the result into the target Module folder.
     - Stage
-        Copy all module files to the build directory excluding the Functions and
-        Helpers, these files get merged in the .psm1 file.
+      Copy all module files to the build directory excluding the Functions and
+      Helpers, these files get merged in the .psm1 file.
     - Merge
-        Copy the content of all .ps1 files within the Functions and Helpers
-        folders to the .psm1 file. This ensures a faster loading time for the
-        module, but still a nice development experience with one function per
-        file.
+      Copy the content of all .ps1 files within the Functions and Helpers
+      folders to the .psm1 file. This ensures a faster loading time for the
+      module, but still a nice development experience with one function per
+      file.
     - Pester
-        Invoke all Pester tests within the module and ensure that all tests pass.
+      Invoke all Pester tests within the module and ensure that all tests pass.
     - ScriptAnalyzer
-        Invoke all Script Analyzer rules against the PowerShell script files and
-        ensure, that they do not break any rule.
+      Invoke all Script Analyzer rules against the PowerShell script files and
+      ensure, that they do not break any rule.
     - Gallery
-        This task will publish the module to a PowerShell Gallery. The task is not
-        part of the default tasks, it needs to be called manually if needed during
-        a deployment.
+      This task will publish the module to a PowerShell Gallery. The task is not
+      part of the default tasks, it needs to be called manually if needed during
+      a deployment.
     - GitHub
-        This task will publish the module to the GitHub Releases. The task is not
-        part of the default tasks, it needs to be called manually if needed during
-        a deployment.
+      This task will publish the module to the GitHub Releases. The task is not
+      part of the default tasks, it needs to be called manually if needed during
+      a deployment.
 
     The tasks are grouped to the following task groups. The deploy task is not
     part of the default tasks.
     - Default
-        Tasks: Build, Test
+      Tasks: Build, Test
     - Build
-        Tasks: Init, Clean, Compile, Stage, Merge
+      Tasks: Init, Clean, Compile, Stage, Merge
     - Test
-        Tasks: Pester, ScriptAnalyzer
+      Tasks: Pester, ScriptAnalyzer
     - Deploy
-        Tasks: Gallery, GitHub
+      Tasks: Gallery, GitHub
 
     .NOTES
     Author     : Claudio Spizzi
@@ -441,21 +441,29 @@ function Show-ScriptAnalyzerResult($ModuleName, $Rule, $Result)
         Information = 'Blue'
     }
 
-    Write-Host "Module $ModuleName" -ForegroundColor Magenta
+    Write-Host "`nModule $ModuleName" -ForegroundColor Green
 
     foreach ($currentRule in $Rule)
     {
-        Write-Host "   Rule $($currentRule.RuleName)" -ForegroundColor Magenta
+        Write-Host "`n   Rule $($currentRule.RuleName)" -ForegroundColor Green
 
-        foreach ($record in $Result.Where({$_.RuleName -eq $currentRule.RuleName}))
+        $records = $Result.Where({$_.RuleName -eq $currentRule.RuleName})
+
+        if ($records.Count -eq 0)
         {
-            Write-Host "    [-] $($record.Severity): $($record.Message)" -ForegroundColor $colorMap[[String]$record.Severity]
-            Write-Host "      at $($record.ScriptPath): line $($record.Line)" -ForegroundColor $colorMap[[String]$record.Severity]
-
+            Write-Host "    [+] No rule violation found" -ForegroundColor DarkGreen
+        }
+        else
+        {
+            foreach ($record in $records)
+            {
+                Write-Host "    [-] $($record.Severity): $($record.Message)" -ForegroundColor $colorMap[[String]$record.Severity]
+                Write-Host "      at $($record.ScriptPath): line $($record.Line)" -ForegroundColor $colorMap[[String]$record.Severity]
+            }
         }
     }
 
-    Write-Host "Script Analyzer completed"
+    Write-Host "`nScript Analyzer completed"
     Write-Host "Rules: $($Rule.Count) Failed: $($analyzeResults.Count)"
 }
 
