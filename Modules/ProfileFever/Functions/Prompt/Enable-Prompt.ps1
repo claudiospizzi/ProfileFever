@@ -6,6 +6,7 @@
 function Enable-Prompt
 {
     [CmdletBinding()]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalFunctions', '')]
     param ()
 
     function Global:Prompt
