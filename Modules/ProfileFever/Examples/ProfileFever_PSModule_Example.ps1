@@ -11,7 +11,7 @@ Configuration Example
         $NodeName = 'localhost'
     )
 
-    Import-DscResource -Module ProfileFever
+    Import-DscResource -ModuleName 'ProfileFever' -ModuleVersion '0.0.3'
 
     Node $NodeName
     {
