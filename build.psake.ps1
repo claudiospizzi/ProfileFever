@@ -8,44 +8,44 @@
 
     The build script contains the following tasks:
     - Init
-      Create folders, which are used by the build system: tst/ and bin/.
+        Create folders, which are used by the build system: tst/ and bin/.
     - Clean
-      Clean the content of build paths to ensure no side effects.
+        Clean the content of build paths to ensure no side effects.
     - Compile
-      If required, compile the Visual Studio Solutions. Ensure that the build
-      system copies the result into the target Module folder.
+        If required, compile the Visual Studio Solutions. Ensure that the build
+        system copies the result into the target Module folder.
     - Stage
-      Copy all module files to the build directory excluding the Functions and
-      Helpers, these files get merged in the .psm1 file.
+        Copy all module files to the build directory excluding the Functions and
+        Helpers, these files get merged in the .psm1 file.
     - Merge
-      Copy the content of all .ps1 files within the Functions and Helpers
-      folders to the .psm1 file. This ensures a faster loading time for the
-      module, but still a nice development experience with one function per
-      file.
+        Copy the content of all .ps1 files within the Functions and Helpers
+        folders to the .psm1 file. This ensures a faster loading time for the
+        module, but still a nice development experience with one function per
+        file.
     - Pester
-      Invoke all Pester tests within the module and ensure that all tests pass.
+        Invoke all Pester tests within the module and ensure that all tests pass.
     - ScriptAnalyzer
-      Invoke all Script Analyzer rules against the PowerShell script files and
-      ensure, that they do not break any rule.
+        Invoke all Script Analyzer rules against the PowerShell script files and
+        ensure, that they do not break any rule.
     - Gallery
-      This task will publish the module to a PowerShell Gallery. The task is not
-      part of the default tasks, it needs to be called manually if needed during
-      a deployment.
+        This task will publish the module to a PowerShell Gallery. The task is not
+        part of the default tasks, it needs to be called manually if needed during
+        a deployment.
     - GitHub
-      This task will publish the module to the GitHub Releases. The task is not
-      part of the default tasks, it needs to be called manually if needed during
-      a deployment.
+        This task will publish the module to the GitHub Releases. The task is not
+        part of the default tasks, it needs to be called manually if needed during
+        a deployment.
 
     The tasks are grouped to the following task groups. The deploy task is not
     part of the default tasks.
     - Default
-      Tasks: Build, Test
+        Tasks: Build, Test
     - Build
-      Tasks: Init, Clean, Compile, Stage, Merge
+        Tasks: Init, Clean, Compile, Stage, Merge
     - Test
-      Tasks: Pester, ScriptAnalyzer
+        Tasks: Pester, ScriptAnalyzer
     - Deploy
-      Tasks: Gallery, GitHub
+        Tasks: Gallery, GitHub
 
     .NOTES
     Author     : Claudio Spizzi
@@ -85,7 +85,7 @@ Properties {
 
     $GitHubEnabled  = $false
     $GitHubRepoName = ''
-    $GitHubKey      = ''
+    $GitHubToken    = ''
 }
 
 # Load project configuration
@@ -331,24 +331,28 @@ Task Gallery -requiredVariables ReleasePath, ModuleNames, GalleryEnabled, Galler
         $moduleVersion = (Import-PowerShellDataFile -Path "$ReleasePath\$moduleName\$moduleName.psd1").ModuleVersion
         $releaseNotes  = Get-ReleaseNote -Version $moduleVersion
 
-        Publish-Module -Path "$ReleasePath\$moduleName" -Repository $GalleryName -NuGetApiKey $GalleryKey -ReleaseNotes $releaseNotes
+        $plainGalleryKey = $GalleryKey | Unprotect-SecureString
+
+        Publish-Module -Path "$ReleasePath\$moduleName" -Repository $GalleryName -NuGetApiKey $plainGalleryKey -ReleaseNotes $releaseNotes
     }
 }
 
 # Deploy a release to the GitHub repository
-Task GitHub -requiredVariables ReleasePath, ModuleNames, GitHubEnabled, GitHubRepoName, GitHubKey {
+Task GitHub -requiredVariables ReleasePath, ModuleNames, GitHubEnabled, GitHubRepoName, GitHubToken {
 
     if (!$GitHubEnabled)
     {
         return
     }
 
-    if ([String]::IsNullOrEmpty($GitHubKey))
+    if ([String]::IsNullOrEmpty($GitHubToken))
     {
         throw 'GitHub key is null or empty!'
     }
 
     Test-GitRepo
+
+    $plainGitHubToken = $GitHubToken | Unprotect-SecureString
 
     foreach ($moduleName in $ModuleNames)
     {
@@ -361,7 +365,7 @@ Task GitHub -requiredVariables ReleasePath, ModuleNames, GitHubEnabled, GitHubRe
             Uri     = "https://api.github.com/repos/$GitHubRepoName/releases"
             Headers = @{
                 'Accept'        = 'application/vnd.github.v3+json'
-                'Authorization' = "token $GitHubKey"
+                'Authorization' = "token $plainGitHubToken"
             }
             Body   = @{
                 tag_name         = $moduleVersion
@@ -380,7 +384,7 @@ Task GitHub -requiredVariables ReleasePath, ModuleNames, GitHubEnabled, GitHubRe
             Uri             = "https://uploads.github.com/repos/$GitHubRepoName/releases/$($release.id)/assets?name=$moduleName-$moduleVersion.zip"
             Headers         = @{
                 'Accept'        = 'application/vnd.github.v3+json'
-                'Authorization' = "token $GitHubKey"
+                'Authorization' = "token $plainGitHubToken"
                 'Content-Type'  = 'application/zip'
             }
             InFile          = "$ReleasePath\$ModuleName.zip"
