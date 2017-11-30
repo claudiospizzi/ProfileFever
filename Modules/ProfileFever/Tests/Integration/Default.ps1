@@ -6,6 +6,14 @@ Configuration 'Default'
 
     Node 'localhost'
     {
+        PSRepository 'Arcade'
+        {
+            Name               = 'Arcade'
+            InstallationPolicy = 'Trusted'
+            SourceLocation     = 'https://psgallery.arcade.ch/nuget/powershell/'
+            PublishLocation    = 'https://psgallery.arcade.ch/nuget/powershell/package/'
+        }
+
         PSModule 'Pester'
         {
             Name    = 'Pester'
