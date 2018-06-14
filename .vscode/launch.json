@@ -5,7 +5,7 @@
             "type": "PowerShell",
             "request": "launch",
             "name": "PowerShell Launch Debug File",
-            "script": "${workspaceRoot}\\build.debug.ps1",
+            "script": "${workspaceRoot}\\debug.ps1",
             "args": [],
             "cwd": "${workspaceRoot}",
             "createTemporaryIntegratedConsole": true

@@ -13,6 +13,12 @@
         "tst": true
     },
 
+    // PowerShell console behaviour
+    "powershell.debugging.createTemporaryIntegratedConsole": false,
+    "powershell.integratedConsole.showOnStartup": true,
+    "powershell.integratedConsole.focusConsoleOnExecute": false,
+
+    // PowerShell code formatting
     "powershell.codeFormatting.openBraceOnSameLine": false,
     "powershell.codeFormatting.newLineAfterOpenBrace": true,
     "powershell.codeFormatting.newLineAfterCloseBrace": true,
