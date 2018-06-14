@@ -5,6 +5,7 @@
 function Enable-CommandNotFoundAction
 {
     [CmdletBinding()]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalFunctions', '')]
     param ()
 
     $Global:ExecutionContext.InvokeCommand.CommandNotFoundAction = {

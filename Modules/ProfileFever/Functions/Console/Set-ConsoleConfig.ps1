@@ -4,7 +4,8 @@
 #>
 function Set-ConsoleConfig
 {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess = $true)]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalFunctions', '')]
     param
     (
         [Parameter(Mandatory = $false)]
@@ -26,36 +27,40 @@ function Set-ConsoleConfig
 
 
     # Step 1: Window and buffer size
-
-    $bufferSize = $Host.UI.RawUI.BufferSize
-    $windowSize = $Host.UI.RawUI.WindowSize
-
-    $bufferSize.Height = 9999
-
-    if ($PSBoundParameters.ContainsKey('WindowWidth'))
+    if ($PSCmdlet.ShouldProcess('Window and Buffer', 'Change Size'))
     {
-        $bufferSize.Width = $WindowWidth
-        $windowSize.Width = $WindowWidth
-    }
+        $bufferSize = $Global:Host.UI.RawUI.BufferSize
+        $windowSize = $Global:Host.UI.RawUI.WindowSize
 
-    if ($PSBoundParameters.ContainsKey('WindowHeight'))
-    {
-        $windowSize.Height = $WindowHeight
-    }
+        $bufferSize.Height = 9999
 
-    $Host.UI.RawUI.BufferSize = $bufferSize
-    $Host.UI.RawUI.WindowSize = $windowSize
+        if ($PSBoundParameters.ContainsKey('WindowWidth'))
+        {
+            $bufferSize.Width = $WindowWidth
+            $windowSize.Width = $WindowWidth
+        }
+
+        if ($PSBoundParameters.ContainsKey('WindowHeight'))
+        {
+            $windowSize.Height = $WindowHeight
+        }
+
+        $Global:Host.UI.RawUI.BufferSize = $bufferSize
+        $Global:Host.UI.RawUI.WindowSize = $windowSize
+    }
 
 
     # Step 2: Window foreground and background color
-
-    if ($PSBoundParameters.ContainsKey('ForegroundColor'))
+    if ($PSCmdlet.ShouldProcess('Color', 'Change Color'))
     {
-        $host.ui.RawUI.ForegroundColor = $ForegroundColor
-    }
+        if ($PSBoundParameters.ContainsKey('ForegroundColor'))
+        {
+            $Global:Host.UI.RawUI.ForegroundColor = $ForegroundColor
+        }
 
-    if ($PSBoundParameters.ContainsKey('BackgroundColor'))
-    {
-        $host.ui.RawUI.BackgroundColor = $BackgroundColor
+        if ($PSBoundParameters.ContainsKey('BackgroundColor'))
+        {
+            $Global:Host.UI.RawUI.BackgroundColor = $BackgroundColor
+        }
     }
 }
