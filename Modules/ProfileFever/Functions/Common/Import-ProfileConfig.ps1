@@ -1,7 +1,6 @@
-
 <#
     .SYNOPSIS
-    Import the profile configuration file.
+        Import the profile configuration file.
 #>
 function Import-ProfileConfig
 {

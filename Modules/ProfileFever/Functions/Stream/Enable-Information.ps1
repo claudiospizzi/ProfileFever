@@ -1,7 +1,6 @@
-
 <#
     .SYNOPSIS
-    Enable the information output stream for the global shell.
+        Enable the information output stream for the global shell.
 #>
 function Enable-Information
 {

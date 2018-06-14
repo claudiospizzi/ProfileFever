@@ -1,7 +1,10 @@
-
 <#
     .SYNOPSIS
-    Disable the verbose output stream for the global shell.
+        Update the workspace configuration for Visual Studio Code which is used
+        by the extension vscode-open-project.
+
+    .LINK
+        https://marketplace.visualstudio.com/items?itemName=svetlozarangelov.vscode-open-project
 #>
 function Update-Workspace
 {
@@ -16,8 +19,6 @@ function Update-Workspace
         [System.String]
         $ProjectListPath = "$Env:AppData\Code\User\projectlist.json"
     )
-
-    # Step 1: Generate VS Code Project list (Extension = vscode-open-project)
 
     $projectList = @{
         projects = [Ordered] @{}

@@ -1,7 +1,6 @@
-
 <#
     .SYNOPSIS
-    Show the during of the last executed command.
+        Show the during of the last executed command.
 #>
 function Show-PromptLastCommandDuration
 {

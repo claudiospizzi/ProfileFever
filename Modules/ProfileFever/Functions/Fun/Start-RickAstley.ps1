@@ -1,7 +1,6 @@
-
 <#
     .SYNOPSIS
-    Play the fun tool of Rick Astley.
+        Play the fun tool of Rick Astley.
 #>
 function Start-RickAstley
 {

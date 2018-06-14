@@ -1,7 +1,6 @@
-
 <#
     .SYNOPSIS
-    Enable the git repository status in the prompt.
+        Enable the git repository status in the prompt.
 #>
 function Enable-PromptGit
 {

@@ -1,7 +1,6 @@
-
 <#
     .SYNOPSIS
-    Enable the custom prompt by replacing the default prompt.
+        Enable the custom prompt by replacing the default prompt.
 #>
 function Enable-Prompt
 {

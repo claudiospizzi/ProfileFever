@@ -1,7 +1,7 @@
-
 <#
     .SYNOPSIS
-    Show the headline with information about the local system and current user.
+        Show the headline with information about the local system and current
+        user.
 #>
 function Show-HostHeadline
 {

@@ -1,4 +1,7 @@
-
+<#
+    .SYNOPSIS
+        Enable the prompt timestamp output.
+#>
 function Enable-PromptTimeSpan
 {
     [CmdletBinding()]

@@ -1,7 +1,6 @@
-
 <#
     .SYNOPSIS
-    Disable the custom prompt and restore the default prompt.
+        Disable the custom prompt and restore the default prompt.
 #>
 function Disable-Prompt
 {

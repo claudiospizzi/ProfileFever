@@ -1,7 +1,6 @@
-
 <#
     .SYNOPSIS
-    Disable the information output stream for the global shell.
+        Disable the information output stream for the global shell.
 #>
 function Disable-Information
 {

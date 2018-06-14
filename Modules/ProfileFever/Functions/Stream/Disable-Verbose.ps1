@@ -1,7 +1,6 @@
-
 <#
     .SYNOPSIS
-    Disable the verbose output stream for the global shell.
+        Disable the verbose output stream for the global shell.
 #>
 function Disable-Verbose
 {

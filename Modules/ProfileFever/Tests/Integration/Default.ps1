@@ -2,7 +2,7 @@
 # Default configuration
 Configuration 'Default'
 {
-    Import-DscResource -ModuleName 'ProfileFever' -ModuleVersion '0.0.3'
+    Import-DscResource -ModuleName 'ProfileFever'
 
     Node 'localhost'
     {

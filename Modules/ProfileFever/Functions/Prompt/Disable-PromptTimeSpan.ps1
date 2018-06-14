@@ -1,4 +1,7 @@
-
+<#
+    .SYNOPSIS
+        Disable the prompt timestamp output.
+#>
 function Disable-PromptTimeSpan
 {
     [CmdletBinding()]

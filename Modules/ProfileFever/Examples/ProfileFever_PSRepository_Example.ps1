@@ -1,6 +1,6 @@
 <#
     .EXAMPLE
-    Register the repository PSGallery.
+        Register the repository PSGallery.
 #>
 Configuration Example
 {
@@ -11,7 +11,7 @@ Configuration Example
         $NodeName = 'localhost'
     )
 
-    Import-DscResource -ModuleName 'ProfileFever' -ModuleVersion '0.0.3'
+    Import-DscResource -ModuleName 'ProfileFever'
 
     Node $NodeName
     {

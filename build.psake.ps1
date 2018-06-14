@@ -185,7 +185,7 @@ Task Stage -depends Compile -requiredVariables ReleasePath, ModulePath, ModuleNa
     {
         foreach ($moduleName in $ModuleNames)
         {
-            foreach ($item in (Get-ChildItem -Path "$ModulePath\$moduleName" -Exclude 'Functions', 'Helpers'))
+            foreach ($item in (Get-ChildItem -Path "$ModulePath\$moduleName" -Exclude 'Classes', 'Functions', 'Helpers'))
             {
                 Copy-Item -Path $item.FullName -Destination "$ReleasePath\$moduleName\$($item.Name)" -Recurse -Verbose:$VerbosePreference
             }
@@ -204,20 +204,26 @@ Task Merge -depends Stage -requiredVariables ReleasePath, ModulePath, ModuleName
             {
                 $moduleContent = New-Object -TypeName 'System.Collections.Generic.List[System.String]'
 
-                # Load code for all function files
-                foreach ($function in (Get-ChildItem -Path "$ModulePath\$moduleName\Functions" -Filter '*.ps1' -Recurse -File -ErrorAction 'SilentlyContinue'))
+                # Load code for all class files
+                foreach ($file in (Get-ChildItem -Path "$ModulePath\$moduleName\Classes" -Filter '*.ps1' -Recurse -File -ErrorAction 'SilentlyContinue'))
                 {
-                    $moduleContent.Add((Get-Content -Path $function.FullName -Raw))
+                    $moduleContent.Add((Get-Content -Path $file.FullName -Raw))
+                }
+
+                # Load code for all function files
+                foreach ($file in (Get-ChildItem -Path "$ModulePath\$moduleName\Functions" -Filter '*.ps1' -Recurse -File -ErrorAction 'SilentlyContinue'))
+                {
+                    $moduleContent.Add((Get-Content -Path $file.FullName -Raw))
                 }
 
                 # Load code for all helpers files
-                foreach ($function in (Get-ChildItem -Path "$ModulePath\$moduleName\Helpers" -Filter '*.ps1' -Recurse -File -ErrorAction 'SilentlyContinue'))
+                foreach ($file in (Get-ChildItem -Path "$ModulePath\$moduleName\Helpers" -Filter '*.ps1' -Recurse -File -ErrorAction 'SilentlyContinue'))
                 {
-                    $moduleContent.Add((Get-Content -Path $function.FullName -Raw))
+                    $moduleContent.Add((Get-Content -Path $file.FullName -Raw))
                 }
 
                 # Load code of the module file itself
-                $moduleContent.Add((Get-Content -Path "$ModulePath\$moduleName\$moduleName.psm1" | Select-Object -Skip 15) -join "`r`n")
+                $moduleContent.Add((Get-Content -Path "$ModulePath\$moduleName\$moduleName.psm1" | Select-Object -Skip 21) -join "`r`n")
 
                 # Concatenate whole code into the module file
                 $moduleContent | Set-Content -Path "$ReleasePath\$moduleName\$moduleName.psm1" -Encoding UTF8 -Verbose:$VerbosePreference
@@ -401,16 +407,19 @@ function Test-GitRepo
 {
     $gitStatus = Get-GitStatus
 
-    if ($gitStatus.Branch -ne 'master')
+    if ($gitStatus.Branch -ne 'master' -and $gitStatus.Branch -notlike '(*.*.*)')
     {
         throw "Git Exception: $($gitStatus.Branch) is checked out, switch to master branch!"
     }
 
-    $mergeStatus = Get-GitMergeStatus -Branch 'master'
-
-    if ($mergeStatus -notcontains 'dev')
+    if ($gitStatus.Branch -eq 'master')
     {
-        throw "Git Exception: dev branch is not merged into the master branch!"
+        $mergeStatus = Get-GitMergeStatus -Branch 'master'
+
+        if ($mergeStatus -notcontains 'dev')
+        {
+            throw "Git Exception: dev branch is not merged into the master branch!"
+        }
     }
 
     if ($gitStatus.AheadBy -ne 0)

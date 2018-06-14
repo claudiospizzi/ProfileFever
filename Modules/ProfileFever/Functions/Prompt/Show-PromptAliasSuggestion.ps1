@@ -1,7 +1,6 @@
-
 <#
     .SYNOPSIS
-    Show the alias suggestion for the latest command.
+        Show the alias suggestion for the latest command.
 #>
 function Show-PromptAliasSuggestion
 {

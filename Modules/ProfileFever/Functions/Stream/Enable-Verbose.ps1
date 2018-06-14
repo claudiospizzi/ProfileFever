@@ -1,7 +1,6 @@
-
 <#
     .SYNOPSIS
-    Enable the verbose output stream for the global shell.
+        Enable the verbose output stream for the global shell.
 #>
 function Enable-Verbose
 {

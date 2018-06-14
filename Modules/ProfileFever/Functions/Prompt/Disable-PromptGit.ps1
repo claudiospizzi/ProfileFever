@@ -1,8 +1,6 @@
-
-
 <#
     .SYNOPSIS
-    Disable the git repository status in the prompt.
+        Disable the git repository status in the prompt.
 #>
 function Disable-PromptGit
 {

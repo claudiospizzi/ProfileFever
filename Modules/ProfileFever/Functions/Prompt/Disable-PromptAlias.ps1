@@ -1,7 +1,6 @@
-
 <#
     .SYNOPSIS
-    Disable the prompt alias recommendation output after each command.
+        Disable the prompt alias recommendation output after each command.
 #>
 function Disable-PromptAlias
 {

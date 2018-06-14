@@ -1,6 +1,6 @@
 <#
     .EXAMPLE
-    Install the module SecurityFever with version 1.0.0.
+        Install the module SecurityFever with version 1.0.0.
 #>
 Configuration Example
 {
@@ -11,7 +11,7 @@ Configuration Example
         $NodeName = 'localhost'
     )
 
-    Import-DscResource -ModuleName 'ProfileFever' -ModuleVersion '0.0.3'
+    Import-DscResource -ModuleName 'ProfileFever'
 
     Node $NodeName
     {

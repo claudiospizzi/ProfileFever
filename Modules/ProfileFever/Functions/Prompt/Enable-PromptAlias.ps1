@@ -1,7 +1,6 @@
-
 <#
     .SYNOPSIS
-    Enable the prompt alias recommendation output after each command.
+        Enable the prompt alias recommendation output after each command.
 #>
 function Enable-PromptAlias
 {

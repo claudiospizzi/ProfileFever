@@ -1,5 +1,11 @@
 <# ----------------- DEBUGGING ONLY -- REMOVED DURING BUILD ----------------- #>
 
+# Get and dot source all classes (internal)
+Split-Path -Path $PSCommandPath |
+    Get-ChildItem -Filter 'Classes' -Directory |
+        Get-ChildItem -Include '*.ps1' -Exclude '*.Tests.*' -File -Recurse |
+            ForEach-Object { . $_.FullName }
+
 # Get and dot source all helper functions (internal)
 Split-Path -Path $PSCommandPath |
     Get-ChildItem -Filter 'Helpers' -Directory |
