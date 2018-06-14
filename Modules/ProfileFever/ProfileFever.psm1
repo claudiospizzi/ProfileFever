@@ -20,10 +20,13 @@ Split-Path -Path $PSCommandPath |
 
 <# -------------------------------------------------------------------------- #>
 
-# Script-wide profile configuration variables
+# Module profile configuration variables
 $Script:PromptHistory  = 0
 $Script:PromptAdmin    = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 $Script:PromptColor    = $(if($Script:PromptAdmin) { 'Red' } else { 'DarkCyan' })
 $Script:PromptAlias    = $false
 $Script:PromptTimeSpan = $false
 $Script:PromptGit      = $false
+
+# Module command not found action variables
+$Script:CommandNotFoundAction = @()

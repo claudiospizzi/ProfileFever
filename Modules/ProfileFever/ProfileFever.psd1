@@ -70,6 +70,10 @@
         'Import-ProfileConfig'
         # Fun
         'Start-RickAstley'
+        # NotFound
+        'Enable-CommandNotFoundAction'
+        'Disable-CommandNotFoundAction'
+        'Add-CommandNotFoundAction'
         # Prompt
         'Enable-Prompt'
         'Disable-Prompt'
