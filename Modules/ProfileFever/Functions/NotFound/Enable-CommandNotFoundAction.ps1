@@ -29,7 +29,7 @@ function Enable-CommandNotFoundAction
                         }
                         if ($command.VaultTargetName)
                         {
-                            $credential = Get-VaultCredential -TargetName $targetName
+                            $credential = Get-VaultCredential -TargetName $command.VaultTargetName
                             $credentialSplat['Credential'] = $credential
                             $credentialVerbose = " -Credential '{0}'" -f $credential.UserName
                         }
