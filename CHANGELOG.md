@@ -6,6 +6,11 @@ The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## 1.0.1 - 2018-06-18
+
+* Fixed: Add an option to provide a vault target name for the command not found
+  remoting actions.
+
 ## 1.0.0 - 2018-06-15
 
 * Added: Command not found action helper functions
