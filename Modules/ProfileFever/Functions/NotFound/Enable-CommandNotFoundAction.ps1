@@ -27,6 +27,12 @@ function Enable-CommandNotFoundAction
                             $credentialSplat['Credential'] = $command.Credential
                             $credentialVerbose = " -Credential '{0}'" -f $command.Credential.UserName
                         }
+                        if ($command.VaultTargetName)
+                        {
+                            $credential = Get-VaultCredential -TargetName $targetName
+                            $credentialSplat['Credential'] = $credential
+                            $credentialVerbose = " -Credential '{0}'" -f $credential.UserName
+                        }
 
                         # Option 1: Enter Session
                         # If no parameters were specified, just enter into a
