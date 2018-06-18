@@ -25,7 +25,7 @@ function Enable-CommandNotFoundAction
                         if ($command.Credential)
                         {
                             $credentialSplat['Credential'] = $command.Credential
-                            $credentialVerbose = " -Credential '{1}'" -f $command.Credential.UserName
+                            $credentialVerbose = " -Credential '{0}'" -f $command.Credential.UserName
                         }
 
                         # Option 1: Enter Session
