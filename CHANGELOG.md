@@ -6,6 +6,11 @@ The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## 1.0.2 - 2018-06-19
+
+* Fixed: Execute the script block command not found action.
+
+
 ## 1.0.1 - 2018-06-18
 
 * Fixed: Add an option to provide a vault target name for the command not found

@@ -13,9 +13,8 @@ function Add-CommandNotFoundAction
         $CommandName,
 
         # For the remoting command, set the computer name of the target system.
-        [Parameter(Mandatory = $true)]
-        [Parameter(ParameterSetName = 'RemotingWithCredential')]
-        [Parameter(ParameterSetName = 'RemotingWithVault')]
+        [Parameter(Mandatory = $true, ParameterSetName = 'RemotingWithCredential')]
+        [Parameter(Mandatory = $true, ParameterSetName = 'RemotingWithVault')]
         [System.String]
         $ComputerName,
 

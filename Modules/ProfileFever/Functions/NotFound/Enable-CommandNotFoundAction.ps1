@@ -84,7 +84,10 @@ function Enable-CommandNotFoundAction
 
                     'ScriptBlock'
                     {
-                        throw 'Not implemented!'
+                        Write-Verbose ("& {{ {0} }}" -f $command.ScriptBlock)
+
+                        $CommandLookupEventArgs.StopSearch = $true
+                        $CommandLookupEventArgs.CommandScriptBlock = $command.ScriptBlock
                     }
                 }
             }
