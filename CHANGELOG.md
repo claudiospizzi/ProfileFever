@@ -6,6 +6,11 @@ The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## 1.0.3 - 2018-09-26
+
+* Fixed: Windows title with enabled git mode in a git repo folder
+
+
 ## 1.0.2 - 2018-06-19
 
 * Fixed: Execute the script block command not found action.
