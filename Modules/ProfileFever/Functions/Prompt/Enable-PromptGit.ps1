@@ -6,6 +6,7 @@ function Enable-PromptGit
 {
     [CmdletBinding()]
     [Alias('egit')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalVars', '')]
     param ()
 
     if ($null -eq (Get-Module -Name posh-git))
