@@ -6,6 +6,11 @@ The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## Unreleased
+
+* Added: Connect-JumpHost function
+
+
 ## 1.0.4 - 2019-01-03
 
 * Fixed: Replace Get-VaultCredential with Use-VaultCredential
