@@ -6,6 +6,11 @@ The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## 1.0.4 - 2019-01-03
+
+* Fixed: Replace Get-VaultCredential with Use-VaultCredential
+
+
 ## 1.0.3 - 2018-09-26
 
 * Fixed: Windows title with enabled git mode in a git repo folder
