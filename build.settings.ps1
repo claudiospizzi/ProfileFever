@@ -2,6 +2,7 @@
 Properties {
 
     $ModuleNames    = 'ProfileFever'
+    $ModuleMerge    = $true
 
     $GalleryEnabled = $true
     $GalleryKey     = Use-VaultSecureString -TargetName 'PowerShell Gallery Key (claudiospizzi)'
