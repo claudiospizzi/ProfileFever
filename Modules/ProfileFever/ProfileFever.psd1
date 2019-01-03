@@ -68,8 +68,8 @@
         # Common
         'Show-HostHeadline'
         'Import-ProfileConfig'
-        # Fun
-        'Start-RickAstley'
+        # Corpoare
+        'Connect-JumpHost'
         # NotFound
         'Enable-CommandNotFoundAction'
         'Disable-CommandNotFoundAction'
