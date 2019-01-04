@@ -6,7 +6,7 @@ The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
-## Unreleased
+## 1.1.0 - 2019-01-04
 
 * Added: Connect-JumpHost function
 
