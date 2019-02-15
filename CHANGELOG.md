@@ -6,6 +6,11 @@ The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## 1.1.1 - 2019-02-15
+
+* Added: Add VS Code Workspace to Update-Workspace
+
+
 ## 1.1.0 - 2019-01-04
 
 * Added: Connect-JumpHost function
