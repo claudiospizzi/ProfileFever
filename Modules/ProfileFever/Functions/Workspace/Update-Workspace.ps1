@@ -24,6 +24,11 @@ function Update-Workspace
         projects = [Ordered] @{}
     }
 
+    foreach ($workspace in (Get-ChildItem -Path $Path -Filter '*.code-workspace' -File))
+    {
+        $projectList.projects.Add(('Workspace {0}' -f $workspace.BaseName), $workspace.FullName)
+    }
+
     foreach ($group in (Get-ChildItem -Path $Path -Directory))
     {
         foreach ($repo in (Get-ChildItem -Path $group.FullName -Directory))
