@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.0.1 - 2019-04-24
+
+* Fixed: Wrong last command execution duration format
+
 ## 2.0.0 - 2019-04-24
 
 * Changed: Change format of last command execution duration to 0.000
