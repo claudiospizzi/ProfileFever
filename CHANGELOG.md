@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 
 * Changed: Change format of last command execution duration to 0.000
+* Removed: DSC resources available in the official PowerShellGet module
 
 ## 1.1.1 - 2019-02-15
 
