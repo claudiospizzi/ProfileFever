@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## Unreleased
+## 2.0.0 - 2019-04-24
 
 * Changed: Change format of last command execution duration to 0.000
 * Removed: DSC resources available in the official PowerShellGet module
