@@ -8,11 +8,5 @@ function Disable-Prompt
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalFunctions', '')]
     param ()
 
-    function Global:Prompt
-    {
-        "PS $($executionContext.SessionState.Path.CurrentLocation)$('>' * ($nestedPromptLevel + 1)) "
-        # .Link
-        # http://go.microsoft.com/fwlink/?LinkID=225750
-        # .ExternalHelp System.Management.Automation.dll-help.xml
-    }
+    Set-Item -Path 'Function:Global:prompt' -Value $Script:PromptDefault
 }

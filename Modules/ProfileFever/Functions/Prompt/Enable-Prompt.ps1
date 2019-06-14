@@ -18,7 +18,7 @@ function Enable-Prompt
             if ($Script:PromptTimeSpan) { Show-PromptLastCommandDuration }
         }
 
-        $Host.UI.Write($Script:PromptColor, $Host.UI.RawUI.BackgroundColor, '[{0:dd MMM HH:mm}]' -f [DateTime]::Now)
+        $Host.UI.Write($Script:PromptColor, $Host.UI.RawUI.BackgroundColor, $Script:PromptInfo)
         $Host.UI.Write(" $($ExecutionContext.SessionState.Path.CurrentLocation)")
         if ($Script:PromptGit) { Write-VcsStatus }
         return "`n$($MyInvocation.HistoryId.ToString().PadLeft(3, '0'))$('>' * ($NestedPromptLevel + 1)) "

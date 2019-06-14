@@ -7,8 +7,15 @@
         module context.
 #>
 
+#region Namepsace Loader
 
-## Module loader
+# Use namespaces for PSReadLine extension
+using namespace System.Management.Automation
+using namespace System.Management.Automation.Language
+
+#endregion Namepsace Loader
+
+#region Module Loader
 
 # Get and dot source all classes (internal)
 Split-Path -Path $PSCommandPath |
@@ -28,19 +35,21 @@ Split-Path -Path $PSCommandPath |
         Get-ChildItem -Include '*.ps1' -File -Recurse |
             ForEach-Object { . $_.FullName }
 
+#endregion Module Loader
 
-## Module configuration
+#region Module Configuration
 
-# Module path
-New-Variable -Name 'ModulePath' -Value $PSScriptRoot
-
-# Module profile configuration variables
+# Prompt configuration and variables
 $Script:PromptHistory  = 0
-$Script:PromptAdmin    = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-$Script:PromptColor    = $(if($Script:PromptAdmin) { 'Red' } else { 'DarkCyan' })
+$Script:PromptColor    = $(if(([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) { 'Red' } else { 'DarkCyan' })
+$Script:PromptInfo     = '[PS {0}.{1}]' -f $PSVersionTable.PSVersion.Major, $PSVersionTable.PSVersion.Minor
 $Script:PromptAlias    = $false
 $Script:PromptTimeSpan = $false
 $Script:PromptGit      = $false
+$Script:PromptDefault  = Get-Command -Name 'prompt' | Select-Object -ExpandProperty 'Definition'
 
 # Module command not found action variables
-$Script:CommandNotFoundAction = @()
+$Script:CommandNotFoundEnabled = $false
+$Script:CommandNotFoundAction  = @{}
+
+#endregion Module Configuration
