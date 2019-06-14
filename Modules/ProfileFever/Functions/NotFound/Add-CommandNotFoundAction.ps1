@@ -34,32 +34,38 @@ function Add-CommandNotFoundAction
         $ScriptBlock
     )
 
-    $command = @{
-        CommandName = $CommandName
+    $command = [PSCustomObject] @{
+        PSTypeName      = 'ProfileFever.CommandNotFoundAction'
+        CommandName     = $CommandName
+        CommandType     = $null
+        ComputerName    = $null
+        Credential      = $null
+        CredentialVault = $null
+        ScriptBlock     = $null
     }
 
     switch ($PSCmdlet.ParameterSetName)
     {
         'RemotingWithCredential'
         {
-            $command['CommandType']  = 'Remoting'
-            $command['ComputerName'] = $ComputerName
-            $command['Credential']   = $Credential
+            $command.CommandType  = 'Remoting'
+            $command.ComputerName = $ComputerName
+            $command.Credential   = $Credential
         }
 
         'RemotingWithVault'
         {
-            $command['CommandType']     = 'Remoting'
-            $command['ComputerName']    = $ComputerName
-            $command['VaultTargetName'] = $VaultTargetName
+            $command.CommandType     = 'Remoting'
+            $command.ComputerName    = $ComputerName
+            $command.CredentialVault = $VaultTargetName
         }
 
         'ScriptBlock'
         {
-            $command['CommandType'] = 'ScriptBlock'
-            $command['ScriptBlock'] = $ScriptBlock
+            $command.CommandType = 'ScriptBlock'
+            $command.ScriptBlock = $ScriptBlock
         }
     }
 
-    $Script:CommandNotFoundAction += [PSCustomObject] $command
+    $Script:CommandNotFoundAction[$CommandName] = $command
 }

@@ -2,5 +2,42 @@
 <Configuration>
   <ViewDefinitions>
 
+    <View>
+      <Name>ProfileFever.CommandNotFoundAction</Name>
+      <ViewSelectedBy>
+        <TypeName>ProfileFever.CommandNotFoundAction</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>Command Name</Label>
+            <Width>24</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Command Type</Label>
+            <Width>24</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Command</Label>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>CommandName</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>CommandType</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>if($_.CommandType = 'ScriptBlock') { $_.ScriptBlock } else { 'Remoting on {0}' -f $_.ComputerName }</ScriptBlock>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+
   </ViewDefinitions>
 </Configuration>

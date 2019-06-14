@@ -71,8 +71,11 @@
         # Corpoare
         'Connect-JumpHost'
         # NotFound
-        'Enable-CommandNotFoundAction'
-        'Disable-CommandNotFoundAction'
+        'Register-CommandNotFound'
+        'Unregister-CommandNotFound'
+        'Enable-CommandNotFound'
+        'Disable-CommandNotFound'
+        'Get-CommandNotFoundAction'
         'Add-CommandNotFoundAction'
         # Prompt
         'Enable-Prompt'
