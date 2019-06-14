@@ -35,4 +35,8 @@ function Show-HostHeadline
     $Host.UI.WriteLine()
     $Host.UI.WriteLine(('{0}\{1} on {2}, Uptime {3:%d} day(s) {3:hh\:mm\:ss}' -f $Env:USERDOMAIN, $Env:USERNAME, $Env:COMPUTERNAME.ToUpper(), [System.TimeSpan]::FromMilliseconds([System.Environment]::TickCount)))
     $Host.UI.WriteLine()
+
+    Write-Host 'F1      Show command help                               Ctrl+Shift+J   Save the current directory in the marker list' -ForegroundColor 'Yellow'
+    Write-Host 'F7      Show history                                    Ctrl+J         Jump to the saved directory' -ForegroundColor 'Yellow'
+    Write-Host 'Alt+W   Save current line in history w/o executing      Alt+J          Show all saved markers' -ForegroundColor 'Yellow'
 }

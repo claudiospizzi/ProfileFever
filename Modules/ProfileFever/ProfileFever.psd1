@@ -66,10 +66,10 @@
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
     FunctionsToExport = @(
         # Common
+        'Start-Profile'
+        'Install-Profile'
+        'Update-ProfileConfig'
         'Show-HostHeadline'
-        'Import-ProfileConfig'
-        # Corpoare
-        'Connect-JumpHost'
         # NotFound
         'Register-CommandNotFound'
         'Unregister-CommandNotFound'
@@ -123,10 +123,7 @@
     )
 
     # DSC resources to export from this module
-    DscResourcesToExport = @(
-        'PSModule'
-        'PSRepository'
-    )
+    # DscResourcesToExport = @()
 
     # List of all modules packaged with this module
     # ModuleList = @()
