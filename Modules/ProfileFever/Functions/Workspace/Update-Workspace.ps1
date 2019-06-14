@@ -12,8 +12,9 @@ function Update-Workspace
     param
     (
         [Parameter(Mandatory = $false)]
+        [ValidateScript({Test-Path -Path $_})]
         [System.String]
-        $Path = "$HOME\Workspace",
+        $Path = $Env:Worksapce,
 
         [Parameter(Mandatory = $false)]
         [System.String]
