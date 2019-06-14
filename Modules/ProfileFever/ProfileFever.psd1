@@ -88,6 +88,11 @@
         'Disable-PromptTimeSpan'
         'Show-PromptAliasSuggestion'
         'Show-PromptLastCommandDuration'
+        # ReadLine
+        'Enable-PSReadLineCommandHelp'
+        'Enable-PSReadLineHistoryHelper'
+        'Enable-PSReadLineLocationMark'
+        'Enable-PSReadLineSmartInsertDelete'
         # Stream
         'Enable-Verbose'
         'Disable-Verbose'
