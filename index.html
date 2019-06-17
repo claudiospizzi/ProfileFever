@@ -1,1 +1,10 @@
-Install-PackageProvider -Name 'NuGet' -Scope 'CurrentUser' -MinimumVersion '2.8.5.201' -Force -ForceBootstrap; Install-Module -Name 'ProfileFever' -Repository 'PSGallery' -Scope 'CurrentUser' -Force -AllowClobber -SkipPublisherCheck -Verbose; Install-Profile -Verbose; Start-Profile
+# Set execution policy to allow profiles
+Set-ExecutionPolicy -ExecutionPolicy 'RemoteSigned' -Scope 'CurrentUser'
+
+# Install the ProfileFever module and the required nuget provider
+Install-PackageProvider -Name 'NuGet' -Scope 'CurrentUser' -MinimumVersion '2.8.5.201' -Force -ForceBootstrap
+Install-Module -Name 'ProfileFever' -Repository 'PSGallery' -Scope 'CurrentUser' -Force -AllowClobber -SkipPublisherCheck
+
+# Install the profile
+Install-Profile
+Start-Profile
