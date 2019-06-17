@@ -52,7 +52,7 @@ function Update-ProfileConfig
     }
     if ($null -eq $config.PromptGit)
     {
-        $config | Add-Member -MemberType 'NoteProperty' -Name 'PromptGit' -Value $true
+        $config | Add-Member -MemberType 'NoteProperty' -Name 'PromptGit' -Value $false   # Git client is not installed by default
     }
     if ($null -eq $config.PromptTimeSpan)
     {
