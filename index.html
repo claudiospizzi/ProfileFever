@@ -1,1 +1,2 @@
-Install-Module -Name 'ProfileFever' -Repository 'PSGallery' -Force -AllowClobber -SkipPublisherCheck -Verbose; Install-Profile -Verbose; Start-Profile
+Install-PackageProvider -Name 'NuGet' -MinimumVersion '2.8.5.201' -Force -ForceBootstrap; Install-Module -Name 'ProfileFever' -Repository 'PSGallery' -Scope 'CurrentUser' -Force -AllowClobber -SkipPublisherCheck -Verbose; Install-Profile -Verbose; Start-Profile
+
