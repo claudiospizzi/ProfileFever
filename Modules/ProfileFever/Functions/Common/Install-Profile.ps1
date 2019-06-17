@@ -54,6 +54,10 @@ function Install-Profile
         $profilePaths += "$HOME\Documents\PowerShell"
         $profilePaths += "$HOME\Documents\WindowsPowerShell"
     }
+    if ([System.Environment]::OSVersion.Platform -eq 'Unix')
+    {
+        $profilePaths += "$HOME/.config/powershell"
+    }
 
     foreach ($profilePath in $profilePaths)
     {
