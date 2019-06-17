@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.0.1 - 2019-06-17
+
+* Fixed: Switch default install scope to current user
+* Fixed: Multiple bugs for cross platform support
+
 ## 3.0.0 - 2019-06-17
 
 * Changed: Update whole module and add cross platform
