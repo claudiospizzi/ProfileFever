@@ -1,6 +1,12 @@
 <#
     .SYNOPSIS
-        .
+        Install all dependencies for the profile.
+
+    .DESCRIPTION
+        Insted of adding theses module dependencies into the module manifest,
+        they are separated in this command. This is by design, to speed up the
+        module load duration of ProfileFever. The module load time is essential
+        for a fast profie script.
 #>
 function Install-Profile
 {

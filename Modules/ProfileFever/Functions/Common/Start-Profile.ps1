@@ -152,29 +152,47 @@ function Start-Profile
     ##
 
     # History browser, history search and history save
-    Enable-PSReadLineHistoryHelper
-
-    # Enable smart insert/delete for ', ", [, ), {
-    Enable-PSReadLineSmartInsertDelete
-
-    # Enable F1 to show help
-    Enable-PSReadLineCommandHelp
-
-    # Jump around in the file system
-    Enable-PSReadLineLocationMark
-
-    # This will invoke the PSake build in the current directory
-    Set-PSReadLineKeyHandler -Key 'Ctrl+B', 'Ctrl+b' -BriefDescription 'BuildCurrentDirectory' -LongDescription "Build the current directory" -ScriptBlock {
-        [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
-        [Microsoft.PowerShell.PSConsoleReadLine]::Insert('Invoke-psake -buildFile ".\build.psake.ps1"')
-        [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
+    if ($config.ReadLineHistoryHelper)
+    {
+        Enable-PSReadLineHistoryHelper
     }
 
-    # This will invoke all Pester tests in the current directory
-    Set-PSReadLineKeyHandler -Key 'Ctrl+T', 'Ctrl+t' -BriefDescription 'TestCurrentDirectory' -LongDescription "Test the current directory" -ScriptBlock {
-        [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
-        [Microsoft.PowerShell.PSConsoleReadLine]::Insert('Invoke-Pester')
-        [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
+    # Enable smart insert/delete for ', ", [, ), {
+    if ($config.ReadLineSmartInsertDelete)
+    {
+        Enable-PSReadLineSmartInsertDelete
+    }
+
+    # Enable F1 to show help
+    if ($config.ReadLineCommandHelp)
+    {
+        Enable-PSReadLineCommandHelp
+    }
+
+    # Jump around in the file system
+    if ($config.ReadLineLocationMark)
+    {
+        Enable-PSReadLineLocationMark
+    }
+
+    if ($config.ReadLinePSakeBuild)
+    {
+        # This will invoke the PSake build in the current directory
+        Set-PSReadLineKeyHandler -Key 'Ctrl+B', 'Ctrl+b' -BriefDescription 'BuildCurrentDirectory' -LongDescription "Build the current directory" -ScriptBlock {
+            [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
+            [Microsoft.PowerShell.PSConsoleReadLine]::Insert('Invoke-psake -buildFile ".\build.psake.ps1"')
+            [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
+        }
+    }
+
+    if ($config.ReadLinePesterTest)
+    {
+        # This will invoke all Pester tests in the current directory
+        Set-PSReadLineKeyHandler -Key 'Ctrl+T', 'Ctrl+t' -BriefDescription 'TestCurrentDirectory' -LongDescription "Test the current directory" -ScriptBlock {
+            [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
+            [Microsoft.PowerShell.PSConsoleReadLine]::Insert('Invoke-Pester')
+            [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
+        }
     }
 
 

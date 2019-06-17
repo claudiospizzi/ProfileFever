@@ -36,11 +36,11 @@ function Update-ProfileConfig
     # Initialize the configuration if not specified with default values
     if ($null -eq $config.Location)
     {
-        $config | Add-Member -MemberType 'NoteProperty' -Name 'Location' -Value $(if ($IsLinux) { '~' } else { "$Home\Desktop" })
+        $config | Add-Member -MemberType 'NoteProperty' -Name 'Location' -Value $(if ($IsLinux -or $IsMacOs) { '~' } else { "$Home\Desktop" })
     }
     if ($null -eq $config.Workspace)
     {
-        $config | Add-Member -MemberType 'NoteProperty' -Name 'Workspace' -Value $(if ($IsLinux) { '~/workspace' } else { "$Home\Workspace" })
+        $config | Add-Member -MemberType 'NoteProperty' -Name 'Workspace' -Value $(if ($IsLinux -or $IsMacOs) { '~/workspace' } else { "$Home\Workspace" })
     }
     if ($null -eq $config.Prompt)
     {
@@ -57,6 +57,30 @@ function Update-ProfileConfig
     if ($null -eq $config.PromptTimeSpan)
     {
         $config | Add-Member -MemberType 'NoteProperty' -Name 'PromptTimeSpan' -Value $true
+    }
+    if ($null -eq $config.ReadLineHistoryHelper)
+    {
+        $config | Add-Member -MemberType 'NoteProperty' -Name 'ReadLineHistoryHelper' -Value $true
+    }
+    if ($null -eq $config.ReadLineSmartInsertDelete)
+    {
+        $config | Add-Member -MemberType 'NoteProperty' -Name 'ReadLineSmartInsertDelete' -Value $true
+    }
+    if ($null -eq $config.ReadLineCommandHelp)
+    {
+        $config | Add-Member -MemberType 'NoteProperty' -Name 'ReadLineCommandHelp' -Value $true
+    }
+    if ($null -eq $config.ReadLineLocationMark)
+    {
+        $config | Add-Member -MemberType 'NoteProperty' -Name 'ReadLineLocationMark' -Value $true
+    }
+    if ($null -eq $config.ReadLinePSakeBuild)
+    {
+        $config | Add-Member -MemberType 'NoteProperty' -Name 'ReadLinePSakeBuild' -Value $true
+    }
+    if ($null -eq $config.ReadLinePesterTest)
+    {
+        $config | Add-Member -MemberType 'NoteProperty' -Name 'ReadLinePesterTest' -Value $true
     }
     if ($null -eq $config.StrictMode)
     {
