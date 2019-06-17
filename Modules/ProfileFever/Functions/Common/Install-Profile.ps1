@@ -22,7 +22,13 @@ function Install-Profile
 
     if ($PSVersionTable.PSEdition -ne 'Core')
     {
-        Install-PackageProvider -Name 'NuGet' -Scope 'CurrentUser' -MinimumVersion '2.8.5.201' -Force -ForceBootstrap -Verbose
+        Install-PackageProvider -Name 'NuGet' -Scope 'CurrentUser' -MinimumVersion '2.8.5.201' -Force -ForceBootstrap -Verbose | Out-Null
+    }
+
+    # Only for Pester, update the built-in module with version 3.4.0
+    if ((Get-Module -Name 'Pester' -ListAvailable | Sort-Object -Property 'Version' -Descending | Select-Object -First 1).Version -eq '3.4.0')
+    {
+        Install-Module -Name 'Pester' -Repository 'PSGallery' -Scope 'CurrentUser' -Force -AllowClobber -SkipPublisherCheck -Verbose
     }
 
     foreach ($moduleName in $moduleNames)
@@ -33,7 +39,7 @@ function Install-Profile
         }
         else
         {
-            Update-Module -Name $moduleName -Force -Verbose -AcceptLicense
+            Update-Module -Name $moduleName -Force -Verbose
         }
     }
 
