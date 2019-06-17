@@ -41,12 +41,22 @@ Split-Path -Path $PSCommandPath |
 
 # Prompt configuration and variables
 $Script:PromptHistory  = 0
-$Script:PromptColor    = $(if(([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) { 'Red' } else { 'DarkCyan' })
+$Script:PromptColor    = 'Yellow'
 $Script:PromptInfo     = '[PS {0}.{1}]' -f $PSVersionTable.PSVersion.Major, $PSVersionTable.PSVersion.Minor
 $Script:PromptAlias    = $false
 $Script:PromptTimeSpan = $false
 $Script:PromptGit      = $false
 $Script:PromptDefault  = Get-Command -Name 'prompt' | Select-Object -ExpandProperty 'Definition'
+
+# Enumerate the prompt color based on the operating system
+if ([System.Environment]::OSVersion.Platform -eq 'Win32NT')
+{
+    $Script:PromptColor = $(if(([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) { 'Red' } else { 'DarkCyan' })
+}
+if ([System.Environment]::OSVersion.Platform -eq 'Unix')
+{
+    $Script:PromptColor = $(if((whoami) -eq 'root') { 'Red' } else { 'DarkCyan' })
+}
 
 # Module command not found action variables
 $Script:CommandNotFoundEnabled = $false
