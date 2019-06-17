@@ -49,10 +49,10 @@ function Install-Profile
     ##
 
     $profilePaths = @()
-    if ($IsWindows)
+    if ([System.Environment]::OSVersion.Platform -eq 'Win32NT')
     {
-        $profilePaths += '$HOME\Documents\PowerShell'
-        $profilePaths += '$HOME\Documents\WindowsPowerShell'
+        $profilePaths += "$HOME\Documents\PowerShell"
+        $profilePaths += "$HOME\Documents\WindowsPowerShell"
     }
 
     foreach ($profilePath in $profilePaths)
