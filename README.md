@@ -3,11 +3,10 @@
 [![AppVeyor - master](https://img.shields.io/appveyor/ci/claudiospizzi/ProfileFever/master.svg)](https://ci.appveyor.com/project/claudiospizzi/ProfileFever/branch/master)
 [![AppVeyor - dev](https://img.shields.io/appveyor/ci/claudiospizzi/ProfileFever/dev.svg)](https://ci.appveyor.com/project/claudiospizzi/ProfileFever/branch/dev)
 
-
 # ProfileFever PowerShell Module
 
-PowerShell Module with functions and DSC resources to configure a system and the
-PowerShell profile.
+PowerShell module with functions to configure a PowerShell console. The module
+is primary aligned to be used by myself.
 
 
 ## Introduction
