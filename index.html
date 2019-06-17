@@ -1,9 +1,17 @@
 # Set execution policy to allow profiles
-Set-ExecutionPolicy -ExecutionPolicy 'RemoteSigned' -Scope 'CurrentUser'
+if ([System.Environment]::OSVersion.Platform -eq 'Win32NT')
+{
+    Set-ExecutionPolicy -ExecutionPolicy 'RemoteSigned' -Scope 'CurrentUser'
+}
 
-# Install the ProfileFever module and the required nuget provider
-Install-PackageProvider -Name 'NuGet' -Scope 'CurrentUser' -MinimumVersion '2.8.5.201' -Force -ForceBootstrap
-Install-Module -Name 'ProfileFever' -Repository 'PSGallery' -Scope 'CurrentUser' -Force -AllowClobber -SkipPublisherCheck
+# On Windows PowerShell, install the NuGet package provider
+if ($PSVersionTable.PSEdition -ne 'Core')
+{
+    Install-PackageProvider -Name 'NuGet' -Scope 'CurrentUser' -MinimumVersion '2.8.5.201' -Force -ForceBootstrap -Verbose
+}
+
+# Install the ProfileFever module
+Install-Module -Name 'ProfileFever' -Repository 'PSGallery' -Scope 'CurrentUser' -Force -AllowClobber -SkipPublisherCheck -Verbose
 
 # Install the profile
 Install-Profile
