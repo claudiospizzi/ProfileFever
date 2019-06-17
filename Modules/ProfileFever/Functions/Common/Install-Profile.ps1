@@ -20,11 +20,16 @@ function Install-Profile
 
     $moduleNames = 'SecurityFever', 'Pester', 'posh-git', 'psake'
 
+    if ($PSVersionTable.PSEdition -ne 'Core')
+    {
+        Install-PackageProvider -Name 'NuGet' -Scope 'CurrentUser' -MinimumVersion '2.8.5.201' -Force -ForceBootstrap -Verbose
+    }
+
     foreach ($moduleName in $moduleNames)
     {
         if ($null -eq (Get-Module -Name $moduleName -ListAvailable))
         {
-            Install-Module -Name $moduleName -Repository 'PSGallery' -Force -AllowClobber -AcceptLicense -SkipPublisherCheck -Verbose
+            Install-Module -Name $moduleName -Repository 'PSGallery' -Scope 'CurrentUser' -Force -AllowClobber -SkipPublisherCheck -Verbose
         }
         else
         {
