@@ -133,7 +133,7 @@ function Start-Profile
 
     foreach ($script in $config.Scripts)
     {
-        & $script
+        . $script
     }
 
 
