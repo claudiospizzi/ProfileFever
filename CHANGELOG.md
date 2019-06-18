@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 
 * Fixed: Load scripts with dot-sourcing instead of a separate scope
+* Fixed: Credential not loaded from vault for command not found action
 
 ## 3.0.1 - 2019-06-17
 

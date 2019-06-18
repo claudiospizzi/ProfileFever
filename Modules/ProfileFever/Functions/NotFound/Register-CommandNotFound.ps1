@@ -26,9 +26,9 @@ function Register-CommandNotFound
                         $credentialSplat['Credential'] = $command.Credential
                         $credentialVerbose = " -Credential '{0}'" -f $command.Credential.UserName
                     }
-                    if ($command.VaultTargetName)
+                    if ($command.CredentialVault)
                     {
-                        $credential = Use-VaultCredential -TargetName $command.VaultTargetName
+                        $credential = Use-VaultCredential -TargetName $command.CredentialVault
                         $credentialSplat['Credential'] = $credential
                         $credentialVerbose = " -Credential '{0}'" -f $credential.UserName
                     }
