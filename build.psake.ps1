@@ -408,7 +408,9 @@ Task ScriptAnalyzer -requiredVariables ReleasePath, ModulePath, ModuleNames, Scr
     {
         $moduleScriptAnalyzerFile = Join-Path -Path $ScriptAnalyzerPath -ChildPath "$moduleName-$ScriptAnalyzerFile"
 
+        # Invoke script analyzer on the module but exclude all examples
         $analyzeResults = Invoke-ScriptAnalyzer -Path "$ReleasePath\$moduleName" -IncludeRule $ScriptAnalyzerRules -Recurse
+        $analyzeResults = $analyzeResults | Where-Object { $_.ScriptPath -notlike "$releasePath\$moduleName\Examples\*" }
         $analyzeResults | ConvertTo-Json | Out-File -FilePath $moduleScriptAnalyzerFile -Encoding UTF8
 
         Show-ScriptAnalyzerResult -ModuleName $moduleName -Rule $ScriptAnalyzerRules -Result $analyzeResults
@@ -572,6 +574,7 @@ function Get-GitMergeStatus($Branch)
 function Show-ScriptAnalyzerResult($ModuleName, $Rule, $Result)
 {
     $colorMap = @{
+        ParseError  = 'DarkRed'
         Error       = 'Red'
         Warning     = 'Yellow'
         Information = 'Cyan'
