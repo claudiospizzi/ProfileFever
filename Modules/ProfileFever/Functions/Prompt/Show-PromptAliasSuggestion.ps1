@@ -13,7 +13,7 @@ function Show-PromptAliasSuggestion
         $reports = @()
         foreach ($alias in (Get-Alias))
         {
-            if ($history.CommandLine.IndexOf($alias.ResolvedCommandName) -ne -1)
+            if ($history.CommandLine.IndexOf($alias.ResolvedCommandName, [System.StringComparison]::CurrentCultureIgnoreCase) -ne -1)
             {
                 $reports += $alias
             }
