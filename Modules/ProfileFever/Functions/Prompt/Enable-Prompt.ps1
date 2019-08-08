@@ -66,7 +66,14 @@ function Enable-Prompt
             $location = $location.Replace($Home, "~")
 
             # Set the window title
-            $Host.UI.RawUI.WindowTitle = "$Env:Username@$Env:ComputerName | $location"
+            if ($null -eq $Script:PromptTitle)
+            {
+                $Host.UI.RawUI.WindowTitle = "$Env:Username@$Env:ComputerName | $location"
+            }
+            else
+            {
+                $Host.UI.RawUI.WindowTitle = $Script:PromptTitle
+            }
 
             # Show prompt info and current location
             Write-Host -ForegroundColor $colorText -BackgroundColor $colorInfo -NoNewline " $Script:PromptInfo "

@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Added: Advanced prompt mode
 * Added: Show current load state during profile start
 * Added: Support SSH connections with the command not found feature
+* Added: Functions to control the prompt title
 
 ## 3.0.2 - 2019-06-18
 
