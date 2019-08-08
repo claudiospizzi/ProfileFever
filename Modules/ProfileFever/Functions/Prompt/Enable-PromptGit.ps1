@@ -12,7 +12,6 @@ function Enable-PromptGit
     if ($null -eq (Get-Module -Name posh-git))
     {
         Import-Module -Name posh-git -Force
-        $Global:GitPromptSettings.EnableWindowTitle = '{0} ~ ' -f $Host.UI.RawUI.WindowTitle
     }
 
     Remove-Variable -Scope Script -Name PromptGit -ErrorAction SilentlyContinue -Force
