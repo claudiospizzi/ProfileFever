@@ -46,6 +46,10 @@ function Update-ProfileConfig
     {
         $config | Add-Member -MemberType 'NoteProperty' -Name 'Prompt' -Value $true
     }
+    if ($null -eq $config.PromptType)
+    {
+        $config | Add-Member -MemberType 'NoteProperty' -Name 'PromptType' -Value 'Basic'
+    }
     if ($null -eq $config.PromptAlias)
     {
         $config | Add-Member -MemberType 'NoteProperty' -Name 'PromptAlias' -Value $true

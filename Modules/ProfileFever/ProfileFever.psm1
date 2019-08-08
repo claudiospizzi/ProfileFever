@@ -42,7 +42,7 @@ Split-Path -Path $PSCommandPath |
 # Prompt configuration and variables
 $Script:PromptHistory  = 0
 $Script:PromptColor    = 'Yellow'
-$Script:PromptInfo     = '[PS {0}.{1}]' -f $PSVersionTable.PSVersion.Major, $PSVersionTable.PSVersion.Minor
+$Script:PromptInfo     = 'PS {0}.{1}' -f $PSVersionTable.PSVersion.Major, $PSVersionTable.PSVersion.Minor
 $Script:PromptAlias    = $false
 $Script:PromptTimeSpan = $false
 $Script:PromptGit      = $false
