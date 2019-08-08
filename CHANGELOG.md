@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 
 * Added: Advanced prompt mode
+* Added: Show current load state during profile start
 * Added: Support SSH connections with the command not found feature
 
 ## 3.0.2 - 2019-06-18

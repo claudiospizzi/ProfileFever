@@ -24,6 +24,8 @@ function Start-Profile
     ## PROFILE CONFIG
     ##
 
+    Show-ProfileLoadStatus -Section 'Load Profile Config'
+
     # Guess the real config path for the all hosts current user
     if (-not $PSBoundParameters.ContainsKey('ConfigPath'))
     {
@@ -34,18 +36,10 @@ function Start-Profile
 
 
     ##
-    ## HEADLINE
-    ##
-
-    if ($config.Headline)
-    {
-        Show-HostHeadline
-    }
-
-
-    ##
     ## LOCATION
     ##
+
+    Show-ProfileLoadStatus -Section 'Set Location'
 
     if (Test-Path -Path $config.Location)
     {
@@ -57,7 +51,11 @@ function Start-Profile
     ## WORKSPACE
     ##
 
-    if (Test-Path -Path $config.Workspace)
+    Show-ProfileLoadStatus -Section 'Create Workspace'
+
+
+
+    if ((Test-Path -Path $config.Workspace) -and -not (Test-Path -Path 'Workspace:'))
     {
         New-PSDrive -PSProvider 'FileSystem' -Scope 'Global' -Name 'Workspace' -Root $config.Workspace | Out-Null
 
@@ -66,7 +64,7 @@ function Start-Profile
         Set-Item -Path 'Function:Global:WS:' -Value 'Set-Location -Path "Workspace:"'
 
         # Specify the path to the workspace as environment variable
-        [System.Environment]::SetEnvironmentVariable('Workspace', $Workspace, [System.EnvironmentVariableTarget]::Process)
+        [System.Environment]::SetEnvironmentVariable('Workspace', $config.Workspace, [System.EnvironmentVariableTarget]::Process)
     }
 
 
@@ -74,9 +72,11 @@ function Start-Profile
     ## PROMPT
     ##
 
+    Show-ProfileLoadStatus -Section 'Enable Prompt'
+
     if ($config.Prompt)
     {
-        Enable-Prompt
+        Enable-Prompt -Type $config.PromptType
     }
 
     if ($config.PromptAlias)
@@ -99,6 +99,8 @@ function Start-Profile
     ## COMMAND NOT FOUND
     ##
 
+    Show-ProfileLoadStatus -Section 'Enable Command Not Found'
+
     if ($config.CommandNotFound)
     {
         Enable-CommandNotFound
@@ -108,6 +110,8 @@ function Start-Profile
     ##
     ## ALIASES
     ##
+
+    Show-ProfileLoadStatus -Section 'Register Aliases'
 
     $aliasKeys = $config.Aliases | Get-Member -MemberType 'NoteProperty' | Select-Object -ExpandProperty 'Name'
     foreach ($aliasKey in $aliasKeys)
@@ -120,6 +124,9 @@ function Start-Profile
     ## FUNCTIONS
     ##
 
+    Show-ProfileLoadStatus -Section 'Register Functions'
+
+
     $functionKeys = $config.Functions | Get-Member -MemberType 'NoteProperty' | Select-Object -ExpandProperty 'Name'
     foreach ($functionKey in $functionKeys)
     {
@@ -131,8 +138,12 @@ function Start-Profile
     ## SCRIPTS
     ##
 
+    Show-ProfileLoadStatus -Section 'Invoke Scripts'
+
     foreach ($script in $config.Scripts)
     {
+        Show-ProfileLoadStatus -Section "Invoke Script $script"
+
         . $script
     }
 
@@ -140,6 +151,8 @@ function Start-Profile
     ##
     ## BINARIES
     ##
+
+    Show-ProfileLoadStatus -Section 'Update Path for Binaries'
 
     foreach ($binary in $config.Binaries)
     {
@@ -150,6 +163,8 @@ function Start-Profile
     ##
     ## PSREADLINE
     ##
+
+    Show-ProfileLoadStatus -Section 'Update PSReadLine'
 
     # History browser, history search and history save
     if ($config.ReadLineHistoryHelper)
@@ -200,8 +215,23 @@ function Start-Profile
     ## STRICT MODE
     ##
 
+    Show-ProfileLoadStatus -Section 'Enable Strict Mode'
+
     if ($config.StrictMode)
     {
         Set-StrictMode -Version 'latest'
+    }
+
+
+    ##
+    ## HEADLINE
+    ##
+
+    Show-ProfileLoadStatus -Section 'Show Headline'
+    Write-Host "`r" -NoNewline
+
+    if ($config.Headline)
+    {
+        Show-HostHeadline
     }
 }
