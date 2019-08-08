@@ -3,7 +3,7 @@
     RootModule = 'ProfileFever.psm1'
 
     # Version number of this module.
-    ModuleVersion = '3.0.2'
+    ModuleVersion = '3.1.0'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
