@@ -51,6 +51,7 @@ function Register-CommandNotFound
                                     $PromptIndent = $using:session.ComputerName.Length + 4
                                     function Global:prompt
                                     {
+                                        $Host.UI.RawUI.WindowTitle = "$Env:Username@$Env:ComputerName | $($executionContext.SessionState.Path.CurrentLocation)"
                                         Write-Host "[$PromptLabel]" -NoNewline -ForegroundColor Cyan; "$("`b `b" * $PromptIndent) $($executionContext.SessionState.Path.CurrentLocation)$('>' * ($nestedPromptLevel + 1)) "
                                     }
                                     function profile
@@ -93,6 +94,20 @@ function Register-CommandNotFound
                             Invoke-Command -ComputerName $command.ComputerName @credentialSplat -ScriptBlock $scriptBlock -ErrorAction Stop
                         }.GetNewClosure()
                     }
+                }
+
+                'SSH'
+                {
+                    $hostname = $command.Hostname
+                    $username = $command.Username
+
+                    Write-Verbose "ssh.exe $username@$hostname"
+
+                    $CommandLookupEventArgs.StopSearch = $true
+                    $CommandLookupEventArgs.CommandScriptBlock = {
+
+                        ssh.exe "$username@$hostname"
+                    }.GetNewClosure()
                 }
 
                 'ScriptBlock'

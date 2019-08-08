@@ -13,25 +13,35 @@ function Add-CommandNotFoundAction
         $CommandName,
 
         # For the remoting command, set the computer name of the target system.
-        [Parameter(Mandatory = $true, ParameterSetName = 'RemotingWithCredential')]
-        [Parameter(Mandatory = $true, ParameterSetName = 'RemotingWithVault')]
+        [Parameter(Mandatory = $true, ParameterSetName = 'PSRemotingWithCredential')]
+        [Parameter(Mandatory = $true, ParameterSetName = 'PSRemotingWithVault')]
         [System.String]
         $ComputerName,
 
         # For the remoting command, set the credentials.
-        [Parameter(Mandatory = $false, ParameterSetName = 'RemotingWithCredential')]
+        [Parameter(Mandatory = $false, ParameterSetName = 'PSRemotingWithCredential')]
         [System.Management.Automation.PSCredential]
         $Credential,
 
         # For the remoting command, but only a pointer to the credential vault.
-        [Parameter(Mandatory = $true, ParameterSetName = 'RemotingWithVault')]
+        [Parameter(Mandatory = $true, ParameterSetName = 'PSRemotingWithVault')]
         [System.String]
         $VaultTargetName,
 
         # Define a script block to execute for the command.
-        [Parameter(Mandatory = $true, ParameterSetName = 'ScriptBlock')]
+        [Parameter(Mandatory = $true, ParameterSetName = 'PSScriptBlock')]
         [System.Management.Automation.ScriptBlock]
-        $ScriptBlock
+        $ScriptBlock,
+
+        # To invoke an ssh session, the target hostname.
+        [Parameter(Mandatory = $true, ParameterSetName = 'SSHRemoting')]
+        [System.String]
+        $Hostname,
+
+        # To invoke an ssh session, the username to use.
+        [Parameter(Mandatory = $true, ParameterSetName = 'SSHRemoting')]
+        [System.String]
+        $Username
     )
 
     $command = [PSCustomObject] @{
@@ -42,28 +52,37 @@ function Add-CommandNotFoundAction
         Credential      = $null
         CredentialVault = $null
         ScriptBlock     = $null
+        Hostname        = $null
+        Username        = $null
     }
 
     switch ($PSCmdlet.ParameterSetName)
     {
-        'RemotingWithCredential'
+        'PSRemotingWithCredential'
         {
             $command.CommandType  = 'Remoting'
             $command.ComputerName = $ComputerName
             $command.Credential   = $Credential
         }
 
-        'RemotingWithVault'
+        'PSRemotingWithVault'
         {
             $command.CommandType     = 'Remoting'
             $command.ComputerName    = $ComputerName
             $command.CredentialVault = $VaultTargetName
         }
 
-        'ScriptBlock'
+        'PSScriptBlock'
         {
             $command.CommandType = 'ScriptBlock'
             $command.ScriptBlock = $ScriptBlock
+        }
+
+        'SSHRemoting'
+        {
+            $command.CommandType = 'SSH'
+            $command.Hostname    = $Hostname
+            $command.Username    = $Username
         }
     }
 
