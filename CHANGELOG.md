@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+
+* Added: Support SSH connections with the command not found feature
+
 ## 3.0.2 - 2019-06-18
 
 * Fixed: Load scripts with dot-sourcing instead of a separate scope
