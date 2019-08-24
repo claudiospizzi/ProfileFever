@@ -46,7 +46,7 @@ function Show-HostHeadline
         $usrInfo = ''
         if ([System.Environment]::OSVersion.Platform -eq 'Win32NT')
         {
-            $usrInfo = '{0}\{1} on {2}, Uptime {3:%d} day(s) {3:hh\:mm\:ss}' -f $Env:USERDOMAIN, $Env:USERNAME, $Env:COMPUTERNAME.ToUpper(), [System.TimeSpan]::FromMilliseconds([System.Environment]::TickCount)
+            $usrInfo = '{0}\{1} on {2} ({3}), Uptime {4:%d} day(s) {4:hh\:mm\:ss}' -f $Env:UserDomain, $Env:Username, $Env:ComputerName.ToUpper(), $PID, [System.TimeSpan]::FromMilliseconds([System.Environment]::TickCount)
         }
         if ([System.Environment]::OSVersion.Platform -eq 'Unix')
         {
