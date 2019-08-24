@@ -70,6 +70,7 @@
         'Install-Profile'
         'Update-ProfileConfig'
         'Show-HostHeadline'
+        'Write-HostColored'
         # NotFound
         'Register-CommandNotFound'
         'Unregister-CommandNotFound'
