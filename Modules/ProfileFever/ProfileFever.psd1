@@ -71,6 +71,7 @@
         'Update-ProfileConfig'
         'Show-HostHeadline'
         'Write-HostColored'
+        'Test-GitRepository'
         # NotFound
         'Register-CommandNotFound'
         'Unregister-CommandNotFound'
