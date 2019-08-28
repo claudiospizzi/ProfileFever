@@ -107,7 +107,11 @@ function Enable-Prompt
             {
                 try
                 {
-                    Import-Module -Name 'posh-git'
+                    if ($null -eq (Get-Module -Name 'posh-git'))
+                    {
+                        Import-Module -Name 'posh-git'
+                    }
+
                     $Global:GitPromptSettings.EnableStashStatus = $true
                     $Global:GitStatus = Get-GitStatus
 
