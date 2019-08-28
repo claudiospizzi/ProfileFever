@@ -8,5 +8,5 @@ function Enable-Information
     [Alias('ei')]
     param ()
 
-    Set-Variable -Scope Global -Name InformationPreference -Value 'Continue'
+    Set-Variable -Scope 'Global' -Name 'InformationPreference' -Value 'Continue'
 }

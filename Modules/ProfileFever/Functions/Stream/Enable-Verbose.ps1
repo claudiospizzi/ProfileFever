@@ -8,5 +8,5 @@ function Enable-Verbose
     [Alias('ev')]
     param ()
 
-    Set-Variable -Scope Global -Name VerbosePreference -Value 'Continue'
+    Set-Variable -Scope 'Global' -Name 'VerbosePreference' -Value 'Continue'
 }

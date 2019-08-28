@@ -8,5 +8,5 @@ function Disable-Information
     [Alias('di')]
     param ()
 
-    Set-Variable -Scope Global -Name InformationPreference -Value 'SilentlyContinue'
+    Set-Variable -Scope 'Global' -Name 'InformationPreference' -Value 'SilentlyContinue'
 }

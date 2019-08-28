@@ -8,5 +8,5 @@ function Disable-Verbose
     [Alias('dv')]
     param ()
 
-    Set-Variable -Scope Global -Name VerbosePreference -Value 'SilentlyContinue'
+    Set-Variable -Scope 'Global' -Name 'VerbosePreference' -Value 'SilentlyContinue'
 }
