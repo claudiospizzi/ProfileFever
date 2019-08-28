@@ -1,6 +1,10 @@
 <#
     .SYNOPSIS
         Show the alias suggestion for the latest command.
+
+    .DESCRIPTION
+        Show a suggestion for the last prompt, all aliases for the used command
+        are shown to the user.
 #>
 function Show-PromptAliasSuggestion
 {

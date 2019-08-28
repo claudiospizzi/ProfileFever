@@ -1,6 +1,10 @@
 <#
     .SYNOPSIS
         Show the during of the last executed command.
+
+    .DESCRIPTION
+        Use the $MyInvocation variable and the Get-History to get the last
+        executed command and calculate the execution duration.
 #>
 function Show-PromptLastCommandDuration
 {
