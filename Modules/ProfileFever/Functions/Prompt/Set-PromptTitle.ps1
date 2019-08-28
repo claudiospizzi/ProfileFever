@@ -1,6 +1,9 @@
 <#
     .SYNOPSIS
         Set a static prompt title.
+
+    .DESCRIPTION
+        Overwrite the dynamic prompt title with a static title.
 #>
 function Set-PromptTitle
 {
