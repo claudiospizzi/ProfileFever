@@ -1,6 +1,6 @@
 <#
     .SYNOPSIS
-        Return the headline  with information about the local system and current
+        Return the headline with information about the local system and current
         user.
 
     .DESCRIPTION
