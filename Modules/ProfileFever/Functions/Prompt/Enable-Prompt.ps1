@@ -93,14 +93,14 @@ function Enable-Prompt
             # Show an information about the debug prompt
             if ($NestedPromptLevel -gt 0)
             {
-                $output.Append((Write-HostColored -Message ' DBG ' -BackgroundColor $colorDarkMagenta -NoNewline -PassThru)) | Out-Null
+                $output.Append((Format-HostText -Message ' DBG ' -BackgroundColor $colorDarkMagenta)) | Out-Null
             }
 
             # Get the prompt info and current location
-            $output.Append((Write-HostColored -Message " $Script:PromptInfo " -ForegroundColor $colorWhite -BackgroundColor $colorCyan1 -NoNewline -PassThru)) | Out-Null
-            $output.Append((Write-HostColored -Message $separator -ForegroundColor $colorCyan1 -BackgroundColor $colorCyan2 -NoNewline -PassThru)) | Out-Null
-            $output.Append((Write-HostColored -Message " $location " -ForegroundColor $colorWhite -BackgroundColor $colorCyan2 -NoNewline -PassThru)) | Out-Null
-            $output.Append((Write-HostColored -Message $separator -ForegroundColor $colorCyan2 -NoNewline -PassThru)) | Out-Null
+            $output.Append((Format-HostText -Message " $Script:PromptInfo " -ForegroundColor $colorWhite -BackgroundColor $colorCyan1)) | Out-Null
+            $output.Append((Format-HostText -Message $separator -ForegroundColor $colorCyan1 -BackgroundColor $colorCyan2)) | Out-Null
+            $output.Append((Format-HostText -Message " $location " -ForegroundColor $colorWhite -BackgroundColor $colorCyan2)) | Out-Null
+            $output.Append((Format-HostText -Message $separator -ForegroundColor $colorCyan2)) | Out-Null
 
             # Check if the current directory is member of a git repo
             if ($NestedPromptLevel -eq 0 -and $Script:PromptGit -and (Test-GitRepository))
@@ -162,16 +162,16 @@ function Enable-Prompt
                         $branchColor = $colorCyan3
                     }
 
-                    $output.Append((Write-HostColored -Message "`b$separator " -ForegroundColor $colorCyan2 -BackgroundColor $branchColor -NoNewline -PassThru)) | Out-Null
-                    $output.Append((Write-HostColored -Message $branchText -ForegroundColor $colorWhite -BackgroundColor $branchColor -NoNewline -PassThru)) | Out-Null
-                    $output.Append((Write-HostColored -Message $separator -ForegroundColor $branchColor -NoNewline -PassThru)) | Out-Null
+                    $output.Append((Format-HostText -Message "`b$separator " -ForegroundColor $colorCyan2 -BackgroundColor $branchColor)) | Out-Null
+                    $output.Append((Format-HostText -Message $branchText -ForegroundColor $colorWhite -BackgroundColor $branchColor)) | Out-Null
+                    $output.Append((Format-HostText -Message $separator -ForegroundColor $branchColor)) | Out-Null
 
                     if ($status.HasIndex -or $status.HasWorking -or $GitStatus.StashCount -gt 0)
                     {
-                        $output.Append((Write-HostColored -Message "`b$separator" -ForegroundColor $branchColor -BackgroundColor $colorCyan4 -NoNewline -PassThru)) | Out-Null
+                        $output.Append((Format-HostText -Message "`b$separator" -ForegroundColor $branchColor -BackgroundColor $colorCyan4)) | Out-Null
 
                         $outputPart  = @()
-                        $outputSplit = Write-HostColored -Message $diagonal -ForegroundColor $colorCyan4 -BackgroundColor $colorCyan5 -NoNewline -PassThru
+                        $outputSplit = Format-HostText -Message $diagonal -ForegroundColor $colorCyan4 -BackgroundColor $colorCyan5
 
                         if ($status.HasIndex)
                         {
@@ -185,7 +185,7 @@ function Enable-Prompt
                             }
                             $indexText += "$iconIndex "
 
-                            $outputPart += Write-HostColored -Message $indexText -ForegroundColor 0,96,0 -BackgroundColor $colorCyan4 -NoNewline -PassThru
+                            $outputPart += Format-HostText -Message $indexText -ForegroundColor 0,96,0 -BackgroundColor $colorCyan4
                         }
 
                         if ($status.HasWorking)
@@ -200,14 +200,14 @@ function Enable-Prompt
                             }
                             $workingText += "$iconWorking "
 
-                            $outputPart += Write-HostColored -Message $workingText -ForegroundColor 96,0,0 -BackgroundColor $colorCyan4 -NoNewline -PassThru
+                            $outputPart += Format-HostText -Message $workingText -ForegroundColor 96,0,0 -BackgroundColor $colorCyan4
                         }
 
                         if ($GitStatus.StashCount -gt 0)
                         {
                             $stashText = " +{0} $iconStash " -f $GitStatus.StashCount
 
-                            $outputPart += Write-HostColored -Message $stashText -ForegroundColor 0,0,96 -BackgroundColor $colorCyan4 -NoNewline -PassThru
+                            $outputPart += Format-HostText -Message $stashText -ForegroundColor 0,0,96 -BackgroundColor $colorCyan4
                         }
 
                         $output.Append($outputPart[0]) | Out-Null
@@ -217,14 +217,14 @@ function Enable-Prompt
                             $output.Append($outputPart[$i]) | Out-Null
                         }
 
-                        $output.Append((Write-HostColored -Message $separator -ForegroundColor $colorCyan4 -NoNewline -PassThru)) | Out-Null
+                        $output.Append((Format-HostText -Message $separator -ForegroundColor $colorCyan4)) | Out-Null
                     }
                 }
                 catch
                 {
-                    $output.Append((Write-HostColored -Message "`b$separator" -ForegroundColor $colorCyan2 -BackgroundColor $colorCyan3 -NoNewline -PassThru)) | Out-Null
-                    $output.Append((Write-HostColored -Message " ERROR: $_ " -ForegroundColor $colorWhite -BackgroundColor $colorCyan3 -NoNewline -PassThru)) | Out-Null
-                    $output.Append((Write-HostColored -Message $separator -ForegroundColor $colorCyan3 -NoNewline -PassThru)) | Out-Null
+                    $output.Append((Format-HostText -Message "`b$separator" -ForegroundColor $colorCyan2 -BackgroundColor $colorCyan3)) | Out-Null
+                    $output.Append((Format-HostText -Message " ERROR: $_ " -ForegroundColor $colorWhite -BackgroundColor $colorCyan3)) | Out-Null
+                    $output.Append((Format-HostText -Message $separator -ForegroundColor $colorCyan3)) | Out-Null
                 }
             }
 
