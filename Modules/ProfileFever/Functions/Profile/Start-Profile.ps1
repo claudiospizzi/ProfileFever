@@ -230,8 +230,11 @@ function Start-Profile
     Show-ProfileLoadStatus -Section 'Show Headline'
     Write-Host "`r" -NoNewline
 
-    if ($config.Headline)
+    # Only show the headline, if PowerShell was started with -NoLogo switch. The
+    # test is more a workaround as checking the start parameter. Not found an
+    # efficient way to test that without WMI.
+    if ($config.Headline -and $Host.UI.RawUI.CursorPosition.Y -eq 0)
     {
-        Show-HostHeadline
+        $Host.UI.WriteLine((Get-ProfileHeadline))
     }
 }
