@@ -103,7 +103,7 @@ function Enable-Prompt
             $output.Append((Write-HostColored -Message $separator -ForegroundColor $colorCyan2 -NoNewline -PassThru)) | Out-Null
 
             # Check if the current directory is member of a git repo
-            if ($Script:PromptGit -and (Test-GitRepository))
+            if ($NestedPromptLevel -eq 0 -and $Script:PromptGit -and (Test-GitRepository))
             {
                 try
                 {
