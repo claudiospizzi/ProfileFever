@@ -13,7 +13,7 @@ function Test-GitRepository
     [OutputType([System.Boolean])]
     param ()
 
-    $pathInfo = Microsoft.PowerShell.Management\Get-Location
+    $pathInfo = Get-Location
 
     if (!$pathInfo -or ($pathInfo.Provider.Name -ne 'FileSystem'))
     {
