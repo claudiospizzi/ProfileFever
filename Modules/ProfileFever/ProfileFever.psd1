@@ -61,31 +61,33 @@
     )
 
     # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
-    # NestedModules = @()
+    NestedModules = @()
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
     FunctionsToExport = @(
-        # Common
-        'Start-Profile'
-        'Install-Profile'
-        'Update-ProfileConfig'
-        'Show-HostHeadline'
-        'Write-HostColored'
-        'Test-GitRepository'
-        # NotFound
+        # CmdNotFound
         'Register-CommandNotFound'
         'Unregister-CommandNotFound'
         'Enable-CommandNotFound'
         'Disable-CommandNotFound'
         'Get-CommandNotFoundAction'
         'Add-CommandNotFoundAction'
+        # Format
+        'Format-HostText'
+        # Git
+        'Test-GitRepository'
+        # Profile
+        'Start-Profile'
+        'Install-Profile'
+        'Update-ProfileConfig'
+        'Get-ProfileHeadline'
         # Prompt
         'Enable-Prompt'
         'Disable-Prompt'
-        'Enable-PromptGit'
-        'Disable-PromptGit'
         'Enable-PromptAlias'
         'Disable-PromptAlias'
+        'Enable-PromptGit'
+        'Disable-PromptGit'
         'Enable-PromptTimeSpan'
         'Disable-PromptTimeSpan'
         'Set-PromptTitle'
@@ -114,18 +116,20 @@
 
     # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
     AliasesToExport = @(
-        'ev'
-        'dv'
-        'ei'
-        'di'
-        'egit'
-        'dgit'
+        # Prompt
         'ealias'
         'dalias'
+        'egit'
+        'dgit'
         'etimestamp'
         'dtimestamp'
         'title'
         'ctitle'
+        # Stream
+        'ev'
+        'dv'
+        'ei'
+        'di'
     )
 
     # DSC resources to export from this module
