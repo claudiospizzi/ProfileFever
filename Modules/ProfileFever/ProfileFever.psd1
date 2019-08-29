@@ -159,7 +159,7 @@
             # IconUri = ''
 
             # ReleaseNotes of this module
-            # ReleaseNotes = ''
+            ReleaseNotes = 'https://github.com/claudiospizzi/ProfileFever/blob/master/CHANGELOG.md'
 
         } # End of PSData hashtable
 
