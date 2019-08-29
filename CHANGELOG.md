@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.2.0 - 2019-08-29
+
+* Changed: Remove dependencies to Pansis module
+* Added: Function to format text (Format-HostText)
+
 ## 3.1.0 - 2019-08-08
 
 * Added: Advanced prompt mode
