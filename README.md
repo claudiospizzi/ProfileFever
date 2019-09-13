@@ -13,36 +13,6 @@ supports the new Windows Terminal.
 
 ## Features
 
-### CmdNotFound
-
-* **Register-CommandNotFound**  
-  Register the command not found action callback.
-
-* **Unregister-CommandNotFound**  
-  Unregister the command not found action callback.
-
-* **Enable-CommandNotFound**  
-  Enable the command not found actions.
-
-* **Disable-CommandNotFound**  
-  Disable the command not found actions.
-
-* **Get-CommandNotFoundAction**  
-  Get the registered command not found actions.
-
-* **Add-CommandNotFoundAction**  
-   Add a command not found action to the list of actions.
-
-### Format
-
-* **Format-HostText**  
-  Format the text with RGB colors and weight.
-
-### Git
-
-* **Test-GitRepository**  
-  Test if the current directory is a git repository.
-
 ### Profile
 
 * **Start-Profile**  
@@ -122,6 +92,36 @@ supports the new Windows Terminal.
 
 * **Disable-Information**  
   Disable the information output stream for the global shell.
+
+### Format
+
+* **Format-HostText**  
+  Format the text with RGB colors and weight.
+
+### Git
+
+* **Test-GitRepository**  
+  Test if the current directory is a git repository.
+
+### Command Not Found Action
+
+* **Register-CommandNotFound**  
+  Register the command not found action callback.
+
+* **Unregister-CommandNotFound**  
+  Unregister the command not found action callback.
+
+* **Enable-CommandNotFound**  
+  Enable the command not found actions.
+
+* **Disable-CommandNotFound**  
+  Disable the command not found actions.
+
+* **Get-CommandNotFoundAction**  
+  Get the registered command not found actions.
+
+* **Add-CommandNotFoundAction**  
+   Add a command not found action to the list of actions.
 
 ### Workspace
 
