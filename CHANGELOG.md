@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+
+* Fixed: Don't show the full prompt if the user enters Shift+Enter
+* Fixed: Import the posh-git module in the global scope
+
 ## 3.2.0 - 2019-08-29
 
 * Changed: Remove dependencies to Pansis module

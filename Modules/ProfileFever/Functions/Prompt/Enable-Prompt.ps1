@@ -44,8 +44,6 @@ function Enable-Prompt
         # Required to use System.Windows.Input.Keyboard class
         Add-Type -AssemblyName 'PresentationFramework'
 
-        #[System.Windows.Input.Keyboard]::IsKeyDown('RightShift')
-
         function Global:Prompt
         {
             # Definition of used colours
@@ -84,6 +82,8 @@ function Enable-Prompt
                 $Host.UI.RawUI.WindowTitle = $Script:PromptTitle
             }
 
+            $output = [System.Text.StringBuilder]::new()
+
             # If the prompt history id chagned, e.g. a command was executed,
             # show the alias suggestion and last command duration, if enabled.
             if ($Script:PromptHistory -ne $MyInvocation.HistoryId)
@@ -92,152 +92,162 @@ function Enable-Prompt
                 if ($Script:PromptAlias) { Show-PromptAliasSuggestion }
                 if ($Script:PromptTimeSpan) { Show-PromptLastCommandDuration }
             }
-            $output = [System.Text.StringBuilder]::new()
 
-            # Show an information about the debug prompt
-            if ($NestedPromptLevel -gt 0)
+            if (-not [System.Windows.Input.Keyboard]::IsKeyDown('RightShift'))
             {
-                $output.Append((Format-HostText -Message ' DBG ' -BackgroundColor $colorDarkMagenta)) | Out-Null
-            }
-
-            # Get the prompt info and current location
-            $output.Append((Format-HostText -Message " $Script:PromptInfo " -ForegroundColor $colorWhite -BackgroundColor $colorCyan1)) | Out-Null
-            $output.Append((Format-HostText -Message $separator -ForegroundColor $colorCyan1 -BackgroundColor $colorCyan2)) | Out-Null
-            $output.Append((Format-HostText -Message " $location " -ForegroundColor $colorWhite -BackgroundColor $colorCyan2)) | Out-Null
-            $output.Append((Format-HostText -Message $separator -ForegroundColor $colorCyan2)) | Out-Null
-
-            # Check if the current directory is member of a git repo
-            if ($NestedPromptLevel -eq 0 -and $Script:PromptGit -and (Test-GitRepository))
-            {
-                try
+                # Show an information about the debug prompt
+                if ($NestedPromptLevel -gt 0)
                 {
-                    if ($null -eq (Get-Module -Name 'posh-git'))
-                    {
-                        Import-Module -Name 'posh-git'
-                    }
+                    $output.Append((Format-HostText -Message ' DBG ' -BackgroundColor $colorDarkMagenta)) | Out-Null
+                }
 
-                    $Global:GitPromptSettings.EnableStashStatus = $true
-                    $Global:GitStatus = Get-GitStatus
+                # Get the prompt info and current location
+                $output.Append((Format-HostText -Message " $Script:PromptInfo " -ForegroundColor $colorWhite -BackgroundColor $colorCyan1)) | Out-Null
+                $output.Append((Format-HostText -Message $separator -ForegroundColor $colorCyan1 -BackgroundColor $colorCyan2)) | Out-Null
+                $output.Append((Format-HostText -Message " $location " -ForegroundColor $colorWhite -BackgroundColor $colorCyan2)) | Out-Null
+                $output.Append((Format-HostText -Message $separator -ForegroundColor $colorCyan2)) | Out-Null
 
-                    $status  = $Global:GitStatus
-                    $setting = $Global:GitPromptSettings
-
-                    $branchText = '{0} {1}' -f $iconBranch, (Format-GitBranchName -BranchName $status.Branch)
-
-                    if (!$status.Upstream)
+                # Check if the current directory is member of a git repo
+                if ($NestedPromptLevel -eq 0 -and $Script:PromptGit -and (Test-GitRepository))
+                {
+                    try
                     {
-                        # No upstream branch configured
-                        $branchText += ' '
-                        $branchColor = $colorCyan3
-                    }
-                    elseif ($status.UpstreamGone -eq $true)
-                    {
-                        # Upstream branch is gone
-                        $branchText += ' {0} ' -f $setting.BranchGoneStatusSymbol.Text
-                        $branchColor = $colorDarkRed
-                    }
-                    elseif (($status.BehindBy -eq 0) -and ($status.AheadBy -eq 0))
-                    {
-                        # We are aligned with remote
-                        $branchText += ' {0} ' -f $setting.BranchIdenticalStatusSymbol.Text
-                        $branchColor = $colorCyan3
-                    }
-                    elseif (($status.BehindBy -ge 1) -and ($status.AheadBy -ge 1))
-                    {
-                        # We are both behind and ahead of remote
-                        $branchText += ' {0}{1} {2}{3} ' -f $setting.BranchBehindStatusSymbol.Text, $status.BehindBy, $setting.BranchAheadStatusSymbol.Text, $status.AheadBy
-                        $branchColor = $colorDarkYellow
-                    }
-                    elseif ($status.BehindBy -ge 1)
-                    {
-                        # We are behind remote
-                        $branchText += ' {0}{1} ' -f $setting.BranchBehindStatusSymbol.Text, $status.BehindBy
-                        $branchColor = $colorDarkRed
-                    }
-                    elseif ($status.AheadBy -ge 1)
-                    {
-                        # We are ahead of remote
-                        $branchText += ' {0}{1} ' -f $setting.BranchAheadStatusSymbol.Text, $status.AheadBy
-                        $branchColor = $colorDarkGreen
-                    }
-                    else
-                    {
-                        $branchText += ' ? '
-                        $branchColor = $colorCyan3
-                    }
-
-                    $output.Append((Format-HostText -Message "`b$separator " -ForegroundColor $colorCyan2 -BackgroundColor $branchColor)) | Out-Null
-                    $output.Append((Format-HostText -Message $branchText -ForegroundColor $colorWhite -BackgroundColor $branchColor)) | Out-Null
-                    $output.Append((Format-HostText -Message $separator -ForegroundColor $branchColor)) | Out-Null
-
-                    if ($status.HasIndex -or $status.HasWorking -or $GitStatus.StashCount -gt 0)
-                    {
-                        $output.Append((Format-HostText -Message "`b$separator" -ForegroundColor $branchColor -BackgroundColor $colorCyan4)) | Out-Null
-
-                        $outputPart  = @()
-                        $outputSplit = Format-HostText -Message $diagonal -ForegroundColor $colorCyan4 -BackgroundColor $colorCyan5
-
-                        if ($status.HasIndex)
+                        if ($null -eq (Get-Module -Name 'posh-git'))
                         {
-                            $indexText = ' '
-                            $indexText += '{0}{1} ' -f $setting.FileAddedText, $status.Index.Added.Count
-                            $indexText += '{0}{1} ' -f $setting.FileModifiedText, $status.Index.Modified.Count
-                            $indexText += '{0}{1} ' -f $setting.FileRemovedText, $status.Index.Deleted.Count
-                            if ($status.Index.Unmerged)
+                            Import-Module -Name 'posh-git' -Global
+                        }
+
+                        $Global:GitPromptSettings.EnableStashStatus = $true
+                        $Global:GitStatus = Get-GitStatus
+
+                        $status  = $Global:GitStatus
+                        $setting = $Global:GitPromptSettings
+
+                        $branchText = '{0} {1}' -f $iconBranch, (Format-GitBranchName -BranchName $status.Branch)
+
+                        if (!$status.Upstream)
+                        {
+                            # No upstream branch configured
+                            $branchText += ' '
+                            $branchColor = $colorCyan3
+                        }
+                        elseif ($status.UpstreamGone -eq $true)
+                        {
+                            # Upstream branch is gone
+                            $branchText += ' {0} ' -f $setting.BranchGoneStatusSymbol.Text
+                            $branchColor = $colorDarkRed
+                        }
+                        elseif (($status.BehindBy -eq 0) -and ($status.AheadBy -eq 0))
+                        {
+                            # We are aligned with remote
+                            $branchText += ' {0} ' -f $setting.BranchIdenticalStatusSymbol.Text
+                            $branchColor = $colorCyan3
+                        }
+                        elseif (($status.BehindBy -ge 1) -and ($status.AheadBy -ge 1))
+                        {
+                            # We are both behind and ahead of remote
+                            $branchText += ' {0}{1} {2}{3} ' -f $setting.BranchBehindStatusSymbol.Text, $status.BehindBy, $setting.BranchAheadStatusSymbol.Text, $status.AheadBy
+                            $branchColor = $colorDarkYellow
+                        }
+                        elseif ($status.BehindBy -ge 1)
+                        {
+                            # We are behind remote
+                            $branchText += ' {0}{1} ' -f $setting.BranchBehindStatusSymbol.Text, $status.BehindBy
+                            $branchColor = $colorDarkRed
+                        }
+                        elseif ($status.AheadBy -ge 1)
+                        {
+                            # We are ahead of remote
+                            $branchText += ' {0}{1} ' -f $setting.BranchAheadStatusSymbol.Text, $status.AheadBy
+                            $branchColor = $colorDarkGreen
+                        }
+                        else
+                        {
+                            $branchText += ' ? '
+                            $branchColor = $colorCyan3
+                        }
+
+                        $output.Append((Format-HostText -Message "`b$separator " -ForegroundColor $colorCyan2 -BackgroundColor $branchColor)) | Out-Null
+                        $output.Append((Format-HostText -Message $branchText -ForegroundColor $colorWhite -BackgroundColor $branchColor)) | Out-Null
+                        $output.Append((Format-HostText -Message $separator -ForegroundColor $branchColor)) | Out-Null
+
+                        if ($status.HasIndex -or $status.HasWorking -or $GitStatus.StashCount -gt 0)
+                        {
+                            $output.Append((Format-HostText -Message "`b$separator" -ForegroundColor $branchColor -BackgroundColor $colorCyan4)) | Out-Null
+
+                            $outputPart  = @()
+                            $outputSplit = Format-HostText -Message $diagonal -ForegroundColor $colorCyan4 -BackgroundColor $colorCyan5
+
+                            if ($status.HasIndex)
                             {
-                                $indexText += '{0}{1} ' -f $setting.FileConflictedText, $status.Index.Unmerged.Count
+                                $indexText = ' '
+                                $indexText += '{0}{1} ' -f $setting.FileAddedText, $status.Index.Added.Count
+                                $indexText += '{0}{1} ' -f $setting.FileModifiedText, $status.Index.Modified.Count
+                                $indexText += '{0}{1} ' -f $setting.FileRemovedText, $status.Index.Deleted.Count
+                                if ($status.Index.Unmerged)
+                                {
+                                    $indexText += '{0}{1} ' -f $setting.FileConflictedText, $status.Index.Unmerged.Count
+                                }
+                                $indexText += "$iconIndex "
+
+                                $outputPart += Format-HostText -Message $indexText -ForegroundColor 0,96,0 -BackgroundColor $colorCyan4
                             }
-                            $indexText += "$iconIndex "
 
-                            $outputPart += Format-HostText -Message $indexText -ForegroundColor 0,96,0 -BackgroundColor $colorCyan4
-                        }
-
-                        if ($status.HasWorking)
-                        {
-                            $workingText = ' '
-                            $workingText += '{0}{1} ' -f $setting.FileAddedText, $status.Working.Added.Count
-                            $workingText += '{0}{1} ' -f $setting.FileModifiedText, $status.Working.Modified.Count
-                            $workingText += '{0}{1} ' -f $setting.FileRemovedText, $status.Working.Deleted.Count
-                            if ($status.Working.Unmerged)
+                            if ($status.HasWorking)
                             {
-                                $workingText += '{0}{1} ' -f $setting.FileConflictedText, $status.Working.Unmerged.Count
+                                $workingText = ' '
+                                $workingText += '{0}{1} ' -f $setting.FileAddedText, $status.Working.Added.Count
+                                $workingText += '{0}{1} ' -f $setting.FileModifiedText, $status.Working.Modified.Count
+                                $workingText += '{0}{1} ' -f $setting.FileRemovedText, $status.Working.Deleted.Count
+                                if ($status.Working.Unmerged)
+                                {
+                                    $workingText += '{0}{1} ' -f $setting.FileConflictedText, $status.Working.Unmerged.Count
+                                }
+                                $workingText += "$iconWorking "
+
+                                $outputPart += Format-HostText -Message $workingText -ForegroundColor 96,0,0 -BackgroundColor $colorCyan4
                             }
-                            $workingText += "$iconWorking "
 
-                            $outputPart += Format-HostText -Message $workingText -ForegroundColor 96,0,0 -BackgroundColor $colorCyan4
+                            if ($GitStatus.StashCount -gt 0)
+                            {
+                                $stashText = " +{0} $iconStash " -f $GitStatus.StashCount
+
+                                $outputPart += Format-HostText -Message $stashText -ForegroundColor 0,0,96 -BackgroundColor $colorCyan4
+                            }
+
+                            $output.Append($outputPart[0]) | Out-Null
+                            for ($i = 1; $i -lt $outputPart.Count; $i++)
+                            {
+                                $output.Append($outputSplit) | Out-Null
+                                $output.Append($outputPart[$i]) | Out-Null
+                            }
+
+                            $output.Append((Format-HostText -Message $separator -ForegroundColor $colorCyan4)) | Out-Null
                         }
-
-                        if ($GitStatus.StashCount -gt 0)
-                        {
-                            $stashText = " +{0} $iconStash " -f $GitStatus.StashCount
-
-                            $outputPart += Format-HostText -Message $stashText -ForegroundColor 0,0,96 -BackgroundColor $colorCyan4
-                        }
-
-                        $output.Append($outputPart[0]) | Out-Null
-                        for ($i = 1; $i -lt $outputPart.Count; $i++)
-                        {
-                            $output.Append($outputSplit) | Out-Null
-                            $output.Append($outputPart[$i]) | Out-Null
-                        }
-
-                        $output.Append((Format-HostText -Message $separator -ForegroundColor $colorCyan4)) | Out-Null
+                    }
+                    catch
+                    {
+                        $output.Append((Format-HostText -Message "`b$separator" -ForegroundColor $colorCyan2 -BackgroundColor $colorCyan3)) | Out-Null
+                        $output.Append((Format-HostText -Message " ERROR: $_ " -ForegroundColor $colorWhite -BackgroundColor $colorCyan3)) | Out-Null
+                        $output.Append((Format-HostText -Message $separator -ForegroundColor $colorCyan3)) | Out-Null
                     }
                 }
-                catch
-                {
-                    $output.Append((Format-HostText -Message "`b$separator" -ForegroundColor $colorCyan2 -BackgroundColor $colorCyan3)) | Out-Null
-                    $output.Append((Format-HostText -Message " ERROR: $_ " -ForegroundColor $colorWhite -BackgroundColor $colorCyan3)) | Out-Null
-                    $output.Append((Format-HostText -Message $separator -ForegroundColor $colorCyan3)) | Out-Null
-                }
             }
 
-            # Write the prompt
-            Write-Host $output -NoNewline
+            # Defint the command counter and imput line
+            $input = "$($MyInvocation.HistoryId.ToString().PadLeft(3, '0'))$('>' * ($NestedPromptLevel + 1)) "
 
-            # Finally, show the command count and the prompt level indicator on
-            # the a seperate line
-            return "`n$($MyInvocation.HistoryId.ToString().PadLeft(3, '0'))$('>' * ($NestedPromptLevel + 1)) "
+            # Finally, show the output about path, debug, git etc. and then on a
+            # new line the command count and the prompt level indicator
+            if ([System.String]::IsNullOrEmpty($output.ToString()))
+            {
+                return $input
+            }
+            else
+            {
+                Write-Host $output -NoNewline
+                return "`n$input"
+            }
         }
     }
 }
