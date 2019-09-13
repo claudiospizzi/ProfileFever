@@ -41,6 +41,11 @@ function Enable-Prompt
 
     if ($Type -eq 'Advanced')
     {
+        # Required to use System.Windows.Input.Keyboard class
+        Add-Type -AssemblyName 'PresentationFramework'
+
+        #[System.Windows.Input.Keyboard]::IsKeyDown('RightShift')
+
         function Global:Prompt
         {
             # Definition of used colours
@@ -65,15 +70,6 @@ function Enable-Prompt
             $iconWorking = [char] 57353
             $iconStash   = [char] 58915
 
-            # If the prompt history id chagned, e.g. a command was executed,
-            # show the alias suggestion and last command duration, if enabled.
-            if ($Script:PromptHistory -ne $MyInvocation.HistoryId)
-            {
-                $Script:PromptHistory = $MyInvocation.HistoryId
-                if ($Script:PromptAlias) { Show-PromptAliasSuggestion }
-                if ($Script:PromptTimeSpan) { Show-PromptLastCommandDuration }
-            }
-
             # Get location and replace the user home directory
             $location = $ExecutionContext.SessionState.Path.CurrentLocation.Path
             $location = $location.Replace($Home, "~")
@@ -88,6 +84,14 @@ function Enable-Prompt
                 $Host.UI.RawUI.WindowTitle = $Script:PromptTitle
             }
 
+            # If the prompt history id chagned, e.g. a command was executed,
+            # show the alias suggestion and last command duration, if enabled.
+            if ($Script:PromptHistory -ne $MyInvocation.HistoryId)
+            {
+                $Script:PromptHistory = $MyInvocation.HistoryId
+                if ($Script:PromptAlias) { Show-PromptAliasSuggestion }
+                if ($Script:PromptTimeSpan) { Show-PromptLastCommandDuration }
+            }
             $output = [System.Text.StringBuilder]::new()
 
             # Show an information about the debug prompt
