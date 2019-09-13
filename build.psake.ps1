@@ -156,7 +156,7 @@ Task Verify -requiredVariables VerifyBuildSystem {
             $actual   = Get-Content -Path "$PSScriptRoot\$file"
 
             # Compare objects
-            #Assert -conditionToCheck ($null -eq (Compare-Object -ReferenceObject $expected -DifferenceObject $actual)) -failureMessage "The file '$file' is not current. Please update the file and restart the build."
+            Assert -conditionToCheck ($null -eq (Compare-Object -ReferenceObject $expected -DifferenceObject $actual)) -failureMessage "The file '$file' is not current. Please update the file and restart the build."
         }
     }
     else
@@ -529,12 +529,6 @@ function Test-GitRepo($ModuleName)
     if ($gitStatus.Branch -ne 'master')
     {
         throw "Git Exception: $($gitStatus.Branch) is checked out, switch to master branch!  (git checkout master)"
-    }
-
-    $mergeStatus = Get-GitMergeStatus -Branch 'master'
-    if ($mergeStatus -notcontains 'dev')
-    {
-        throw "Git Exception: dev branch is not merged into the master branch!  (git merge dev)"
     }
 
     if ($gitStatus.AheadBy -ne 0)
