@@ -48,6 +48,7 @@ $Script:PromptTimeSpan = $false
 $Script:PromptGit      = $false
 $Script:PromptDefault  = Get-Command -Name 'prompt' | Select-Object -ExpandProperty 'Definition'
 $Script:PromptTitle    = $null
+$Script:PromptIsAdmin  = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
 # Enumerate the prompt color based on the operating system
 if ([System.Environment]::OSVersion.Platform -eq 'Win32NT')

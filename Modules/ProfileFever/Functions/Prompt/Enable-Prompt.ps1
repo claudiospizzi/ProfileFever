@@ -6,7 +6,12 @@
         There are two prompts available. Be default, the Basic prompt is used.
         It will show all information without any fancy formatting. For a nice
         formiatting, the Advanced type can be used. It's recommended that the
-        font MesloLGS NF is used.
+        font Delugia Nerd Font is used. This is an extension of the new font
+        Cascadia Code.
+
+    .LINK
+        https://github.com/microsoft/cascadia-code/
+        https://github.com/adam7/delugia-code/
 #>
 function Enable-Prompt
 {
@@ -41,8 +46,10 @@ function Enable-Prompt
 
     if ($Type -eq 'Advanced')
     {
-        # Required to use System.Windows.Input.Keyboard class
-        Add-Type -AssemblyName 'PresentationFramework'
+        if ($PSVersionTable.PSVersion -lt '6.0')
+        {
+            Add-Type -AssemblyName 'PresentationFramework'
+        }
 
         function Global:Prompt
         {
@@ -55,6 +62,7 @@ function Enable-Prompt
             $colorCyan5       = 0x85, 0xC5, 0xF7
             $colorWhite       = 0xF2, 0xF2, 0xF2
             $colorBlack       = 0x0C, 0x0C, 0x0C
+            $colorRed         = 0xCC, 0x00, 0x00
             $colorDarkRed     = 0xC5, 0x0F, 0x1F
             $colorDarkYellow  = 0xC1, 0x9C, 0x00
             $colorDarkGreen   = 0x13, 0x90, 0x0E # Darker than console color
@@ -67,6 +75,8 @@ function Enable-Prompt
             $iconIndex   = [char] 57354
             $iconWorking = [char] 57353
             $iconStash   = [char] 58915
+            $iconAdmin   = [char] 9760
+            $iconDebug   = [char] 9874
 
             # Get location and replace the user home directory
             $location = $ExecutionContext.SessionState.Path.CurrentLocation.Path
@@ -84,21 +94,28 @@ function Enable-Prompt
 
             $output = [System.Text.StringBuilder]::new()
 
+            $showFullPrompt = $PSVersionTable.PSVersion -lt '6.0' -and ([System.Windows.Input.Keyboard]::IsKeyDown('RightShift'))
+
             # If the prompt history id chagned, e.g. a command was executed,
             # show the alias suggestion and last command duration, if enabled.
-            if ($Script:PromptHistory -ne $MyInvocation.HistoryId)
+            if ($Script:PromptHistory -ne $MyInvocation.HistoryId -or $showFullPrompt)
             {
+                # Update history information
                 $Script:PromptHistory = $MyInvocation.HistoryId
+
+                # Show promt alias and command duration
                 if ($Script:PromptAlias) { Show-PromptAliasSuggestion }
                 if ($Script:PromptTimeSpan) { Show-PromptLastCommandDuration }
-            }
 
-            if (-not [System.Windows.Input.Keyboard]::IsKeyDown('RightShift'))
-            {
+                if ($Script:PromptIsAdmin)
+                {
+                    $output.Append((Format-HostText -Message " $iconAdmin " -BackgroundColor $colorRed)) | Out-Null
+                }
+
                 # Show an information about the debug prompt
                 if ($NestedPromptLevel -gt 0)
                 {
-                    $output.Append((Format-HostText -Message ' DBG ' -BackgroundColor $colorDarkMagenta)) | Out-Null
+                    $output.Append((Format-HostText -Message " $iconDebug " -BackgroundColor $colorDarkMagenta)) | Out-Null
                 }
 
                 # Get the prompt info and current location
@@ -234,7 +251,7 @@ function Enable-Prompt
                 }
             }
 
-            # Defint the command counter and imput line
+            # Define the command counter and imput line
             $input = "$($MyInvocation.HistoryId.ToString().PadLeft(3, '0'))$('>' * ($NestedPromptLevel + 1)) "
 
             # Finally, show the output about path, debug, git etc. and then on a

@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+
+* Added: Prompt indicator if the current process is administrator
+* Fixed: PresentationFramework only loaded in Windows PowerShell
+
 ## 3.2.1 - 2019-09-13
 
 * Fixed: Don't show the full prompt if the user enters Shift+Enter
