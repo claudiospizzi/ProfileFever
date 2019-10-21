@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 * Added: Prompt indicator if the current process is administrator
 * Fixed: PresentationFramework only loaded in Windows PowerShell
+* Fixed: Alias suggestion did show wrong suggestions (word parts)
 
 ## 3.2.1 - 2019-09-13
 
