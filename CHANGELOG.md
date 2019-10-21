@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## Unreleased
+## 3.3.0 - 2019-10-21
 
 * Added: Prompt indicator if the current process is administrator
 * Added: Move last prompt duration on line down and add clock icon
