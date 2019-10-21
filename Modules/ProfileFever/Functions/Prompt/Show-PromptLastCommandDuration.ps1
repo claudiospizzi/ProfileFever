@@ -13,15 +13,20 @@ function Show-PromptLastCommandDuration
 
     if ($MyInvocation.HistoryId -gt 1 -and $Host.UI.RawUI.CursorPosition.Y -gt 0)
     {
+        $clock    = [System.Char] 9201
         $history  = Get-History -Id ($MyInvocation.HistoryId - 1)
-        $duration = "{0:0.000}s" -f ($history.EndExecutionTime - $history.StartExecutionTime).TotalSeconds
+        $duration = " {0} {1:0.000}s`r" -f $clock, ($history.EndExecutionTime - $history.StartExecutionTime).TotalSeconds
 
-        # Move cursor one up and to the right to show the execution time
+        # Move cursor to the right to show the execution time
         $position = $Host.UI.RawUI.CursorPosition
-        $position.Y = $position.Y - 1
-        $position.X = $Host.UI.RawUI.WindowSize.Width - $duration.Length - 1
+        $position.X = $Host.UI.RawUI.WindowSize.Width - $duration.Length - 2
         $Host.UI.RawUI.CursorPosition = $position
 
-        $Host.UI.WriteLine('Gray', $Host.UI.RawUI.BackgroundColor, $duration)
+        $Host.UI.Write('Gray', $Host.UI.RawUI.BackgroundColor, $duration)
+
+        # Move cursor back
+        $position = $Host.UI.RawUI.CursorPosition
+        $position.X = 0
+        $Host.UI.RawUI.CursorPosition = $position
     }
 }

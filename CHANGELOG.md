@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 
 * Added: Prompt indicator if the current process is administrator
+* Added: Move last prompt duration on line down and add clock icon
 * Fixed: PresentationFramework only loaded in Windows PowerShell
 * Fixed: Alias suggestion did show wrong suggestions (word parts)
 
