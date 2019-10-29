@@ -7,7 +7,7 @@
 #>
 function Set-PromptTitle
 {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess = $true)]
     [Alias('title')]
     param
     (
@@ -17,6 +17,9 @@ function Set-PromptTitle
         $Title
     )
 
-    Remove-Variable -Scope 'Script' -Name 'PromptTitle' -ErrorAction 'SilentlyContinue' -Force
-    New-Variable -Scope 'Script' -Name 'PromptTitle' -Option 'ReadOnly' -Value $Title -Force
+    if ($PSCmdlet.ShouldProcess('Prompt Title', 'Set'))
+    {
+        Remove-Variable -Scope 'Script' -Name 'PromptTitle' -ErrorAction 'SilentlyContinue' -Force
+        New-Variable -Scope 'Script' -Name 'PromptTitle' -Option 'ReadOnly' -Value $Title -Force
+    }
 }

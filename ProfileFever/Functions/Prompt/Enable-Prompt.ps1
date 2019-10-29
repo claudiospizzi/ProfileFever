@@ -16,6 +16,8 @@
 function Enable-Prompt
 {
     [CmdletBinding()]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalVars', '')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalFunctions', '')]
     param
     (
@@ -61,7 +63,7 @@ function Enable-Prompt
             $colorCyan4       = 0x75, 0xB5, 0xE7
             $colorCyan5       = 0x85, 0xC5, 0xF7
             $colorWhite       = 0xF2, 0xF2, 0xF2
-            $colorBlack       = 0x0C, 0x0C, 0x0C
+            # $colorBlack     = 0x0C, 0x0C, 0x0C # Not used at the moment
             $colorRed         = 0xCC, 0x00, 0x00
             $colorDarkRed     = 0xC5, 0x0F, 0x1F
             $colorDarkYellow  = 0xC1, 0x9C, 0x00
