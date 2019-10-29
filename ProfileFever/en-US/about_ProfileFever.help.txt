@@ -1,0 +1,14 @@
+
+TOPIC
+    about_ProfileFever
+
+SHORT DESCRIPTION
+    PowerShell Module with functions to configure a system and the PowerShell
+    profile.
+
+LONG DESCRIPTION
+    To get more information about this module, check the open source GitHub
+    repository readme or the cmdlet based help for the module functions:
+
+LINK
+    https://github.com/claudiospizzi/ProfileFever

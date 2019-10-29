@@ -21,7 +21,7 @@
     Copyright = 'Copyright (c) 2019 by Claudio Spizzi. Licensed under MIT license.'
 
     # Description of the functionality provided by this module
-    Description = 'PowerShell Module with functions and DSC resources to configure a system and the PowerShell profile.'
+    Description = 'PowerShell Module with functions to configure a system and the PowerShell profile.'
 
     # Minimum version of the Windows PowerShell engine required by this module
     PowerShellVersion = '5.1'
