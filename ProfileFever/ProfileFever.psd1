@@ -52,12 +52,12 @@
 
     # Type files (.ps1xml) to be loaded when importing this module
     TypesToProcess = @(
-        'Resources\ProfileFever.Types.ps1xml'
+        'ProfileFever.Xml.Types.ps1xml'
     )
 
     # Format files (.ps1xml) to be loaded when importing this module
     FormatsToProcess = @(
-        'Resources\ProfileFever.Formats.ps1xml'
+        'ProfileFever.Xml.Format.ps1xml'
     )
 
     # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
