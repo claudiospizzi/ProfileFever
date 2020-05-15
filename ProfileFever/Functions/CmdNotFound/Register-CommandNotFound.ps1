@@ -66,7 +66,22 @@ function Register-CommandNotFound
                         }.GetNewClosure()
                     }
 
-                    # Option 2: Open Session
+                    # Option 2: Invoke Command
+                    # If a script is appended to the command, execute that
+                    # script on the remote system.
+                    elseif ($commandline.StartsWith($CommandName) -and $commandLine.Length -gt $CommandName.Length)
+                    {
+                        $scriptBlock = [System.Management.Automation.ScriptBlock]::Create($commandLine.Substring($CommandName.Length).Trim())
+
+                        Write-Verbose ("Invoke-Command -ComputerName '{0}'{1} -ScriptBlock {{ {2} }}" -f $command.ComputerName, $credentialVerbose, $scriptBlock.ToString())
+
+                        $CommandLookupEventArgs.StopSearch = $true
+                        $CommandLookupEventArgs.CommandScriptBlock = {
+                            Invoke-Command -ComputerName $command.ComputerName @credentialSplat -ScriptBlock $scriptBlock -ErrorAction Stop
+                        }.GetNewClosure()
+                    }
+
+                    # Option 3: Open Session
                     # If a variable is specified as output of the command,
                     # a new remoting session will be opened and returned.
                     $openSessionRegex = '^\$\S+ = {0}$' -f ([System.Text.RegularExpressions.Regex]::Escape($CommandName))
@@ -77,21 +92,6 @@ function Register-CommandNotFound
                         $CommandLookupEventArgs.StopSearch = $true
                         $CommandLookupEventArgs.CommandScriptBlock = {
                             New-PSSession -ComputerName $command.ComputerName @credentialSplat -ErrorAction Stop
-                        }.GetNewClosure()
-                    }
-
-                    # Option 3: Invoke Command
-                    # If a script is appended to the command, execute that
-                    # script on the remote system.
-                    if ($commandline.StartsWith($CommandName) -and $commandLine.Length -gt $CommandName.Length)
-                    {
-                        $scriptBlock = [System.Management.Automation.ScriptBlock]::Create($commandLine.Substring($CommandName.Length).Trim())
-
-                        Write-Verbose ("Invoke-Command -ComputerName '{0}'{1} -ScriptBlock {{ {2} }}" -f $command.ComputerName, $credentialVerbose, $scriptBlock.ToString())
-
-                        $CommandLookupEventArgs.StopSearch = $true
-                        $CommandLookupEventArgs.CommandScriptBlock = {
-                            Invoke-Command -ComputerName $command.ComputerName @credentialSplat -ScriptBlock $scriptBlock -ErrorAction Stop
                         }.GetNewClosure()
                     }
                 }

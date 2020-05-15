@@ -24,7 +24,12 @@ function Format-HostText
     [CmdletBinding()]
     param
     (
+        [Parameter(Mandatory = $false)]
+        [System.Text.StringBuilder]
+        $StringBuilder,
+
         [Parameter(Mandatory = $true)]
+        [AllowEmptyString()]
         [System.String]
         $Message,
 
@@ -47,45 +52,52 @@ function Format-HostText
 
     $ansiEscape = [System.Char] 27
 
-    $stringBuilder = [System.Text.StringBuilder]::new()
+    # If no string build object was passed, create a new one
+    if (-not $PSBoundParameters.ContainsKey('StringBuilder'))
+    {
+        $StringBuilder = [System.Text.StringBuilder]::new()
+    }
 
     # Foreground Color Prefix
     if ($PSBoundParameters.ContainsKey('ForegroundColor'))
     {
-        $stringBuilder.AppendFormat("$ansiEscape[38;2;{0};{1};{2}m", $ForegroundColor[0], $ForegroundColor[1], $ForegroundColor[2]) | Out-Null
+        $StringBuilder.AppendFormat("$ansiEscape[38;2;{0};{1};{2}m", $ForegroundColor[0], $ForegroundColor[1], $ForegroundColor[2]) | Out-Null
     }
 
     # Background Color Prefix
     if ($PSBoundParameters.ContainsKey('BackgroundColor'))
     {
-        $stringBuilder.AppendFormat("$ansiEscape[48;2;{0};{1};{2}m", $BackgroundColor[0], $BackgroundColor[1], $BackgroundColor[2]) | Out-Null
+        $StringBuilder.AppendFormat("$ansiEscape[48;2;{0};{1};{2}m", $BackgroundColor[0], $BackgroundColor[1], $BackgroundColor[2]) | Out-Null
     }
 
     # Bold Prefix
     if ($Bold.IsPresent)
     {
-        $stringBuilder.Append("$ansiEscape[1m") | Out-Null
+        $StringBuilder.Append("$ansiEscape[1m") | Out-Null
     }
 
-    $stringBuilder.Append($Message) | Out-Null
+    $StringBuilder.Append($Message) | Out-Null
 
     # Bold Suffix
     if ($Bold.IsPresent)
     {
-        $stringBuilder.Append("$ansiEscape[0m") | Out-Null
+        $StringBuilder.Append("$ansiEscape[0m") | Out-Null
     }
 
     # Background Color Suffix
     if ($PSBoundParameters.ContainsKey('BackgroundColor'))
     {
-        $stringBuilder.Append("$ansiEscape[0m") | Out-Null
+        $StringBuilder.Append("$ansiEscape[0m") | Out-Null
     }
 
     # Foreground Color Suffix
     if ($PSBoundParameters.ContainsKey('ForegroundColor'))
     {
-        $stringBuilder.Append("$ansiEscape[0m") | Out-Null
+        $StringBuilder.Append("$ansiEscape[0m") | Out-Null
     }
 
-    return $stringBuilder.ToString()
+    if (-not $PSBoundParameters.ContainsKey('StringBuilder'))
+    {
+        return $StringBuilder.ToString()
+    }
 }

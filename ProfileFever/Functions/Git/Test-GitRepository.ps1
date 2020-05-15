@@ -4,7 +4,7 @@
 
     .DESCRIPTION
         Recursive test the current and all it's parents if the repository is
-        part of a git repository. It will use the current location provieded by
+        part of a git repository. It will use the current location provided by
         the Get-Location cmdlet.
 #>
 function Test-GitRepository

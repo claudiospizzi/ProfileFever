@@ -39,7 +39,16 @@ function Enable-Prompt
                 if ($Script:PromptTimeSpan) { Show-PromptLastCommandDuration }
             }
 
-            $Host.UI.Write($Script:PromptColor, $Host.UI.RawUI.BackgroundColor, "[$Script:PromptInfo]")
+            if ($Script:PromptIsAdmin -or $Script:PromptIsRoot)
+            {
+                $color = 'Red'
+            }
+            else
+            {
+                $color =  'DarkCyan'
+            }
+
+            $Host.UI.Write($color, $Host.UI.RawUI.BackgroundColor, "[$Script:PromptInfo]")
             $Host.UI.Write(" $($ExecutionContext.SessionState.Path.CurrentLocation)")
             if ($Script:PromptGit) { Write-VcsStatus }
             return "`n$($MyInvocation.HistoryId.ToString().PadLeft(3, '0'))$('>' * ($NestedPromptLevel + 1)) "
@@ -55,34 +64,14 @@ function Enable-Prompt
 
         function Global:Prompt
         {
-            # Definition of used colours
-            # See cyan shades on https://www.color-hex.com/color/3a96dd
-            $colorCyan1       = 0x17, 0x3C, 0x58
-            $colorCyan2       = 0x28, 0x69, 0x9A
-            $colorCyan3       = 0x3A, 0x96, 0xDD
-            $colorCyan4       = 0x75, 0xB5, 0xE7
-            $colorCyan5       = 0x85, 0xC5, 0xF7
-            $colorWhite       = 0xF2, 0xF2, 0xF2
-            # $colorBlack     = 0x0C, 0x0C, 0x0C # Not used at the moment
-            $colorRed         = 0xCC, 0x00, 0x00
-            $colorDarkRed     = 0xC5, 0x0F, 0x1F
-            $colorDarkYellow  = 0xC1, 0x9C, 0x00
-            $colorDarkGreen   = 0x13, 0x90, 0x0E # Darker than console color
-            $colorDarkMagenta = 0x88, 0x17, 0x98
-
-            # Definition of special characters
-            $separator   = [char] 57520
-            $diagonal    = "$([char]57532)$([char]57530)"
-            $iconBranch  = [char] 57504
-            $iconIndex   = [char] 57354
-            $iconWorking = [char] 57353
-            $iconStash   = [char] 58915
-            $iconAdmin   = [char] 9760
-            $iconDebug   = [char] 9874
+            $config = $Global:ProfileFeverPromptConfig
 
             # Get location and replace the user home directory
             $location = $ExecutionContext.SessionState.Path.CurrentLocation.Path
             $location = $location.Replace($Home, "~")
+
+
+            ## WINDOW TITLE
 
             # Set the window title with the current location
             if ($null -eq $Script:PromptTitle)
@@ -94,13 +83,14 @@ function Enable-Prompt
                 $Host.UI.RawUI.WindowTitle = $Script:PromptTitle
             }
 
-            $output = [System.Text.StringBuilder]::new()
 
-            $showFullPrompt = $PSVersionTable.PSVersion -lt '6.0' -and ([System.Windows.Input.Keyboard]::IsKeyDown('RightShift'))
+            ## PROMPT OUTPUT
+
+            $output = [System.Text.StringBuilder]::new()
 
             # If the prompt history id chagned, e.g. a command was executed,
             # show the alias suggestion and last command duration, if enabled.
-            if ($Script:PromptHistory -ne $MyInvocation.HistoryId -or $showFullPrompt)
+            if ($Script:PromptHistory -ne $MyInvocation.HistoryId -or ($PSVersionTable.PSVersion -lt '6.0' -and ([System.Windows.Input.Keyboard]::IsKeyDown('RightShift'))))
             {
                 # Update history information
                 $Script:PromptHistory = $MyInvocation.HistoryId
@@ -109,23 +99,36 @@ function Enable-Prompt
                 if ($Script:PromptAlias) { Show-PromptAliasSuggestion }
                 if ($Script:PromptTimeSpan) { Show-PromptLastCommandDuration }
 
-                if ($Script:PromptIsAdmin)
-                {
-                    $output.Append((Format-HostText -Message " $iconAdmin " -BackgroundColor $colorRed)) | Out-Null
-                }
 
-                # Show an information about the debug prompt
+                ## PROMPT OUTPUT DEBUG / ADMIN
+
                 if ($NestedPromptLevel -gt 0)
                 {
-                    $output.Append((Format-HostText -Message " $iconDebug " -BackgroundColor $colorDarkMagenta)) | Out-Null
+                    Format-HostText -StringBuilder $output -Message $config.DebugText -ForegroundColor $config.DebugForeground -BackgroundColor $config.DebugBackground
+                    Format-HostText -StringBuilder $output -Message $config.DebugSeperator -ForegroundColor $config.DebugBackground -BackgroundColor $config.InfoBackground
+                }
+                elseif ($Script:PromptIsAdmin -or $Script:PromptIsRoot)
+                {
+                    Format-HostText -StringBuilder $output -Message $config.AdminText -ForegroundColor $config.AdminForeground -BackgroundColor $config.AdminBackground
+                    Format-HostText -StringBuilder $output -Message $config.AdminSeperator -ForegroundColor $config.AdminBackground -BackgroundColor $config.InfoBackground
                 }
 
-                # Get the prompt info and current location
-                $output.Append((Format-HostText -Message " $Script:PromptInfo " -ForegroundColor $colorWhite -BackgroundColor $colorCyan1)) | Out-Null
-                $output.Append((Format-HostText -Message $separator -ForegroundColor $colorCyan1 -BackgroundColor $colorCyan2)) | Out-Null
-                $output.Append((Format-HostText -Message " $location " -ForegroundColor $colorWhite -BackgroundColor $colorCyan2)) | Out-Null
-                $output.Append((Format-HostText -Message $separator -ForegroundColor $colorCyan2)) | Out-Null
 
+                ## PROMPT OUTPUT INFO
+
+                Format-HostText -StringBuilder $output -Message $config.InfoText -ForegroundColor $config.InfoForeground -BackgroundColor $config.InfoBackground
+                Format-HostText -StringBuilder $output -Message $config.InfoSeperator -ForegroundColor $config.InfoBackground -BackgroundColor $config.LocationBackground
+
+
+                ## PROMPT OUTPUT LOCATION
+
+                Format-HostText -StringBuilder $output -Message " $location " -ForegroundColor $config.LocationForeground -BackgroundColor $config.LocationBackground
+                # The seperator is displayed based on the git mode
+
+
+                ## PROMPT OUTPUT GIT
+
+                # Show an information about the debug prompt
                 # Check if the current directory is member of a git repo
                 if ($NestedPromptLevel -eq 0 -and $Script:PromptGit -and (Test-GitRepository))
                 {
@@ -142,64 +145,65 @@ function Enable-Prompt
                         $status  = $Global:GitStatus
                         $setting = $Global:GitPromptSettings
 
-                        $branchText = '{0} {1}' -f $iconBranch, (Format-GitBranchName -BranchName $status.Branch)
+
+                        ## PROMPT OUTPUT GIT BRANCH
+
+                        $branchText = ' {0} {1}' -f $config.GitBranchIcon, (Format-GitBranchName -BranchName $status.Branch)
 
                         if (!$status.Upstream)
                         {
                             # No upstream branch configured
                             $branchText += ' '
-                            $branchColor = $colorCyan3
+                            $branchColor = $config.GitBranchBackgroundDefault
                         }
                         elseif ($status.UpstreamGone -eq $true)
                         {
                             # Upstream branch is gone
                             $branchText += ' {0} ' -f $setting.BranchGoneStatusSymbol.Text
-                            $branchColor = $colorDarkRed
+                            $branchColor = $config.GitBranchBackgroundBehind
                         }
                         elseif (($status.BehindBy -eq 0) -and ($status.AheadBy -eq 0))
                         {
                             # We are aligned with remote
                             $branchText += ' {0} ' -f $setting.BranchIdenticalStatusSymbol.Text
-                            $branchColor = $colorCyan3
+                            $branchColor = $config.GitBranchBackgroundDefault
                         }
                         elseif (($status.BehindBy -ge 1) -and ($status.AheadBy -ge 1))
                         {
                             # We are both behind and ahead of remote
                             $branchText += ' {0}{1} {2}{3} ' -f $setting.BranchBehindStatusSymbol.Text, $status.BehindBy, $setting.BranchAheadStatusSymbol.Text, $status.AheadBy
-                            $branchColor = $colorDarkYellow
+                            $branchColor = $config.GitBranchBackgroundMixed
                         }
                         elseif ($status.BehindBy -ge 1)
                         {
                             # We are behind remote
                             $branchText += ' {0}{1} ' -f $setting.BranchBehindStatusSymbol.Text, $status.BehindBy
-                            $branchColor = $colorDarkRed
+                            $branchColor = $config.GitBranchBackgroundBehind
                         }
                         elseif ($status.AheadBy -ge 1)
                         {
                             # We are ahead of remote
                             $branchText += ' {0}{1} ' -f $setting.BranchAheadStatusSymbol.Text, $status.AheadBy
-                            $branchColor = $colorDarkGreen
+                            $branchColor = $config.GitBranchBackgroundAhead
                         }
                         else
                         {
+                            # Unknown state, whats that?
                             $branchText += ' ? '
-                            $branchColor = $colorCyan3
+                            $branchColor = $config.GitBranchBackgroundDefault
                         }
 
-                        $output.Append((Format-HostText -Message "`b$separator " -ForegroundColor $colorCyan2 -BackgroundColor $branchColor)) | Out-Null
-                        $output.Append((Format-HostText -Message $branchText -ForegroundColor $colorWhite -BackgroundColor $branchColor)) | Out-Null
-                        $output.Append((Format-HostText -Message $separator -ForegroundColor $branchColor)) | Out-Null
+                        Format-HostText -StringBuilder $output -Message $config.LocationSeperator -ForegroundColor $config.LocationBackground -BackgroundColor $branchColor
+                        Format-HostText -StringBuilder $output -Message $branchText -ForegroundColor $config.GitBranchForeground -BackgroundColor $branchColor
+                        # The seperator is displayed based on the git index/working/stash mode
 
                         if ($status.HasIndex -or $status.HasWorking -or $GitStatus.StashCount -gt 0)
                         {
-                            $output.Append((Format-HostText -Message "`b$separator" -ForegroundColor $branchColor -BackgroundColor $colorCyan4)) | Out-Null
-
-                            $outputPart  = @()
-                            $outputSplit = Format-HostText -Message $diagonal -ForegroundColor $colorCyan4 -BackgroundColor $colorCyan5
+                            Format-HostText -StringBuilder $output -Message $config.GitBranchSeperator -ForegroundColor $branchColor -BackgroundColor $config.GitDetailBackground
 
                             if ($status.HasIndex)
                             {
-                                $indexText = ' '
+                                $indexText = ' {0} ' -f $config.GitDetailTextIndex
                                 $indexText += '{0}{1} ' -f $setting.FileAddedText, $status.Index.Added.Count
                                 $indexText += '{0}{1} ' -f $setting.FileModifiedText, $status.Index.Modified.Count
                                 $indexText += '{0}{1} ' -f $setting.FileRemovedText, $status.Index.Deleted.Count
@@ -207,14 +211,19 @@ function Enable-Prompt
                                 {
                                     $indexText += '{0}{1} ' -f $setting.FileConflictedText, $status.Index.Unmerged.Count
                                 }
-                                $indexText += "$iconIndex "
 
-                                $outputPart += Format-HostText -Message $indexText -ForegroundColor 0,96,0 -BackgroundColor $colorCyan4
+                                Format-HostText -StringBuilder $output -Message $indexText -ForegroundColor $config.GitDetailForegroundIndex -BackgroundColor $config.GitDetailBackground
+                            }
+
+                            # Splitter between index and working or stash
+                            if ($status.HasIndex -and ($status.HasWorking -or $GitStatus.StashCount -gt 0))
+                            {
+                                Format-HostText -StringBuilder $output -Message $config.GitDetailTextSplit -ForegroundColor $config.GitDetailForegroundSplit -BackgroundColor $config.GitDetailBackground
                             }
 
                             if ($status.HasWorking)
                             {
-                                $workingText = ' '
+                                $workingText = ' {0} ' -f $config.GitDetailTextWorking
                                 $workingText += '{0}{1} ' -f $setting.FileAddedText, $status.Working.Added.Count
                                 $workingText += '{0}{1} ' -f $setting.FileModifiedText, $status.Working.Modified.Count
                                 $workingText += '{0}{1} ' -f $setting.FileRemovedText, $status.Working.Deleted.Count
@@ -222,34 +231,43 @@ function Enable-Prompt
                                 {
                                     $workingText += '{0}{1} ' -f $setting.FileConflictedText, $status.Working.Unmerged.Count
                                 }
-                                $workingText += "$iconWorking "
 
-                                $outputPart += Format-HostText -Message $workingText -ForegroundColor 96,0,0 -BackgroundColor $colorCyan4
+                                Format-HostText -StringBuilder $output -Message $workingText -ForegroundColor $config.GitDetailForegroundWorking -BackgroundColor $config.GitDetailBackground
+                            }
+
+                            # Splitter between working and stash
+                            if ($status.HasWorking -and $GitStatus.StashCount -gt 0)
+                            {
+                                Format-HostText -StringBuilder $output -Message $config.GitDetailTextSplit -ForegroundColor $config.GitDetailForegroundSplit -BackgroundColor $config.GitDetailBackground
                             }
 
                             if ($GitStatus.StashCount -gt 0)
                             {
-                                $stashText = " +{0} $iconStash " -f $GitStatus.StashCount
+                                $stashText = ' {0} ' -f $config.GitDetailTextStash
+                                $stashText += '={0} ' -f $GitStatus.StashCount
 
-                                $outputPart += Format-HostText -Message $stashText -ForegroundColor 0,0,96 -BackgroundColor $colorCyan4
+                                Format-HostText -StringBuilder $output -Message $stashText -ForegroundColor $config.GitDetailForegroundStash -BackgroundColor $config.GitDetailBackground
                             }
 
-                            $output.Append($outputPart[0]) | Out-Null
-                            for ($i = 1; $i -lt $outputPart.Count; $i++)
-                            {
-                                $output.Append($outputSplit) | Out-Null
-                                $output.Append($outputPart[$i]) | Out-Null
-                            }
-
-                            $output.Append((Format-HostText -Message $separator -ForegroundColor $colorCyan4)) | Out-Null
+                            Format-HostText -StringBuilder $output -Message $config.GitDetailSeperator -ForegroundColor $config.GitDetailBackground
+                        }
+                        else
+                        {
+                            Format-HostText -StringBuilder $output -Message $config.GitBranchSeperator -ForegroundColor $branchColor
                         }
                     }
                     catch
                     {
-                        $output.Append((Format-HostText -Message "`b$separator" -ForegroundColor $colorCyan2 -BackgroundColor $colorCyan3)) | Out-Null
-                        $output.Append((Format-HostText -Message " ERROR: $_ " -ForegroundColor $colorWhite -BackgroundColor $colorCyan3)) | Out-Null
-                        $output.Append((Format-HostText -Message $separator -ForegroundColor $colorCyan3)) | Out-Null
+                        Write-Warning $_
+
+                        #$output.Append((Format-HostText -Message "$separator" -ForegroundColor $colorCyan2 -BackgroundColor $colorCyan3)) | Out-Null
+                        #$output.Append((Format-HostText -Message " ERROR: $_ " -ForegroundColor $colorWhite -BackgroundColor $colorCyan3)) | Out-Null
+                        #$output.Append((Format-HostText -Message $separator -ForegroundColor $colorCyan3)) | Out-Null
                     }
+                }
+                else
+                {
+                    Format-HostText -StringBuilder $output -Message $config.LocationSeperator -ForegroundColor $config.LocationBackground
                 }
             }
 
