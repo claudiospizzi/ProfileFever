@@ -13,7 +13,7 @@ function Show-PromptLastCommandDuration
 
     if ($MyInvocation.HistoryId -gt 1 -and $Host.UI.RawUI.CursorPosition.Y -gt 0)
     {
-        $clock    = [System.Char] 9201
+        $clock    = '' # [char] 9201
         $history  = Get-History -Id ($MyInvocation.HistoryId - 1)
         $duration = " {0} {1:0.000}s`r" -f $clock, ($history.EndExecutionTime - $history.StartExecutionTime).TotalSeconds
 
