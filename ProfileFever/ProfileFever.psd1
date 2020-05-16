@@ -106,6 +106,11 @@
         'Disable-Information'
         # Workspace
         'Update-Workspace'
+        # SQL Server
+        'Get-ProfileSqlServer'
+        'Invoke-ProfileSqlServer'
+        'Register-ProfileSqlServer'
+        'Unregister-ProfileSqlServer'
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
@@ -130,6 +135,8 @@
         'dv'
         'ei'
         'di'
+        # SQL Server
+        'mssql'
     )
 
     # DSC resources to export from this module
