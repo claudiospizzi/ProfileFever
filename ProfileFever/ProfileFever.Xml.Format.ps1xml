@@ -39,7 +39,6 @@
       </TableControl>
     </View>
 
-
     <View>
       <Name>ProfileFever.SqlServer.Definition</Name>
       <ViewSelectedBy>
@@ -77,6 +76,57 @@
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>SqlCredential</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+
+    <View>
+      <Name>ProfileFever.SqlServer.Session</Name>
+      <ViewSelectedBy>
+        <TypeName>ProfileFever.SqlServer.Session</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>SqlInstance</Label>
+            <Width>48</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>SqlCredential</Label>
+            <Width>24</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>StartTime</Label>
+            <Width>24</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Server</Label>
+            <Width>24</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Version</Label>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>SqlInstance</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>SqlCredential</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>StartTime</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Server</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Version</PropertyName>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>

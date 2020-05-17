@@ -136,7 +136,7 @@
         'ei'
         'di'
         # SQL Server
-        'mssql'
+        'sql'
     )
 
     # DSC resources to export from this module
