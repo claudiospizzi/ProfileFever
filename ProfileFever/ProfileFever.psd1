@@ -142,6 +142,7 @@
         'di'
         # PowerShell Remoting
         'winrm'
+        'w'
         # SQL Server
         'sql'
     )

@@ -24,7 +24,7 @@
 function Invoke-ProfilePSRemoting
 {
     [CmdletBinding(DefaultParameterSetName = 'Show')]
-    [Alias('winrm')]
+    [Alias('winrm', 'w')]
     param
     (
         # Name of the PowerShell Remoting connection to use.
