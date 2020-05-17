@@ -4,7 +4,7 @@
 
     .DESCRIPTION
         By registering a SQL Server connection, the connection then can be used
-        with the Invoke-ProfileSqlServer (alias mssql) to connect to the desired
+        with the Invoke-ProfileSqlServer (alias sql) to connect to the desired
         SQL Server.
 #>
 function Get-ProfileSqlServer
