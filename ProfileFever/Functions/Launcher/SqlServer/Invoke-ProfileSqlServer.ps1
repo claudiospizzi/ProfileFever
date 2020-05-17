@@ -12,11 +12,11 @@
         the active connection.
 
     .EXAMPLE
-        PS C:\> sql demo
+        PS C:\> sql srv01
         Connect to the SQL Server by using the demo SQL Server connection.
 
     .EXAMPLE
-        PS C:\> sql -Disconnect
+        PS C:\> sql srv01 -Disconnect
         Disconnect from the SQL Server.
 #>
 function Invoke-ProfileSqlServer
@@ -30,7 +30,7 @@ function Invoke-ProfileSqlServer
         [System.String]
         $Name,
 
-        # Name of the SQL Server to connect.
+        # Flag to disconnect.
         [Parameter(Mandatory = $true, ParameterSetName = 'Disconnect')]
         [Switch]
         $Disconnect
