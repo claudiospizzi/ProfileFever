@@ -12,36 +12,33 @@ function Get-ProfileSqlServer
     [CmdletBinding()]
     param
     (
-        # Name to identify the SQL Server connection.
+        # Name to filter the SQL Server connection. Supports wildcards. If not
+        # specified or the name is an empty string, all SQL Server connections
+        # are returned.
         [Parameter(Mandatory = $false)]
         [SupportsWildcards()]
+        [AllowEmptyString()]
         [System.String]
-        $Name
+        $Name,
+
+        # Optional filter by tags. Don't use wildcards. If any tag was found,
+        # the SQL Server connection will match the filter.
+        [Parameter(Mandatory = $false)]
+        [AllowEmptyCollection()]
+        [System.String[]]
+        $Tag
     )
 
-    $path = "$Env:AppData\PowerShell\ProfileFever"
-    $file = "$path\SqlServer.json"
+    $objects = Get-ProfileObject -Type 'SqlServer' -Name $Name -Tag $Tag
 
-    if (Test-Path -Path $file)
+    foreach ($object in $objects)
     {
-        # The content must be read as raw string, to convert it to JSON.
-        [System.Object[]] $objects = Get-Content -Path $file -Encoding 'UTF8' -Raw | ConvertFrom-Json
-
-        # If the name was specified, use it as filter.
-        if ($PSBoundParameters.ContainsKey('Name'))
-        {
-            [System.Object[]] $objects = $objects | Where-Object { $_.Name -like $Name }
-        }
-
-        foreach ($object in $objects)
-        {
-            [PSCustomObject] @{
-                PSTypeName    = 'ProfileFever.SqlServer'
-                Name          = $object.Name
-                Tag           = $object.Tag
-                SqlInstance   = $object.Object.SqlInstance
-                SqlCredential = $object.Object.SqlCredential
-            }
+        [PSCustomObject] @{
+            PSTypeName    = 'ProfileFever.SqlServer.Definition'
+            Name          = $object.Name
+            Tag           = $object.Tag
+            SqlInstance   = $object.Object.SqlInstance
+            SqlCredential = $object.Object.SqlCredential
         }
     }
 }

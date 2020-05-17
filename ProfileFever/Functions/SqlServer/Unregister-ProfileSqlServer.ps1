@@ -12,10 +12,23 @@ function Unregister-ProfileSqlServer
     param
     (
         # Name to identify the SQL Server connection.
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, Position = 0, ValueFromPipelineByPropertyName = $true)]
         [System.String]
         $Name
     )
 
-    Unregister-ProfileObject -Type 'SqlServer' -Name $Name
+    process
+    {
+        $object = Get-ProfileObject -Type 'SqlServer' -Name $Name
+
+        if ($null -ne $object)
+        {
+            if (-not [System.String]::IsNullOrEmpty($object.Object.SqlCredential))
+            {
+                Get-VaultEntry -TargetName "PowerShell ProfileFever SqlServer $Name" | Remove-VaultEntry -Force
+            }
+
+            Unregister-ProfileObject -Type 'SqlServer' -Name $Name
+        }
+    }
 }
