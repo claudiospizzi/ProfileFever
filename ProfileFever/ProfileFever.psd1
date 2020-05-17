@@ -106,6 +106,11 @@
         'Disable-Information'
         # Workspace
         'Update-Workspace'
+        # PowerShell Remoting
+        'Get-ProfilePSRemoting'
+        'Invoke-ProfilePSRemoting'
+        'Register-ProfilePSRemoting'
+        'Unregister-ProfilePSRemoting'
         # SQL Server
         'Get-ProfileSqlServer'
         'Invoke-ProfileSqlServer'
@@ -135,6 +140,8 @@
         'dv'
         'ei'
         'di'
+        # PowerShell Remoting
+        'winrm'
         # SQL Server
         'sql'
     )
