@@ -34,8 +34,7 @@ function Get-ProfileObject
         $Tag
     )
 
-    $path = "$Env:AppData\PowerShell\ProfileFever"
-    $file = "$path\$Type.json"
+    $file = "$Script:LauncherPath\$Type.json"
 
     if (Test-Path -Path $file)
     {

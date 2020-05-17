@@ -34,8 +34,7 @@ function Register-ProfileObject
         $Object
     )
 
-    $path = "$Env:AppData\PowerShell\ProfileFever"
-    $file = "$path\$Type.json"
+    $file = "$Script:LauncherPath\$Type.json"
 
     if (Test-Path -Path $file)
     {
@@ -45,7 +44,7 @@ function Register-ProfileObject
     else
     {
         # Ensure the parent path exists, important for the export at the end.
-        New-Item -Path $path -ItemType 'Directory' -ErrorAction 'SilentlyContinue' | Out-Null
+        New-Item -Path $Script:LauncherPath -ItemType 'Directory' -ErrorAction 'SilentlyContinue' | Out-Null
 
         [System.Object[]] $objects
     }
