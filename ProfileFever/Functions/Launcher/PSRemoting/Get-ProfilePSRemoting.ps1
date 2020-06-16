@@ -4,8 +4,8 @@
 
     .DESCRIPTION
         By registering a PowerShell Remoting connection, the connection then can
-        be used with the Invoke-ProfilePSRemoting (alias winrm) to connect to
-        the desired remote system with PowerShell Remoting.
+        be used with the Invoke-ProfilePSRemoting (alias w) to connect to the
+        desired remote system with PowerShell Remoting.
 #>
 function Get-ProfilePSRemoting
 {
