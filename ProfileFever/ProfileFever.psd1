@@ -111,6 +111,11 @@
         'Invoke-ProfilePSRemoting'
         'Register-ProfilePSRemoting'
         'Unregister-ProfilePSRemoting'
+        # SSH Remoting
+        'Get-ProfileSSHRemoting'
+        'Invoke-ProfileSSHRemoting'
+        'Register-ProfileSSHRemoting'
+        'Unregister-ProfileSSHRemoting'
         # SQL Server
         'Get-ProfileSqlServer'
         'Invoke-ProfileSqlServer'
@@ -142,7 +147,11 @@
         'di'
         # PowerShell Remoting
         'winrm'
+        'win'
         'w'
+        # SSH Remoting
+        'ssh'
+        'l'
         # SQL Server
         'sql'
     )
