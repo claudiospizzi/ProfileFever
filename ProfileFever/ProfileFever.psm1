@@ -91,7 +91,6 @@ $Global:ProfileFeverPromptConfig = [PSCustomObject] [Ordered] @{
 
 # Module command not found action variables
 $Script:CommandNotFoundEnabled = $false
-$Script:CommandNotFoundAction  = @{}
 
 # Initialize all relevant launcher vairables
 $Script:LauncherPath             = "$Env:AppData\PowerShell\ProfileFever"

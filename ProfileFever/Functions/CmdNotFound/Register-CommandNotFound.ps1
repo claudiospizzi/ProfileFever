@@ -11,112 +11,39 @@ function Register-CommandNotFound
     $Global:ExecutionContext.InvokeCommand.CommandNotFoundAction = {
         param ($CommandName, $CommandLookupEventArgs)
 
-        if ($Script:CommandNotFoundEnabled -and $Script:CommandNotFoundAction.ContainsKey($CommandName))
+        if ($Script:CommandNotFoundEnabled)
         {
-            $command     = $Script:CommandNotFoundAction[$CommandName]
-            $commandLine = (Get-PSCallStack)[1].Position.Text.Trim()
-
-            switch ($command.CommandType)
+            # Option 1: PS Remoting
+            $profilePSRemoting = @(Get-ProfilePSRemoting -Name $CommandName)
+            if ($profilePSRemoting.Count -eq 1)
             {
-                'Remoting'
-                {
-                    $credentialSplat = @{}
-                    if ($command.Credential)
-                    {
-                        $credentialSplat['Credential'] = $command.Credential
-                        $credentialVerbose = " -Credential '{0}'" -f $command.Credential.UserName
-                    }
-                    if ($command.CredentialVault)
-                    {
-                        $credential = Use-VaultCredential -TargetName $command.CredentialVault
-                        $credentialSplat['Credential'] = $credential
-                        $credentialVerbose = " -Credential '{0}'" -f $credential.UserName
-                    }
+                $CommandLookupEventArgs.StopSearch = $true
+                $CommandLookupEventArgs.CommandScriptBlock = {
+                    Invoke-ProfilePSRemoting -Name $CommandName
+                }.GetNewClosure()
+                return
+            }
 
-                    # Option 1: Enter Session
-                    # If no parameters were specified, just enter into a
-                    # remote session to the target system.
-                    if ($CommandName -eq $commandLine)
-                    {
-                        Write-Verbose ("Enter-PSSession -ComputerName '{0}'{1}" -f $command.ComputerName, $credentialVerbose)
+            # Option 2: SSH Remote
+            $profileSSHRemote = @(Get-ProfileSSHRemote -Name $CommandName)
+            if ($profileSSHRemote.Count -eq 1)
+            {
+                $CommandLookupEventArgs.StopSearch = $true
+                $CommandLookupEventArgs.CommandScriptBlock = {
+                    Invoke-ProfileSSHRemote -Name $CommandName
+                }.GetNewClosure()
+                return
+            }
 
-                        $CommandLookupEventArgs.StopSearch = $true
-                        $CommandLookupEventArgs.CommandScriptBlock = {
-                            $session = New-PSSession -ComputerName $command.ComputerName @credentialSplat -ErrorAction Stop
-                            if ($Host.Name -eq 'ConsoleHost')
-                            {
-                                Invoke-Command -Session $session -ErrorAction Stop -ScriptBlock {
-                                    Set-Location -Path "$Env:SystemDrive\"
-                                    $PromptLabel = $Env:ComputerName.ToUpper()
-                                    $PromptIndent = $using:session.ComputerName.Length + 4
-                                    function Global:prompt
-                                    {
-                                        $Host.UI.RawUI.WindowTitle = "$Env:Username@$Env:ComputerName | $($executionContext.SessionState.Path.CurrentLocation)"
-                                        Write-Host "[$PromptLabel]" -NoNewline -ForegroundColor Cyan; "$("`b `b" * $PromptIndent) $($executionContext.SessionState.Path.CurrentLocation)$('>' * ($nestedPromptLevel + 1)) "
-                                    }
-                                    function profile
-                                    {
-                                        Install-Module -Name 'profile'
-                                        Install-Profile
-                                        Start-Profile
-                                    }
-                                }
-                            }
-                            Enter-PSSession -Session $session -ErrorAction Stop
-                        }.GetNewClosure()
-                    }
-
-                    # Option 2: Invoke Command
-                    # If a script is appended to the command, execute that
-                    # script on the remote system.
-                    elseif ($commandline.StartsWith($CommandName) -and $commandLine.Length -gt $CommandName.Length)
-                    {
-                        $scriptBlock = [System.Management.Automation.ScriptBlock]::Create($commandLine.Substring($CommandName.Length).Trim())
-
-                        Write-Verbose ("Invoke-Command -ComputerName '{0}'{1} -ScriptBlock {{ {2} }}" -f $command.ComputerName, $credentialVerbose, $scriptBlock.ToString())
-
-                        $CommandLookupEventArgs.StopSearch = $true
-                        $CommandLookupEventArgs.CommandScriptBlock = {
-                            Invoke-Command -ComputerName $command.ComputerName @credentialSplat -ScriptBlock $scriptBlock -ErrorAction Stop
-                        }.GetNewClosure()
-                    }
-
-                    # Option 3: Open Session
-                    # If a variable is specified as output of the command,
-                    # a new remoting session will be opened and returned.
-                    $openSessionRegex = '^\$\S+ = {0}$' -f ([System.Text.RegularExpressions.Regex]::Escape($CommandName))
-                    if ($commandLine -match $openSessionRegex)
-                    {
-                        Write-Verbose ("New-PSSession -ComputerName '{0}'{1}" -f $command.ComputerName, $credentialVerbose)
-
-                        $CommandLookupEventArgs.StopSearch = $true
-                        $CommandLookupEventArgs.CommandScriptBlock = {
-                            New-PSSession -ComputerName $command.ComputerName @credentialSplat -ErrorAction Stop
-                        }.GetNewClosure()
-                    }
-                }
-
-                'SSH'
-                {
-                    $hostname = $command.Hostname
-                    $username = $command.Username
-
-                    Write-Verbose "ssh.exe $username@$hostname"
-
-                    $CommandLookupEventArgs.StopSearch = $true
-                    $CommandLookupEventArgs.CommandScriptBlock = {
-
-                        ssh.exe "$username@$hostname"
-                    }.GetNewClosure()
-                }
-
-                'ScriptBlock'
-                {
-                    Write-Verbose ("& {{ {0} }}" -f $command.ScriptBlock)
-
-                    $CommandLookupEventArgs.StopSearch = $true
-                    $CommandLookupEventArgs.CommandScriptBlock = $command.ScriptBlock
-                }
+            # Option 3: SQL Server
+            $profileSqlServer = @(Get-ProfileSqlServer -Name $CommandName)
+            if ($profileSqlServer.Count -eq 1)
+            {
+                $CommandLookupEventArgs.StopSearch = $true
+                $CommandLookupEventArgs.CommandScriptBlock = {
+                    Invoke-ProfileSqlServer-Name $CommandName
+                }.GetNewClosure()
+                return
             }
         }
     }
