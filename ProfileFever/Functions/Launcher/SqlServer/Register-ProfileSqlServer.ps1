@@ -38,7 +38,7 @@ function Register-ProfileSqlServer
 
     if ($PSBoundParameters.ContainsKey('SqlCredential'))
     {
-        $sqlCredentialTargetName = "PowerShell ProfileFever SqlServer $Name"
+        $sqlCredentialTargetName = $Script:LauncherCredentialFormat -f 'SqlServer', $Name
         New-VaultEntry -TargetName $sqlCredentialTargetName -Credential $SqlCredential -Force | Out-Null
     }
     else

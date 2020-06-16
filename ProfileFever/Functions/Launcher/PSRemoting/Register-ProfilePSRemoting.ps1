@@ -39,7 +39,7 @@ function Register-ProfilePSRemoting
 
     if ($PSBoundParameters.ContainsKey('Credential'))
     {
-        $credentialTargetName = "PowerShell ProfileFever PSRemoting $Name"
+        $credentialTargetName = $Script:LauncherCredentialFormat -f 'PSRemoting', $Name
         New-VaultEntry -TargetName $credentialTargetName -Credential $Credential -Force | Out-Null
     }
     else

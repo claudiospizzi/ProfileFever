@@ -75,7 +75,7 @@
                 <PropertyName>SqlInstance</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>SqlCredential</PropertyName>
+                <ScriptBlock>if ([System.String]::IsNullOrEmpty($_.SqlCredential)) { '(Integrated Security)' } else { $_.SqlCredential }</ScriptBlock>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>
@@ -170,7 +170,7 @@
                 <PropertyName>ComputerName</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>Credential</PropertyName>
+                <ScriptBlock>if ([System.String]::IsNullOrEmpty($_.Credential)) { '(Current User)' } else { $_.Credential }</ScriptBlock>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>
