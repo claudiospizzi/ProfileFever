@@ -25,7 +25,7 @@ function Unregister-ProfileSqlServer
         {
             if (-not [System.String]::IsNullOrEmpty($object.Object.SqlCredential))
             {
-                Get-VaultEntry -TargetName "PowerShell ProfileFever SqlServer $Name" | Remove-VaultEntry -Force
+                Get-VaultEntry -TargetName $object.Object.SqlCredential | Remove-VaultEntry -Force
             }
 
             Unregister-ProfileObject -Type 'SqlServer' -Name $Name

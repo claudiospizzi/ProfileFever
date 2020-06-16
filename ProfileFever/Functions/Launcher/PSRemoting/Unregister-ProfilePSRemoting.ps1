@@ -25,7 +25,7 @@ function Unregister-ProfilePSRemoting
         {
             if (-not [System.String]::IsNullOrEmpty($object.Object.Credential))
             {
-                Get-VaultEntry -TargetName "PowerShell ProfileFever PSRemoting $Name" | Remove-VaultEntry -Force
+                Get-VaultEntry -TargetName $object.Object.Credential | Remove-VaultEntry -Force
             }
 
             Unregister-ProfileObject -Type 'PSRemoting' -Name $Name
