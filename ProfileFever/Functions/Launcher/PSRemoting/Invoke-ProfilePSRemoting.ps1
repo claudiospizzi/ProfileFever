@@ -10,12 +10,13 @@
 
     .EXAMPLE
         PS C:\> winrm
-        If not connected, list all available PowerShell Remoting connections. Else return
-        the active connection.
+        If not connected, list all available PowerShell Remoting connections.
+        Else return the active connection.
 
     .EXAMPLE
         PS C:\> winrm srv01
-        Connect to the PowerShell Remoting by using the demo PowerShell Remoting connection.
+        Connect to the PowerShell Remoting by using the demo PowerShell Remoting
+        connection.
 
     .EXAMPLE
         PS C:\> winrm srv01
@@ -24,7 +25,7 @@
 function Invoke-ProfilePSRemoting
 {
     [CmdletBinding(DefaultParameterSetName = 'Show')]
-    [Alias('winrm', 'w')]
+    [Alias('winrm', 'win', 'w')]
     param
     (
         # Name of the PowerShell Remoting connection to use.
@@ -32,9 +33,11 @@ function Invoke-ProfilePSRemoting
         [System.String]
         $Name,
 
-        # Optional a script block to invoke it on the remote system.
+        # Optional a script block to invoke it on the remote system. If it's not
+        # a script block, use the string representation to convert it to a
+        # script block.
         [Parameter(Mandatory = $false, ParameterSetName = 'Connect', Position = 1)]
-        [System.Management.Automation.ScriptBlock]
+        [System.Object]
         $ScriptBlock
     )
 
@@ -80,6 +83,11 @@ function Invoke-ProfilePSRemoting
             # remote system.
 
             Write-Host "[Profile Launcher] Invoke a remote command on $verbose ..." -ForegroundColor 'DarkYellow'
+
+            if ($ScriptBlock -isnot [System.Management.Automation.ScriptBlock])
+            {
+                $ScriptBlock = [System.Management.Automation.ScriptBlock]::Create([System.String] $ScriptBlock)
+            }
 
             Invoke-Command @splat -ScriptBlock $ScriptBlock
         }
