@@ -66,6 +66,7 @@ function Invoke-ProfileSqlServer
 
         if ($profileSqlServer.Count -gt 1)
         {
+            $profileSqlServer | ForEach-Object { Write-Host "[Profile Launcher] SQL Server target found: $($_.Name)" -ForegroundColor 'DarkYellow' }
             throw "Multiple SQL Server connections found. Be more specific."
         }
 

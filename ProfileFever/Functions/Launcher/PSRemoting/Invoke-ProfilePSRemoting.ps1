@@ -64,6 +64,7 @@ function Invoke-ProfilePSRemoting
 
         if ($profilePSRemoting.Count -gt 1)
         {
+            $profilePSRemoting | ForEach-Object { Write-Host "[Profile Launcher] PS Remoting target found: $($_.Name)" -ForegroundColor 'DarkYellow' }
             throw "Multiple PowerShell Remoting connections found. Be more specific."
         }
 

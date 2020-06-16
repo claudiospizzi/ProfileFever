@@ -49,6 +49,7 @@ function Invoke-ProfileSSHRemoting
 
         if ($profileSSHRemoting.Count -gt 1)
         {
+            $profileSSHRemoting | ForEach-Object { Write-Host "[Profile Launcher] SSH remoting target found: $($_.Name)" -ForegroundColor 'DarkYellow' }
             throw "Multiple SSH remoting connections found. Be more specific."
         }
 
