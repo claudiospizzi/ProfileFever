@@ -1,28 +1,27 @@
 ﻿<#
     .SYNOPSIS
-        Connect to a remote system by using a registered SSH remoting
-        connection.
+        Connect to a remote system by using a registered SSH remote connection.
 
     .DESCRIPTION
-        Use the SSH remoting connections registered in the profile to connect to
+        Use the SSH remote connections registered in the profile to connect to
         the remote host. Currently only opening an interactive connection is
         supported.
 
     .EXAMPLE
         PS C:\> ssh
-        List all available SSH remoting connections.
+        List all available SSH remote connections.
 
     .EXAMPLE
         PS C:\> ssh srv01
-        Connect to the remote interactive shell of SSH remoting.
+        Connect to the remote interactive shell of SSH remote.
 #>
-function Invoke-ProfileSSHRemoting
+function Invoke-ProfileSSHRemote
 {
     [CmdletBinding(DefaultParameterSetName = 'Show')]
     [Alias('ssh', 'l')]
     param
     (
-        # Name of the SSH remoting connection to use.
+        # Name of the SSH remote connection to use.
         [Parameter(Mandatory = $true, ParameterSetName = 'Connect', Position = 0)]
         [System.String]
         $Name
@@ -32,33 +31,33 @@ function Invoke-ProfileSSHRemoting
 
     if ($PSCmdlet.ParameterSetName -eq 'Show')
     {
-        # Show all registered SSH Remoting connections. This may help to
+        # Show all registered SSH Remote connections. This may help to
         # choose the correct connection.
 
-        Get-ProfileSSHRemoting
+        Get-ProfileSSHRemote
     }
 
     if ($PSCmdlet.ParameterSetName -eq 'Connect')
     {
-        $profileSSHRemoting = @(Get-ProfileSSHRemoting -Name $Name)
+        $profileSSHRemote = @(Get-ProfileSSHRemote -Name $Name)
 
-        if ($null -eq $profileSSHRemoting)
+        if ($null -eq $profileSSHRemote)
         {
-            throw "SSH remoting connection named '$Name' not found."
+            throw "SSH remote connection named '$Name' not found."
         }
 
-        if ($profileSSHRemoting.Count -gt 1)
+        if ($profileSSHRemote.Count -gt 1)
         {
-            $profileSSHRemoting | ForEach-Object { Write-Host "[Profile Launcher] SSH remoting target found: $($_.Name)" -ForegroundColor 'DarkYellow' }
-            throw "Multiple SSH remoting connections found. Be more specific."
+            $profileSSHRemote | ForEach-Object { Write-Host "[Profile Launcher] SSH remote target found: $($_.Name)" -ForegroundColor 'DarkYellow' }
+            throw "Multiple SSH remote connections found. Be more specific."
         }
 
 
-        if (-not [System.String]::IsNullOrEmpty($profileSSHRemoting.Username))
+        if (-not [System.String]::IsNullOrEmpty($profileSSHRemote.Username))
         {
             # Use public/private key authentication
-            $hostname = $profileSSHRemoting.ComputerName
-            $username = $profileSSHRemoting.Username
+            $hostname = $profileSSHRemote.ComputerName
+            $username = $profileSSHRemote.Username
 
             Write-Host "[Profile Launcher] Enter remote shell on $hostname as $username ..." -ForegroundColor 'DarkYellow'
 
@@ -67,8 +66,8 @@ function Invoke-ProfileSSHRemoting
         else
         {
             # Use username/password authentication
-            $credential = Get-VaultCredential -TargetName $profileSSHRemoting.Credential
-            $hostname = $profileSSHRemoting.ComputerName
+            $credential = Get-VaultCredential -TargetName $profileSSHRemote.Credential
+            $hostname = $profileSSHRemote.ComputerName
             $username = $credential.UserName
             $password = $credential.GetNetworkCredential().Password
 
@@ -80,9 +79,9 @@ function Invoke-ProfileSSHRemoting
 }
 
 # Register the argument completer for the Name parameter
-Register-ArgumentCompleter -CommandName 'Invoke-ProfileSSHRemoting' -ParameterName 'Name' -ScriptBlock {
+Register-ArgumentCompleter -CommandName 'Invoke-ProfileSSHRemote' -ParameterName 'Name' -ScriptBlock {
     param ($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
-    Get-ProfileSSHRemoting -Name "$wordToComplete*" | ForEach-Object {
+    Get-ProfileSSHRemote -Name "$wordToComplete*" | ForEach-Object {
         [System.Management.Automation.CompletionResult]::new($_.Name, $_.Name, 'ParameterValue', $_.ComputerName)
     }
 }

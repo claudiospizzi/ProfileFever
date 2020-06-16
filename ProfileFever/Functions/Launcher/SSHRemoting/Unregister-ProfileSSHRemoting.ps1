@@ -1,17 +1,17 @@
 ﻿<#
     .SYNOPSIS
-        Unregister the SSH remoting connection from the profile.
+        Unregister the SSH remote connection from the profile.
 
     .DESCRIPTION
-        This command will remove the stored SSH remoting connection from the
-        SSHRemoting.json file stored in the users AppData folder.
+        This command will remove the stored SSH remote connection from the
+        SSHRemote.json file stored in the users AppData folder.
 #>
-function Unregister-ProfileSSHRemoting
+function Unregister-ProfileSSHRemote
 {
     [CmdletBinding()]
     param
     (
-        # Name to identify the SSH remoting connection.
+        # Name to identify the SSH remote connection.
         [Parameter(Mandatory = $true, Position = 0, ValueFromPipelineByPropertyName = $true)]
         [System.String]
         $Name
@@ -19,7 +19,7 @@ function Unregister-ProfileSSHRemoting
 
     process
     {
-        $object = Get-ProfileObject -Type 'SSHRemoting' -Name $Name
+        $object = Get-ProfileObject -Type 'SSHRemote' -Name $Name
 
         if ($null -ne $object)
         {
@@ -28,7 +28,7 @@ function Unregister-ProfileSSHRemoting
                 Get-VaultEntry -TargetName $object.Object.Credential | Remove-VaultEntry -Force
             }
 
-            Unregister-ProfileObject -Type 'SSHRemoting' -Name $Name
+            Unregister-ProfileObject -Type 'SSHRemote' -Name $Name
         }
     }
 }

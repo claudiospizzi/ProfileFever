@@ -1,19 +1,19 @@
 ﻿<#
     .SYNOPSIS
-        Get all SSH remoting connections from the profile.
+        Get all SSH remote connections from the profile.
 
     .DESCRIPTION
-        By registering an SSH remoting connection, the connection then can be
-        used with the Invoke-ProfileSSHRemoting (alias ssh) to connect to the
-        desired remote system with SSH remoting.
+        By registering an SSH remote connection, the connection then can be used
+        with the Invoke-ProfileSSHRemote (alias ssh) to connect to the desired
+        remote system with SSH remote.
 #>
-function Get-ProfileSSHRemoting
+function Get-ProfileSSHRemote
 {
     [CmdletBinding()]
     param
     (
-        # Name to filter the SSH remoting connection. Supports wildcards. If not
-        # specified or the name is an empty string, all SSH remoting connections
+        # Name to filter the SSH remote connection. Supports wildcards. If not
+        # specified or the name is an empty string, all SSH remote connections
         # are returned.
         [Parameter(Mandatory = $false)]
         [SupportsWildcards()]
@@ -22,19 +22,19 @@ function Get-ProfileSSHRemoting
         $Name,
 
         # Optional filter by tags. Don't use wildcards. If any tag was found,
-        # the SSH remoting connection will match the filter.
+        # the SSH remote connection will match the filter.
         [Parameter(Mandatory = $false)]
         [AllowEmptyCollection()]
         [System.String[]]
         $Tag
     )
 
-    $objects = Get-ProfileObject -Type 'SSHRemoting' -Name $Name -Tag $Tag
+    $objects = Get-ProfileObject -Type 'SSHRemote' -Name $Name -Tag $Tag
 
     foreach ($object in $objects)
     {
         [PSCustomObject] @{
-            PSTypeName   = 'ProfileFever.SSHRemoting.Definition'
+            PSTypeName   = 'ProfileFever.SSHRemote.Definition'
             Name         = $object.Name
             Tag          = $object.Tag
             ComputerName = $object.Object.HostName

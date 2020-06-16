@@ -1,31 +1,30 @@
 ﻿<#
     .SYNOPSIS
-        Register the SSH remoting connection in the profile.
+        Register the SSH remote connection in the profile.
 
     .DESCRIPTION
-        This command will store the SSH temoting connection in the
-        SSHRemoting.json file stored in the users AppData folder. The name must
-        be unique, already existing SSH remoting connections will be
-        overwritten.
+        This command will store the SSH temote connection in the SSHRemote.json
+        file stored in the users AppData folder. The name must be unique,
+        already existing SSH remote connections will be overwritten.
 #>
-function Register-ProfileSSHRemoting
+function Register-ProfileSSHRemote
 {
     [CmdletBinding(DefaultParameterSetName = 'PublicPrivateKey')]
     param
     (
-        # Name to identify the SSH remoting connection.
+        # Name to identify the SSH remote connection.
         [Parameter(Mandatory = $true)]
         [System.String]
         $Name,
 
-        # Tags for the SSH remoting connection.
+        # Tags for the SSH remote connection.
         [Parameter(Mandatory = $false)]
         [AllowEmptyCollection()]
         [System.String[]]
         $Tag = @(),
 
         # DNS name or IP address to connect to the remote system by SSH
-        # remoting.
+        # remote.
         [Parameter(Mandatory = $true)]
         [System.String]
         $HostName,
@@ -54,7 +53,7 @@ function Register-ProfileSSHRemoting
 
     if ($PSCmdlet.ParameterSetName -eq 'UsernamePassword')
     {
-        $credentialTargetName = $Script:LauncherCredentialFormat -f 'SSHRemoting', $Name
+        $credentialTargetName = $Script:LauncherCredentialFormat -f 'SSHRemote', $Name
         New-VaultEntry -TargetName $credentialTargetName -Credential $Credential -Force | Out-Null
     }
     else
@@ -68,5 +67,5 @@ function Register-ProfileSSHRemoting
         Credential = $credentialTargetName
     }
 
-    Register-ProfileObject -Type 'SSHRemoting' -Name $Name -Tag $Tag -Object $object
+    Register-ProfileObject -Type 'SSHRemote' -Name $Name -Tag $Tag -Object $object
 }

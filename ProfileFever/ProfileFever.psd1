@@ -70,8 +70,6 @@
         'Unregister-CommandNotFound'
         'Enable-CommandNotFound'
         'Disable-CommandNotFound'
-        'Get-CommandNotFoundAction'
-        'Add-CommandNotFoundAction'
         # Format
         'Format-HostText'
         # Git
@@ -112,10 +110,10 @@
         'Register-ProfilePSRemoting'
         'Unregister-ProfilePSRemoting'
         # SSH Remoting
-        'Get-ProfileSSHRemoting'
-        'Invoke-ProfileSSHRemoting'
-        'Register-ProfileSSHRemoting'
-        'Unregister-ProfileSSHRemoting'
+        'Get-ProfileSSHRemote'
+        'Invoke-ProfileSSHRemote'
+        'Register-ProfileSSHRemote'
+        'Unregister-ProfileSSHRemote'
         # SQL Server
         'Get-ProfileSqlServer'
         'Invoke-ProfileSqlServer'
@@ -149,7 +147,7 @@
         'winrm'
         'win'
         'w'
-        # SSH Remoting
+        # SSH Remote
         'ssh'
         'l'
         # SQL Server

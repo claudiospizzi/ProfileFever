@@ -179,9 +179,9 @@
     </View>
 
     <View>
-      <Name>ProfileFever.SSHRemoting.Definition</Name>
+      <Name>ProfileFever.SSHRemote.Definition</Name>
       <ViewSelectedBy>
-        <TypeName>ProfileFever.SSHRemoting.Definition</TypeName>
+        <TypeName>ProfileFever.SSHRemote.Definition</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
