@@ -6,21 +6,23 @@
     .DESCRIPTION
         Use the PowerShell Remoting connections registered in the profile to
         connect to the remote host. This can be done by opening an interactive
-        connection, invoke a script block or create a session.17
+        connection, invoke a script block or create a session.
 
     .EXAMPLE
         PS C:\> winrm
-        If not connected, list all available PowerShell Remoting connections.
-        Else return the active connection.
+        List all available PowerShell Remoting connections.
 
     .EXAMPLE
         PS C:\> winrm srv01
-        Connect to the PowerShell Remoting by using the demo PowerShell Remoting
-        connection.
+        Connect to the remote interactive prompt of PowerShell Remoting.
 
     .EXAMPLE
-        PS C:\> winrm srv01
-        Disconnect from the PowerShell Remoting.
+        PS C:\> $session = winrm srv01
+        Open a new PowerShell Remoting session to the remote system.
+
+    .EXAMPLE
+        PS C:\> winrm srv01 'gpupdate'
+        Invoke the command on the remote system.
 #>
 function Invoke-ProfilePSRemoting
 {
