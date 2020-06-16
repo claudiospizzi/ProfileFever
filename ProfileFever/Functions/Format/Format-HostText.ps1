@@ -6,47 +6,41 @@
         Use the ANSI escape sequence to use the full RGB colors formatting the
         text. The foreground and background can be specified as RGB. The font
         can be specified as bold
-
-    .PARAMETER Message
-        The message to format.
-
-    .PARAMETER ForegroundColor
-        Set the foreground color as RGB.
-
-    .PARAMETER BackgroundColor
-        Set the background color as RGB.
-
-    .PARAMETER Bold
-        Show the text in bold font.
 #>
 function Format-HostText
 {
     [CmdletBinding()]
     param
     (
+        # Optional string builder. If specified, the text will be appended to
+        # the existing string builer. Else returned as string.
         [Parameter(Mandatory = $false)]
         [System.Text.StringBuilder]
         $StringBuilder,
 
+        # The message to format.
         [Parameter(Mandatory = $true)]
         [AllowEmptyString()]
         [System.String]
         $Message,
 
+        # Set the foreground color as RGB with an ANSI escape sequence.
         [Parameter(Mandatory = $false)]
         [ValidateRange(0,255)]
         [ValidateCount(3,3)]
         [System.Int32[]]
         $ForegroundColor,
 
+        # Set the background color as RGB with an ANSI escape sequence.
         [Parameter(Mandatory = $false)]
         [ValidateRange(0,255)]
         [ValidateCount(3,3)]
         [System.Int32[]]
         $BackgroundColor,
 
+        # Show the text in bold font.
         [Parameter(Mandatory = $false)]
-        [switch]
+        [Switch]
         $Bold
     )
 
