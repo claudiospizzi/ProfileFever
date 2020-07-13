@@ -224,6 +224,15 @@ function Start-Profile
 
 
     ##
+    ## PIPELINE OUTPUT
+    ##
+
+    Show-ProfileLoadStatus -Section 'Enable Pipeline Output'
+
+    $Global:PSBoundParameters['Out-Default:OutVariable'] = '__'
+
+
+    ##
     ## HEADLINE
     ##
 
