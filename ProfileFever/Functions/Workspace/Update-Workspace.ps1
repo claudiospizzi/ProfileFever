@@ -43,7 +43,7 @@ function Update-Workspace
     {
         foreach ($currentPath in $Path)
         {
-            foreach ($workspace in (Get-ChildItem -Path $currentPath -Filter '*.code-workspace' -File))
+            foreach ($workspace in (Get-ChildItem -Path "$currentPath\.vscode" -Filter '*.code-workspace' -File))
             {
                 $projectList.projects.Add(('Workspace {0}' -f $workspace.BaseName), $workspace.FullName)
             }
