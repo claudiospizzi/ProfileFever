@@ -229,7 +229,7 @@ function Start-Profile
 
     Show-ProfileLoadStatus -Section 'Enable Pipeline Output'
 
-    $Global:PSBoundParameters['Out-Default:OutVariable'] = '__'
+    $Global:PSDefaultParameterValues['Out-Default:OutVariable'] = '__'
 
 
     ##
