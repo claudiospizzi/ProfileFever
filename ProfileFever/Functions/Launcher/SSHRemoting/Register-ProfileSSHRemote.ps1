@@ -10,6 +10,7 @@
 function Register-ProfileSSHRemote
 {
     [CmdletBinding(DefaultParameterSetName = 'PublicPrivateKey')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingPlainTextForPassword', '')]
     param
     (
         # Name to identify the SSH remote connection.
@@ -37,28 +38,42 @@ function Register-ProfileSSHRemote
 
         # The remote credentials are optional and can be used, if public/private
         # key authentication on the remote system is not available.
-        [Parameter(Mandatory = $true, ParameterSetName = 'UsernamePassword')]
+        [Parameter(Mandatory = $true, ParameterSetName = 'SpecificCredential')]
         [System.Management.Automation.PSCredential]
-        $Credential
+        $Credential,
+
+        # Instead of specifying the credentials, reuse an existing vault entry
+        # as credential. If the vault entry does not exist, it will query the
+        # username and password.
+        [Parameter(Mandatory = $true, ParameterSetName = 'ExisitngCredential')]
+        [System.String]
+        $CredentialNameSuffix
     )
 
-    if ($PSCmdlet.ParameterSetName -eq 'PublicPrivateKey')
-    {
-        # Yeah just use the username
-    }
-    else
+    # Reset the username, if credentials were specified.
+    if ($PSCmdlet.ParameterSetName -ne 'PublicPrivateKey')
     {
         $Username = $null
     }
 
-    if ($PSCmdlet.ParameterSetName -eq 'UsernamePassword')
+    switch ($PSCmdlet.ParameterSetName)
     {
-        $credentialTargetName = $Script:LauncherCredentialFormat -f 'SSHRemote', $Name
-        New-VaultEntry -TargetName $credentialTargetName -Credential $Credential -Force | Out-Null
-    }
-    else
-    {
-        $credentialTargetName = $null
+        'SpecificCredential'
+        {
+            $credentialTargetName = $Script:LauncherCredentialFormat -f 'SSHRemote', $Name
+            New-VaultEntry -TargetName $credentialTargetName -Credential $Credential -Force | Out-Null
+        }
+
+        'ExisitngCredential'
+        {
+            $credentialTargetName = $Script:LauncherCredentialFormat -f 'SSHRemote', $CredentialNameSuffix
+            Use-VaultCredential -TargetName $credentialTargetName | Out-Null
+        }
+
+        default
+        {
+            $credentialTargetName = $null
+        }
     }
 
     $object = [PSCustomObject] @{

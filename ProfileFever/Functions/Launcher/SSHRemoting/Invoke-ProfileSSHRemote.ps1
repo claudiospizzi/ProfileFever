@@ -18,7 +18,7 @@
 function Invoke-ProfileSSHRemote
 {
     [CmdletBinding(DefaultParameterSetName = 'Show')]
-    [Alias('ssh', 'l')]
+    [Alias('shell', 'l')]
     param
     (
         # Name of the SSH remote connection to use.
