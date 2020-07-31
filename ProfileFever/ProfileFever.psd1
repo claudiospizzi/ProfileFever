@@ -104,6 +104,9 @@
         'Disable-Information'
         # Workspace
         'Update-Workspace'
+        # Performance
+        'Get-CounterProcessor'
+        'Get-CounterMemory'
         # PowerShell Remoting
         'Get-ProfilePSRemoting'
         'Invoke-ProfilePSRemoting'
@@ -148,10 +151,13 @@
         'win'
         'w'
         # SSH Remote
-        'ssh'
+        'shell'
         'l'
         # SQL Server
         'sql'
+        # Performance
+        'top'
+        'free'
     )
 
     # DSC resources to export from this module

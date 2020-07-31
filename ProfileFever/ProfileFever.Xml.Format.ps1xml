@@ -31,7 +31,7 @@
                 <PropertyName>CommandType</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <ScriptBlock>if($_.CommandType = 'ScriptBlock') { $_.ScriptBlock } else { 'Remoting on {0}' -f $_.ComputerName }</ScriptBlock>
+                <ScriptBlock>if($_.CommandType -eq 'ScriptBlock') { $_.ScriptBlock } else { 'Remoting on {0}' -f $_.ComputerName }</ScriptBlock>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>
@@ -215,6 +215,162 @@
               </TableColumnItem>
               <TableColumnItem>
                 <ScriptBlock>if (-not [System.String]::IsNullOrEmpty($_.Username)) { "$($_.Username) (public-key)" } else { $_.Credential }</ScriptBlock>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+
+    <View>
+      <Name>ProfileFever.ProcessorCounter</Name>
+      <ViewSelectedBy>
+        <TypeName>ProfileFever.ProcessorCounter</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>Time</Label>
+            <Width>10</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>12</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Sock</Label>
+            <Width>4</Width>
+            <Alignment>Right</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Core</Label>
+            <Width>4</Width>
+            <Alignment>Right</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Proc</Label>
+            <Width>4</Width>
+            <Alignment>Right</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Clock</Label>
+            <Width>10</Width>
+            <Alignment>Right</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Hyper-V</Label>
+            <Width>10</Width>
+            <Alignment>Right</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Usage</Label>
+            <Width>10</Width>
+            <Alignment>Right</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Queue</Label>
+            <Width>10</Width>
+            <Alignment>Right</Alignment>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <ScriptBlock>$_.Timestamp.ToString('HH:mm:ss')</ScriptBlock>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Name</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Sockets</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Cores</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Prcessors</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>'{0:0.00}' -f ($_.Clock / 1000)</ScriptBlock>
+              </TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>if($_.HyperV -eq 'n/a') { $_.HyperV } else { '{0:0.0}' -f $_.HyperV }</ScriptBlock>
+              </TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>'{0:0.0}' -f $_.Usage</ScriptBlock>
+              </TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>'{0:0}' -f $_.Queue</ScriptBlock>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+
+    <View>
+      <Name>ProfileFever.MemoryCounter</Name>
+      <ViewSelectedBy>
+        <TypeName>ProfileFever.MemoryCounter</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>Time</Label>
+            <Width>10</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>16</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Total</Label>
+            <Width>10</Width>
+            <Alignment>Right</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Used</Label>
+            <Width>10</Width>
+            <Alignment>Right</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Free</Label>
+            <Width>10</Width>
+            <Alignment>Right</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Cache</Label>
+            <Width>10</Width>
+            <Alignment>Right</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Available</Label>
+            <Width>10</Width>
+            <Alignment>Right</Alignment>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <ScriptBlock>$_.Timestamp.ToString('HH:mm:ss')</ScriptBlock>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Name</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Total</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Used</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Free</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Cache</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Available</PropertyName>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>
