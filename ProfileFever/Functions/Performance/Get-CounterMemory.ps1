@@ -27,7 +27,14 @@ function Get-CounterMemory
 {
     [CmdletBinding()]
     [Alias('free')]
-    param ()
+    param
+    (
+        # Flag to continue showing the memory every second.
+        [Parameter(Mandatory = $false)]
+        [Alias('c')]
+        [Switch]
+        $Continue
+    )
 
     $counterNames = '\Memory\Available MBytes',
                     '\Memory\Free & Zero Page List Bytes',
@@ -35,27 +42,38 @@ function Get-CounterMemory
                     '\Memory\Standby Cache Normal Priority Bytes',
                     '\Memory\Standby Cache Reserve Bytes'
 
-    $perfCounterMemory  = Get-Counter -Counter $counterNames -SampleInterval 1 -MaxSamples 1
-    $cimPageFileUsage   = Get-CimInstance -ClassName 'Win32_PageFileUsage'
+    # Global counters, will not change
     $cimOperatingSystem = Get-CimInstance -ClassName 'Win32_OperatingSystem'
 
-    [PSCustomObject] @{
-        PSTypeName = 'ProfileFever.MemoryCounter'
-        Name       = 'Physical Memory'
-        Total      = [System.Int32] ($cimOperatingSystem.TotalVisibleMemorySize / 1KB)
-        Used       = [System.Int32] ($cimOperatingSystem.TotalVisibleMemorySize / 1KB) - $perfCounterMemory.CounterSamples.Where({$_.Path -like '\\*\Memory\Available MBytes'}).CookedValue
-        Free       = [System.Int32] ($perfCounterMemory.CounterSamples.Where({$_.Path -like '\\*\Memory\Free & Zero Page List Bytes'}).CookedValue / 1MB)
-        Cache      = [System.Int32] (($perfCounterMemory.CounterSamples.Where({$_.Path -like '\\*\Memory\Standby Cache * Bytes'}).CookedValue | Measure-Object -Sum).Sum / 1MB)
-        Available  = [System.Int32] $perfCounterMemory.CounterSamples.Where({$_.Path -like '\\*\Memory\Available MBytes'}).CookedValue
-    }
+    do
+    {
+        # Counters new for every run
+        $perfCounterMemory = Get-Counter -Counter $counterNames -SampleInterval 1 -MaxSamples 1
+        $cimPageFileUsage  = Get-CimInstance -ClassName 'Win32_PageFileUsage'
 
-    [PSCustomObject] @{
-        PSTypeName = 'ProfileFever.MemoryCounter'
-        Name       = 'Page File'
-        Total      = $cimPageFileUsage.AllocatedBaseSize
-        Used       = $cimPageFileUsage.CurrentUsage
-        Free       = $cimPageFileUsage.AllocatedBaseSize - $cimPageFileUsage.CurrentUsage
-        Cache      = $null
-        Available  = $null
+        $timestamp = Get-Date
+
+        [PSCustomObject] @{
+            PSTypeName = 'ProfileFever.MemoryCounter'
+            Timestamp  = $timestamp
+            Name       = 'Physical Memory'
+            Total      = [System.Int32] ($cimOperatingSystem.TotalVisibleMemorySize / 1KB)
+            Used       = [System.Int32] ($cimOperatingSystem.TotalVisibleMemorySize / 1KB) - $perfCounterMemory.CounterSamples.Where({$_.Path -like '\\*\Memory\Available MBytes'}).CookedValue
+            Free       = [System.Int32] ($perfCounterMemory.CounterSamples.Where({$_.Path -like '\\*\Memory\Free & Zero Page List Bytes'}).CookedValue / 1MB)
+            Cache      = [System.Int32] (($perfCounterMemory.CounterSamples.Where({$_.Path -like '\\*\Memory\Standby Cache * Bytes'}).CookedValue | Measure-Object -Sum).Sum / 1MB)
+            Available  = [System.Int32] $perfCounterMemory.CounterSamples.Where({$_.Path -like '\\*\Memory\Available MBytes'}).CookedValue
+        }
+
+        [PSCustomObject] @{
+            PSTypeName = 'ProfileFever.MemoryCounter'
+            Timestamp  = $timestamp
+            Name       = 'Page File'
+            Total      = $cimPageFileUsage.AllocatedBaseSize
+            Used       = $cimPageFileUsage.CurrentUsage
+            Free       = $cimPageFileUsage.AllocatedBaseSize - $cimPageFileUsage.CurrentUsage
+            Cache      = $null
+            Available  = $null
+        }
     }
+    while ($Continue.IsPresent)
 }
