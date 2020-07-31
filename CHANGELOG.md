@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
-* Added: Get-CounterMemory
+* Added: Function to measure the processor usage (Get-CounterProcessor)
+* Added: Function to measure the memory usage (Get-CounterMemory)
 
 ## 3.3.0 - 2019-10-21
 
