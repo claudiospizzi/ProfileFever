@@ -81,7 +81,8 @@ function Measure-Storage
             {
                 Write-Warning ('The Disk {0} Free Space is {1:0}MB falling below 1GB' -f $counterDisk.Name, ($counterDisk.Free * 1000))
             }
-            if (($counterDiskFreePercent = $counterDisk.Free / $counterDisk.Size * 100) -lt 5)
+            $counterDiskFreePercent = $counterDisk.Free / $counterDisk.Size * 100
+            if ($counterDiskFreePercent -lt 5)
             {
                 Write-Warning ('The Disk {0} Free Space is {1:0.0}% falling below 5%' -f $counterDisk.Name, $counterDiskFreePercent)
             }

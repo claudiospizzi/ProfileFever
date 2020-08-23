@@ -82,11 +82,13 @@ function Measure-Memory
         {
             Write-Warning ('The Memory Available is {0:0}MB falling below 100MB' -f $counterMemory.Available)
         }
-        if (($counterMemoryAvailablePercent = $counterMemory.Available / $counterMemory.Total * 100) -lt 10)
+        $counterMemoryAvailablePercent = $counterMemory.Available / $counterMemory.Total * 100
+        if ($counterMemoryAvailablePercent -lt 10)
         {
             Write-Warning ('The Memory Available is {0:0}% falling below 10%' -f $counterMemoryAvailablePercent)
         }
-        if (($counterPageUsedOfMemoryPercent = $counterPage.Used / $counterMemory.Total * 100) -gt 80)
+        $counterPageUsedOfMemoryPercent = $counterPage.Used / $counterMemory.Total * 100
+        if ($counterPageUsedOfMemoryPercent -gt 80)
         {
             Write-Warning ('The Page File Usage is {0:0.0}% exceeding 80% compared to the Memory Total' -f $counterPageUsedOfMemoryPercent)
         }
