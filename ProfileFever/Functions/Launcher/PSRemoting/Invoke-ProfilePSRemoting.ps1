@@ -27,6 +27,7 @@
 function Invoke-ProfilePSRemoting
 {
     [CmdletBinding(DefaultParameterSetName = 'Show')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseUsingScopeModifierInNewRunspaces', '')]
     [Alias('winrm', 'win', 'w')]
     param
     (
@@ -129,9 +130,6 @@ function Invoke-ProfilePSRemoting
                         Set-Content -Path "$Env:Temp\ProfileFeverStub.psm1" -Value $using:stubModule -Force
                         Update-FormatData -AppendPath "$Env:Temp\ProfileFeverStub.Xml.Format.ps1xml"
                         Import-Module -Name "$Env:Temp\ProfileFeverStub.psm1"
-                        # Invoke-Expression $using:functionGetCounterProcessor
-                        # Invoke-Expression $using:functionGetCounterMemory
-                        # Invoke-Expression $using:functionGetCounterStorage
                         Set-Location -Path "$Env:SystemDrive\"
                     }
                     if ($Host.Name -eq 'ConsoleHost')

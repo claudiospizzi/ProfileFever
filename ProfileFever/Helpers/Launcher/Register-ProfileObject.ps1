@@ -10,6 +10,7 @@
 function Register-ProfileObject
 {
     [CmdletBinding()]
+    [OutputType([System.Object[]])]
     param
     (
         # Type of the object. Will be used as filename.
