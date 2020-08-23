@@ -102,6 +102,7 @@
         'Disable-Verbose'
         'Enable-Information'
         'Disable-Information'
+        'Show-Error'
         # Workspace
         'Update-Workspace'
         # Performance

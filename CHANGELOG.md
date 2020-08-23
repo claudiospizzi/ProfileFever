@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+* Added: Function to show the last errors with more details (Show-Error)
 * Added: Function to show or measure system information (Measure-System)
 * Added: Function to measure the processor usage (Measure-Processor)
 * Added: Function to measure the memory usage (Measure-Memory)
