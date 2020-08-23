@@ -105,8 +105,11 @@
         # Workspace
         'Update-Workspace'
         # Performance
-        'Get-CounterProcessor'
-        'Get-CounterMemory'
+        'Measure-System'
+        'Measure-Processor'
+        'Measure-Memory'
+        'Measure-Storage'
+        'Measure-Session'
         # PowerShell Remoting
         'Get-ProfilePSRemoting'
         'Invoke-ProfilePSRemoting'
@@ -156,8 +159,11 @@
         # SQL Server
         'sql'
         # Performance
-        'top'
-        'free'
+        'system'
+        'processor'
+        'memory'
+        'storage'
+        'session'
     )
 
     # DSC resources to export from this module

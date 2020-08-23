@@ -7,8 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
-* Added: Function to measure the processor usage (Get-CounterProcessor)
-* Added: Function to measure the memory usage (Get-CounterMemory)
+* Added: Function to show or measure system information (Measure-System)
+* Added: Function to measure the processor usage (Measure-Processor)
+* Added: Function to measure the memory usage (Measure-Memory)
+* Added: Function to measure the storage usage (Measure-Storage)
+* Added: Function to measure the user sessions (Measure-Session)
 
 ## 3.3.0 - 2019-10-21
 
