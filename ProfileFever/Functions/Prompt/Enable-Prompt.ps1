@@ -272,18 +272,18 @@ function Enable-Prompt
             }
 
             # Define the command counter and imput line
-            $input = "$($MyInvocation.HistoryId.ToString().PadLeft(3, '0'))$('>' * ($NestedPromptLevel + 1)) "
+            $promptInput = "$($MyInvocation.HistoryId.ToString().PadLeft(3, '0'))$('>' * ($NestedPromptLevel + 1)) "
 
             # Finally, show the output about path, debug, git etc. and then on a
             # new line the command count and the prompt level indicator
             if ([System.String]::IsNullOrEmpty($output.ToString()))
             {
-                return $input
+                return $promptInput
             }
             else
             {
                 Write-Host $output -NoNewline
-                return "`n$input"
+                return "`n$promptInput"
             }
         }
     }
