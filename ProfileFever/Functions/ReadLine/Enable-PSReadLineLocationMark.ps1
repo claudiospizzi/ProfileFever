@@ -13,7 +13,6 @@
 function Enable-PSReadLineLocationMark
 {
     [CmdletBinding()]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalVars', '')]
     param ()
 
     $Global:PSReadLineMarks = @{}

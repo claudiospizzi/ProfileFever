@@ -6,7 +6,6 @@ function Enable-PromptGit
 {
     [CmdletBinding()]
     [Alias('egit')]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalVars', '')]
     param ()
 
     Remove-Variable -Scope Script -Name PromptGit -ErrorAction SilentlyContinue -Force

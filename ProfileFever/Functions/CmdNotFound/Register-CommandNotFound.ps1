@@ -5,7 +5,6 @@
 function Register-CommandNotFound
 {
     [CmdletBinding()]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalFunctions', '')]
     param ()
 
     $Global:ExecutionContext.InvokeCommand.CommandNotFoundAction = {

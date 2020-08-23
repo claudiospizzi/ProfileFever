@@ -16,9 +16,6 @@
 function Enable-Prompt
 {
     [CmdletBinding()]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalVars', '')]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalFunctions', '')]
     param
     (
         [Parameter(Mandatory = $false)]

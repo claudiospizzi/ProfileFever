@@ -5,7 +5,6 @@
 function Disable-Prompt
 {
     [CmdletBinding()]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalFunctions', '')]
     param ()
 
     Set-Item -Path 'Function:Global:prompt' -Value $Script:PromptDefault

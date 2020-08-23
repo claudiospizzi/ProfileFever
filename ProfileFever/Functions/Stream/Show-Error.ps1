@@ -5,7 +5,6 @@
 function Show-Error
 {
     [CmdletBinding()]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]
     param
     (
         # Number of errors to show.
