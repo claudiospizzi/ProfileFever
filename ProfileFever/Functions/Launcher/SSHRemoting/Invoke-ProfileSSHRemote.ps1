@@ -41,39 +41,39 @@ function Invoke-ProfileSSHRemote
     {
         $profileSSHRemote = @(Get-ProfileSSHRemote -Name $Name)
 
-        if ($null -eq $profileSSHRemote)
+        if ($null -eq $profileSSHRemote -or $profileSSHRemote.Count -eq 0)
         {
-            throw "SSH remote connection named '$Name' not found."
+            Write-Error "SSH remote connection named '$Name' not found."
         }
-
-        if ($profileSSHRemote.Count -gt 1)
+        elseif ($profileSSHRemote.Count -gt 1)
         {
             $profileSSHRemote | ForEach-Object { Write-Host "[Profile Launcher] SSH remote target found: $($_.Name)" -ForegroundColor 'DarkYellow' }
-            throw "Multiple SSH remote connections found. Be more specific."
-        }
-
-
-        if (-not [System.String]::IsNullOrEmpty($profileSSHRemote.Username))
-        {
-            # Use public/private key authentication
-            $hostname = $profileSSHRemote.ComputerName
-            $username = $profileSSHRemote.Username
-
-            Write-Host "[Profile Launcher] Enter remote shell on $hostname as $username ..." -ForegroundColor 'DarkYellow'
-
-            ssh.exe "$username@$hostname"
+            Write-Error "Multiple SSH remote connections found. Be more specific."
         }
         else
         {
-            # Use username/password authentication
-            $credential = Get-VaultCredential -TargetName $profileSSHRemote.Credential
-            $hostname = $profileSSHRemote.ComputerName
-            $username = $credential.UserName
-            $password = $credential.GetNetworkCredential().Password
+            if (-not [System.String]::IsNullOrEmpty($profileSSHRemote.Username))
+            {
+                # Use public/private key authentication
+                $hostname = $profileSSHRemote.ComputerName
+                $username = $profileSSHRemote.Username
 
-            Write-Host "[Profile Launcher] Enter remote shell on $hostname as $username ..." -ForegroundColor 'DarkYellow'
+                Write-Host "[Profile Launcher] Enter remote shell on $hostname as $username ..." -ForegroundColor 'DarkYellow'
 
-            plink.exe '-ssh' "$username@$hostname" '-pw' $password
+                ssh.exe "$username@$hostname"
+            }
+            else
+            {
+                # Use username/password authentication
+                $credential = Get-VaultCredential -TargetName $profileSSHRemote.Credential
+                $hostname = $profileSSHRemote.ComputerName
+                $username = $credential.UserName
+                $password = $credential.GetNetworkCredential().Password
+
+                Write-Host "[Profile Launcher] Enter remote shell on $hostname as $username ..." -ForegroundColor 'DarkYellow'
+
+                plink.exe '-ssh' "$username@$hostname" '-pw' $password
+            }
         }
     }
 }

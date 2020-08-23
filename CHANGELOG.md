@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Added: Function to measure the memory usage (Measure-Memory)
 * Added: Function to measure the storage usage (Measure-Storage)
 * Added: Function to measure the user sessions (Measure-Session)
+* Fixed: Minor issues in the profile functions
 * Fixed: Various code styling issues
 
 ## 3.3.0 - 2019-10-21

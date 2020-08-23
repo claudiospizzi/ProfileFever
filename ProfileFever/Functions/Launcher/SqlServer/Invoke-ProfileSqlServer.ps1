@@ -61,72 +61,73 @@ function Invoke-ProfileSqlServer
 
         if ($null -eq $profileSqlServer)
         {
-            throw "SQL Server connection named '$Name' not found."
+            Write-Error "SQL Server connection named '$Name' not found."
         }
-
-        if ($profileSqlServer.Count -gt 1)
+        elseif ($profileSqlServer.Count -gt 1)
         {
             $profileSqlServer | ForEach-Object { Write-Host "[Profile Launcher] SQL Server target found: $($_.Name)" -ForegroundColor 'DarkYellow' }
-            throw "Multiple SQL Server connections found. Be more specific."
-        }
-
-        # Connect to the SQL Server with an SQL login or with integrated
-        # authentication. Only if the query test was successful, store the
-        # connection in the profile context.
-
-        if ([System.String]::IsNullOrEmpty($profileSqlServer.SqlCredential))
-        {
-            Write-Host "[Profile Launcher] Connect to the SQL Server '$($profileSqlServer.SqlInstance)' with integrated authentication ..." -ForegroundColor 'DarkYellow'
-
-            $result = Test-SqlConnection -SqlInstance $profileSqlServer.SqlInstance
-
-            $Global:PSDefaultParameterValues['*-Dba*:SqlInstance'] = $profileSqlServer.SqlInstance
-            $Global:PSDefaultParameterValues.Remove('*-Dba*:SqlCredential')
-
-            $Global:PSDefaultParameterValues['*-Sql*:ServerInstance'] = $profileSqlServer.SqlInstance
-            $Global:PSDefaultParameterValues.Remove('*-Sql*:Credential')
-
-            $Global:PSDefaultParameterValues['Test-SqlConnection:SqlInstance'] = $profileSqlServer.SqlInstance
-            $Global:PSDefaultParameterValues.Remove('Test-SqlConnection:SqlCredential')
-
-            $Script:ProfileSqlServer = [PSCustomObject] @{
-                PSTypeName    = 'ProfileFever.SqlServer.Session'
-                SqlInstance   = $profileSqlServer.SqlInstance
-                SqlCredential = ''
-                StartTime     = $result.StartDate
-                Server        = $result.Server
-                Version       = $result.Version
-            }
-
-            return $Script:ProfileSqlServer
+            Write-Error "Multiple SQL Server connections found. Be more specific."
         }
         else
         {
-            $sqlCredential = Get-VaultCredential -TargetName $profileSqlServer.SqlCredential
+            # Connect to the SQL Server with an SQL login or with integrated
+            # authentication. Only if the query test was successful, store the
+            # connection in the profile context.
 
-            Write-Host "[Profile Launcher] Connect to the SQL Server '$($profileSqlServer.SqlInstance)' as '$($sqlCredential.Username)' ..." -ForegroundColor 'DarkYellow'
+            if ([System.String]::IsNullOrEmpty($profileSqlServer.SqlCredential))
+            {
+                Write-Host "[Profile Launcher] Connect to the SQL Server '$($profileSqlServer.SqlInstance)' with integrated authentication ..." -ForegroundColor 'DarkYellow'
 
-            $result = Test-SqlConnection -SqlInstance $profileSqlServer.SqlInstance -SqlCredential $sqlCredential
+                $result = Test-SqlConnection -SqlInstance $profileSqlServer.SqlInstance
 
-            $Global:PSDefaultParameterValues['*-Dba*:SqlInstance'] = $profileSqlServer.SqlInstance
-            $Global:PSDefaultParameterValues['*-Dba*:SqlCredential'] = $sqlCredential
+                $Global:PSDefaultParameterValues['*-Dba*:SqlInstance'] = $profileSqlServer.SqlInstance
+                $Global:PSDefaultParameterValues.Remove('*-Dba*:SqlCredential')
 
-            $Global:PSDefaultParameterValues['*-Sql*:ServerInstance'] = $profileSqlServer.SqlInstance
-            $Global:PSDefaultParameterValues['*-Sql*:Credential'] = $sqlCredential
+                $Global:PSDefaultParameterValues['*-Sql*:ServerInstance'] = $profileSqlServer.SqlInstance
+                $Global:PSDefaultParameterValues.Remove('*-Sql*:Credential')
 
-            $Global:PSDefaultParameterValues['Test-SqlConnection:SqlInstance'] = $profileSqlServer.SqlInstance
-            $Global:PSDefaultParameterValues['Test-SqlConnection:SqlCredential'] = $sqlCredential
+                $Global:PSDefaultParameterValues['Test-SqlConnection:SqlInstance'] = $profileSqlServer.SqlInstance
+                $Global:PSDefaultParameterValues.Remove('Test-SqlConnection:SqlCredential')
 
-            $Script:ProfileSqlServer = [PSCustomObject] @{
-                PSTypeName    = 'ProfileFever.SqlServer.Session'
-                SqlInstance   = $profileSqlServer.SqlInstance
-                SqlCredential = $sqlCredential.Username
-                StartTime     = $result.StartDate
-                Server        = $result.Server
-                Version       = $result.Version
+                $Script:ProfileSqlServer = [PSCustomObject] @{
+                    PSTypeName    = 'ProfileFever.SqlServer.Session'
+                    SqlInstance   = $profileSqlServer.SqlInstance
+                    SqlCredential = ''
+                    StartTime     = $result.StartDate
+                    Server        = $result.Server
+                    Version       = $result.Version
+                }
+
+                return $Script:ProfileSqlServer
             }
+            else
+            {
+                $sqlCredential = Get-VaultCredential -TargetName $profileSqlServer.SqlCredential
 
-            return $Script:ProfileSqlServer
+                Write-Host "[Profile Launcher] Connect to the SQL Server '$($profileSqlServer.SqlInstance)' as '$($sqlCredential.Username)' ..." -ForegroundColor 'DarkYellow'
+
+                $result = Test-SqlConnection -SqlInstance $profileSqlServer.SqlInstance -SqlCredential $sqlCredential
+
+                $Global:PSDefaultParameterValues['*-Dba*:SqlInstance'] = $profileSqlServer.SqlInstance
+                $Global:PSDefaultParameterValues['*-Dba*:SqlCredential'] = $sqlCredential
+
+                $Global:PSDefaultParameterValues['*-Sql*:ServerInstance'] = $profileSqlServer.SqlInstance
+                $Global:PSDefaultParameterValues['*-Sql*:Credential'] = $sqlCredential
+
+                $Global:PSDefaultParameterValues['Test-SqlConnection:SqlInstance'] = $profileSqlServer.SqlInstance
+                $Global:PSDefaultParameterValues['Test-SqlConnection:SqlCredential'] = $sqlCredential
+
+                $Script:ProfileSqlServer = [PSCustomObject] @{
+                    PSTypeName    = 'ProfileFever.SqlServer.Session'
+                    SqlInstance   = $profileSqlServer.SqlInstance
+                    SqlCredential = $sqlCredential.Username
+                    StartTime     = $result.StartDate
+                    Server        = $result.Server
+                    Version       = $result.Version
+                }
+
+                return $Script:ProfileSqlServer
+            }
         }
     }
 

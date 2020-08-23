@@ -57,80 +57,97 @@ function Invoke-ProfilePSRemoting
     {
         $profilePSRemoting = @(Get-ProfilePSRemoting -Name $Name)
 
-        if ($null -eq $profilePSRemoting)
+        if ($null -eq $profilePSRemoting -or $profilePSRemoting.Count -eq 0)
         {
-            throw "PowerShell Remoting connection named '$Name' not found."
+            Write-Error "PowerShell Remoting connection named '$Name' not found."
         }
-
-        if ($profilePSRemoting.Count -gt 1)
+        elseif ($profilePSRemoting.Count -gt 1)
         {
             $profilePSRemoting | ForEach-Object { Write-Host "[Profile Launcher] PS Remoting target found: $($_.Name)" -ForegroundColor 'DarkYellow' }
-            throw "Multiple PowerShell Remoting connections found. Be more specific."
-        }
-
-        # Define a splat to connect to the remoting system.
-        $splat = @{
-            ComputerName = $profilePSRemoting.ComputerName
-        }
-        $verbose = "'$($splat['ComputerName'])'"
-        if (-not [System.String]::IsNullOrEmpty($profilePSRemoting.Credential))
-        {
-            $splat['Credential'] = Get-VaultCredential -TargetName $profilePSRemoting.Credential
-            $verbose += " as '$($splat['Credential'].Username)'"
-        }
-
-        if ($PSBoundParameters.ContainsKey('ScriptBlock'))
-        {
-            # Option 1: Invoke Command
-            # If a script is appended to the command, execute that script on the
-            # remote system.
-
-            Write-Host "[Profile Launcher] Invoke a remote command on $verbose ..." -ForegroundColor 'DarkYellow'
-
-            if ($ScriptBlock -isnot [System.Management.Automation.ScriptBlock])
-            {
-                $ScriptBlock = [System.Management.Automation.ScriptBlock]::Create([System.String] $ScriptBlock)
-            }
-
-            Invoke-Command @splat -ScriptBlock $ScriptBlock
+            Write-Error "Multiple PowerShell Remoting connections found. Be more specific."
         }
         else
         {
-            $commandLine = (Get-PSCallStack)[1].Position.Text.Trim()
-
-            if ($commandLine -like '$*')
+            # Define a splat to connect to the remoting system.
+            $splat = @{
+                ComputerName = $profilePSRemoting.ComputerName
+            }
+            $verbose = "'$($splat['ComputerName'])'"
+            if (-not [System.String]::IsNullOrEmpty($profilePSRemoting.Credential))
             {
-                # Option 2: Open Session
-                # If a variable is specified as output of the command, a new
-                # remoting session will be opened and returned.
+                $splat['Credential'] = Get-VaultCredential -TargetName $profilePSRemoting.Credential
+                $verbose += " as '$($splat['Credential'].Username)'"
+            }
 
-                Write-Host "[Profile Launcher] Create a new session on $verbose ..." -ForegroundColor 'DarkYellow'
+            if ($PSBoundParameters.ContainsKey('ScriptBlock'))
+            {
+                # Option 1: Invoke Command
+                # If a script is appended to the command, execute that script on the
+                # remote system.
 
-                New-PSSession @splat
+                Write-Host "[Profile Launcher] Invoke a remote command on $verbose ..." -ForegroundColor 'DarkYellow'
+
+                if ($ScriptBlock -isnot [System.Management.Automation.ScriptBlock])
+                {
+                    $ScriptBlock = [System.Management.Automation.ScriptBlock]::Create([System.String] $ScriptBlock)
+                }
+
+                Invoke-Command @splat -ScriptBlock $ScriptBlock
             }
             else
             {
-                # Option 3: Enter Session
-                # If no parameters were specified, just enter into a remote
-                # session to the target system.
+                $commandLine = (Get-PSCallStack)[1].Position.Text.Trim()
 
-                Write-Host "[Profile Launcher] Enter remote shell on $verbose ..." -ForegroundColor 'DarkYellow'
-
-                $session = New-PSSession @splat
-                if ($Host.Name -eq 'ConsoleHost')
+                if ($commandLine -like '$*')
                 {
+                    # Option 2: Open Session
+                    # If a variable is specified as output of the command, a new
+                    # remoting session will be opened and returned.
+
+                    Write-Host "[Profile Launcher] Create a new session on $verbose ..." -ForegroundColor 'DarkYellow'
+
+                    New-PSSession @splat
+                }
+                else
+                {
+                    # Option 3: Enter Session
+                    # If no parameters were specified, just enter into a remote
+                    # session to the target system.
+
+                    Write-Host "[Profile Launcher] Enter remote shell on $verbose ..." -ForegroundColor 'DarkYellow'
+
+                    $session = New-PSSession @splat
+                    $stubModule = ''
+                    $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Performance\Measure-System.ps1" -Raw
+                    $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Performance\Measure-Processor.ps1" -Raw
+                    $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Performance\Measure-Memory.ps1" -Raw
+                    $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Performance\Measure-Storage.ps1" -Raw
+                    $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Performance\Measure-Session.ps1" -Raw
+                    $stubFormat = Get-Content -Path "$PSScriptRoot\..\..\..\ProfileFever.Xml.Format.ps1xml" -Raw
                     Invoke-Command -Session $session -ScriptBlock {
+                        Set-Content -Path "$Env:Temp\ProfileFeverStub.Xml.Format.ps1xml" -Value $using:stubFormat -Force
+                        Set-Content -Path "$Env:Temp\ProfileFeverStub.psm1" -Value $using:stubModule -Force
+                        Update-FormatData -AppendPath "$Env:Temp\ProfileFeverStub.Xml.Format.ps1xml"
+                        Import-Module -Name "$Env:Temp\ProfileFeverStub.psm1"
+                        # Invoke-Expression $using:functionGetCounterProcessor
+                        # Invoke-Expression $using:functionGetCounterMemory
+                        # Invoke-Expression $using:functionGetCounterStorage
                         Set-Location -Path "$Env:SystemDrive\"
-                        $PromptLabel = $Env:ComputerName.ToUpper()
-                        $PromptIndent = $using:session.ComputerName.Length + 4
-                        function Global:prompt
-                        {
-                            $Host.UI.RawUI.WindowTitle = "$Env:Username@$Env:ComputerName | $($executionContext.SessionState.Path.CurrentLocation)"
-                            Write-Host "[$PromptLabel]" -NoNewline -ForegroundColor Cyan; "$("`b `b" * $PromptIndent) $($executionContext.SessionState.Path.CurrentLocation)$('>' * ($nestedPromptLevel + 1)) "
+                    }
+                    if ($Host.Name -eq 'ConsoleHost')
+                    {
+                        Invoke-Command -Session $session -ScriptBlock {
+                            $PromptLabel = $Env:ComputerName.ToUpper()
+                            $PromptIndent = $using:session.ComputerName.Length + 4
+                            function Global:prompt
+                            {
+                                $Host.UI.RawUI.WindowTitle = "$Env:Username@$Env:ComputerName | $($executionContext.SessionState.Path.CurrentLocation)"
+                                Write-Host "[$PromptLabel]" -NoNewline -ForegroundColor Cyan; "$("`b `b" * $PromptIndent) $($executionContext.SessionState.Path.CurrentLocation)$('>' * ($nestedPromptLevel + 1)) "
+                            }
                         }
                     }
+                    Enter-PSSession -Session $session
                 }
-                Enter-PSSession -Session $session
             }
         }
     }

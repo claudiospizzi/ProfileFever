@@ -9,7 +9,8 @@
 #>
 function Register-ProfileSqlServer
 {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'NoCredential')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingPlainTextForPassword', '')]
     param
     (
         # Name to identify the SQL Server connection.
@@ -31,19 +32,36 @@ function Register-ProfileSqlServer
 
         # The SQL credentials are optional and can be used, if integration
         # authentication is not available.
-        [Parameter(Mandatory = $false)]
+        [Parameter(Mandatory = $true, ParameterSetName = 'SpecificCredential')]
         [System.Management.Automation.PSCredential]
-        $SqlCredential
+        $SqlCredential,
+
+        # Instead of specifying the SQL credentials, reuse an existing vault
+        # entry as credential. If the vault entry does not exist, it will query
+        # the username and password.
+        [Parameter(Mandatory = $true, ParameterSetName = 'ExisitngCredential')]
+        [System.String]
+        $SqlCredentialNameSuffix
     )
 
-    if ($PSBoundParameters.ContainsKey('SqlCredential'))
+    switch ($PSCmdlet.ParameterSetName)
     {
-        $sqlCredentialTargetName = $Script:LauncherCredentialFormat -f 'SqlServer', $Name
-        New-VaultEntry -TargetName $sqlCredentialTargetName -Credential $SqlCredential -Force | Out-Null
-    }
-    else
-    {
-        $sqlCredentialTargetName = $null
+        'SpecificCredential'
+        {
+            $sqlCredentialTargetName = $Script:LauncherCredentialFormat -f 'SqlServer', $Name
+            New-VaultEntry -TargetName $sqlCredentialTargetName -Credential $SqlCredential -Force | Out-Null
+        }
+
+        'ExisitngCredential'
+        {
+            $sqlCredentialTargetName = $Script:LauncherCredentialFormat -f 'SqlServer', $CredentialNameSuffix
+            Use-VaultCredential -TargetName $sqlCredentialTargetName | Out-Null
+        }
+
+        default
+        {
+            $sqlCredentialTargetName = $null
+        }
     }
 
     $object = [PSCustomObject] @{
