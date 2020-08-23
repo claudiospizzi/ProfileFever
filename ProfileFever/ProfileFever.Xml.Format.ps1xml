@@ -223,9 +223,9 @@
     </View>
 
     <View>
-      <Name>ProfileFever.ProcessorCounter</Name>
+      <Name>ProfileFever.Performance.System</Name>
       <ViewSelectedBy>
-        <TypeName>ProfileFever.ProcessorCounter</TypeName>
+        <TypeName>ProfileFever.Performance.System</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
@@ -234,27 +234,45 @@
             <Width>10</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Width>12</Width>
+            <Width>16</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>Sock</Label>
-            <Width>4</Width>
-            <Alignment>Right</Alignment>
-          </TableColumnHeader>
-          <TableColumnHeader>
-            <Label>Core</Label>
-            <Width>4</Width>
-            <Alignment>Right</Alignment>
-          </TableColumnHeader>
-          <TableColumnHeader>
-            <Label>Proc</Label>
-            <Width>4</Width>
-            <Alignment>Right</Alignment>
-          </TableColumnHeader>
-          <TableColumnHeader>
-            <Label>Clock</Label>
+            <Label>Uptime</Label>
             <Width>10</Width>
             <Alignment>Right</Alignment>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <ScriptBlock>$_.Timestamp.ToString('HH:mm:ss')</ScriptBlock>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Name</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>$_.Uptime.ToString('d\d\ hh\.mm')</ScriptBlock>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+
+    <View>
+      <Name>ProfileFever.Performance.Processor</Name>
+      <ViewSelectedBy>
+        <TypeName>ProfileFever.Performance.Processor</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>Time</Label>
+            <Width>10</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>16</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>Hyper-V</Label>
@@ -271,6 +289,11 @@
             <Width>10</Width>
             <Alignment>Right</Alignment>
           </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Clock</Label>
+            <Width>10</Width>
+            <Alignment>Right</Alignment>
+          </TableColumnHeader>
         </TableHeaders>
         <TableRowEntries>
           <TableRowEntry>
@@ -282,18 +305,6 @@
                 <PropertyName>Name</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>Sockets</PropertyName>
-              </TableColumnItem>
-              <TableColumnItem>
-                <PropertyName>Cores</PropertyName>
-              </TableColumnItem>
-              <TableColumnItem>
-                <PropertyName>Prcessors</PropertyName>
-              </TableColumnItem>
-              <TableColumnItem>
-                <ScriptBlock>'{0:0.00}' -f ($_.Clock / 1000)</ScriptBlock>
-              </TableColumnItem>
-              <TableColumnItem>
                 <ScriptBlock>if($_.HyperV -eq 'n/a') { $_.HyperV } else { '{0:0.0}' -f $_.HyperV }</ScriptBlock>
               </TableColumnItem>
               <TableColumnItem>
@@ -302,6 +313,9 @@
               <TableColumnItem>
                 <ScriptBlock>'{0:0}' -f $_.Queue</ScriptBlock>
               </TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>'{0:0.00}GHz' -f ($_.Clock / 1000)</ScriptBlock>
+              </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>
         </TableRowEntries>
@@ -309,9 +323,9 @@
     </View>
 
     <View>
-      <Name>ProfileFever.MemoryCounter</Name>
+      <Name>ProfileFever.Performance.Memory</Name>
       <ViewSelectedBy>
-        <TypeName>ProfileFever.MemoryCounter</TypeName>
+        <TypeName>ProfileFever.Performance.Memory</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
@@ -371,6 +385,157 @@
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>Available</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+
+    <View>
+      <Name>ProfileFever.Performance.Storage</Name>
+      <ViewSelectedBy>
+        <TypeName>ProfileFever.Performance.Storage</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>Time</Label>
+            <Width>10</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>16</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Size</Label>
+            <Width>10</Width>
+            <Alignment>Right</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Free</Label>
+            <Width>10</Width>
+            <Alignment>Right</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Usage</Label>
+            <Width>10</Width>
+            <Alignment>Right</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Queue</Label>
+            <Width>10</Width>
+            <Alignment>Right</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>AvgRead</Label>
+            <Width>10</Width>
+            <Alignment>Right</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>AvgWrite</Label>
+            <Width>10</Width>
+            <Alignment>Right</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>IOPS</Label>
+            <Width>10</Width>
+            <Alignment>Right</Alignment>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <ScriptBlock>$_.Timestamp.ToString('HH:mm:ss')</ScriptBlock>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Name</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>'{0:0}' -f $_.Size</ScriptBlock>
+              </TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>if($_.Free -lt 10) { '{0:0.000}' -f $_.Free } else { '{0:0}' -f $_.Free }</ScriptBlock>
+              </TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>'{0:0.0}' -f $_.DiskTime</ScriptBlock>
+              </TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>'{0:0}' -f $_.DiskQueue</ScriptBlock>
+              </TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>'{0:0.000}' -f $_.AvgRead</ScriptBlock>
+              </TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>'{0:0.000}' -f $_.AvgWrite</ScriptBlock>
+              </TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>'{0:0}' -f $_.IOPS</ScriptBlock>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+
+    <View>
+      <Name>ProfileFever.Performance.Session</Name>
+      <ViewSelectedBy>
+        <TypeName>ProfileFever.Performance.Session</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>Time</Label>
+            <Width>10</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>6</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>13</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Name</Label>
+            <Width>13</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>15</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Proc</Label>
+            <Width>10</Width>
+            <Alignment>Right</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Memory</Label>
+            <Width>10</Width>
+            <Alignment>Right</Alignment>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <ScriptBlock>$_.Timestamp.ToString('HH:mm:ss')</ScriptBlock>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Id</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Status</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>if ($_.Active) { '{0}*' -f $_.Name.PadRight(11).Substring(0, 11).TrimEnd() } else { $_.Name.PadRight(12).Substring(0, 12) }</ScriptBlock>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>User</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Processes</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>'{0:0}' -f ($_.Memory / 1MB)</ScriptBlock>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>
