@@ -103,6 +103,7 @@
         'Enable-Information'
         'Disable-Information'
         'Show-Error'
+        'Out-ObjectView'
         # Workspace
         'Update-Workspace'
         # Performance
