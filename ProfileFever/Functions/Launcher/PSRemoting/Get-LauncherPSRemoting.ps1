@@ -1,13 +1,13 @@
 ﻿<#
     .SYNOPSIS
-        Get all PowerShell Remoting connections from the profile.
+        Get all PowerShell Remoting connections from the profile launcher.
 
     .DESCRIPTION
         By registering a PowerShell Remoting connection, the connection then can
-        be used with the Invoke-ProfilePSRemoting (alias w) to connect to the
+        be used with the Invoke-LauncherPSRemoting (alias w) to connect to the
         desired remote system with PowerShell Remoting.
 #>
-function Get-ProfilePSRemoting
+function Get-LauncherPSRemoting
 {
     [CmdletBinding()]
     param
@@ -29,12 +29,12 @@ function Get-ProfilePSRemoting
         $Tag
     )
 
-    $objects = Get-ProfileObject -Type 'PSRemoting' -Name $Name -Tag $Tag
+    $objects = Get-LauncherObject -Type 'PSRemoting' -Name $Name -Tag $Tag
 
     foreach ($object in $objects)
     {
         [PSCustomObject] @{
-            PSTypeName   = 'ProfileFever.PSRemoting.Definition'
+            PSTypeName   = 'ProfileFever.Launcher.PSRemoting.Definition'
             Name         = $object.Name
             Tag          = $object.Tag
             ComputerName = $object.Object.ComputerName

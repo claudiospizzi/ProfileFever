@@ -8,7 +8,7 @@
         folder. The output can be filted by name (wildcard supported) and/or by
         tags.
 #>
-function Get-ProfileObject
+function Get-LauncherObject
 {
     [CmdletBinding()]
     param

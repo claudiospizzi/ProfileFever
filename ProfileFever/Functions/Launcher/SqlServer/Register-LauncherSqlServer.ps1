@@ -7,7 +7,7 @@
         file stored in the users AppData folder. The name must be unique,
         already existing SQL Server connections will be overwritten.
 #>
-function Register-ProfileSqlServer
+function Register-LauncherSqlServer
 {
     [CmdletBinding(DefaultParameterSetName = 'NoCredential')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingPlainTextForPassword', '')]
@@ -39,28 +39,31 @@ function Register-ProfileSqlServer
         # Instead of specifying the SQL credentials, reuse an existing vault
         # entry as credential. If the vault entry does not exist, it will query
         # the username and password.
-        [Parameter(Mandatory = $true, ParameterSetName = 'ExisitngCredential')]
+        [Parameter(Mandatory = $false, ParameterSetName = 'SpecificCredential')]
         [System.String]
         $SqlCredentialNameSuffix
     )
 
-    switch ($PSCmdlet.ParameterSetName)
-    {
-        'SpecificCredential'
-        {
-            $sqlCredentialTargetName = $Script:LauncherCredentialFormat -f 'SqlServer', $Name
-            New-VaultEntry -TargetName $sqlCredentialTargetName -Credential $SqlCredential -Force | Out-Null
-        }
+    $sqlCredentialTargetName = $null
 
-        'ExisitngCredential'
+    if ($PSCmdlet.ParameterSetName -eq 'SpecificCredential')
+    {
+        if ($PSBoundParameters.ContainsKey('SqlCredentialNameSuffix'))
         {
             $sqlCredentialTargetName = $Script:LauncherCredentialFormat -f 'SqlServer', $SqlCredentialNameSuffix
-            Use-VaultCredential -TargetName $sqlCredentialTargetName | Out-Null
+        }
+        else
+        {
+            $sqlCredentialTargetName = $Script:LauncherCredentialFormat -f 'SqlServer', $Name
         }
 
-        default
+        if ($null -eq (Get-VaultEntry -TargetName $sqlCredentialTargetName))
         {
-            $sqlCredentialTargetName = $null
+            New-VaultEntry -TargetName $sqlCredentialTargetName -Credential $SqlCredential -Force | Out-Null
+        }
+        else
+        {
+            Use-VaultCredential -TargetName $sqlCredentialTargetName | Out-Null
         }
     }
 
@@ -69,5 +72,5 @@ function Register-ProfileSqlServer
         SqlCredential = $sqlCredentialTargetName
     }
 
-    Register-ProfileObject -Type 'SqlServer' -Name $Name -Tag $Tag -Object $object
+    Register-LauncherObject -Type 'SqlServer' -Name $Name -Tag $Tag -Object $object
 }

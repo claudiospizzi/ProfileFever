@@ -6,7 +6,7 @@
         This command will remove the stored object from the JSON file named like
         the specified type. The JSON file is stored in the users AppData folder.
 #>
-function Unregister-ProfileObject
+function Unregister-LauncherObject
 {
     [CmdletBinding()]
     param

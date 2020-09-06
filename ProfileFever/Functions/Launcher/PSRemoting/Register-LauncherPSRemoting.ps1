@@ -8,7 +8,7 @@
         be unique, already existing PowerShell Remoting connections will be
         overwritten.
 #>
-function Register-ProfilePSRemoting
+function Register-LauncherPSRemoting
 {
     [CmdletBinding(DefaultParameterSetName = 'NoCredential')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingPlainTextForPassword', '')]
@@ -40,28 +40,31 @@ function Register-ProfilePSRemoting
         # Instead of specifying the credentials, reuse an existing vault entry
         # as credential. If the vault entry does not exist, it will query the
         # username and password.
-        [Parameter(Mandatory = $true, ParameterSetName = 'ExisitngCredential')]
+        [Parameter(Mandatory = $false, ParameterSetName = 'SpecificCredential')]
         [System.String]
         $CredentialNameSuffix
     )
 
-    switch ($PSCmdlet.ParameterSetName)
-    {
-        'SpecificCredential'
-        {
-            $credentialTargetName = $Script:LauncherCredentialFormat -f 'PSRemoting', $Name
-            New-VaultEntry -TargetName $credentialTargetName -Credential $Credential -Force | Out-Null
-        }
+    $credentialTargetName = $null
 
-        'ExisitngCredential'
+    if ($PSCmdlet.ParameterSetName -eq 'SpecificCredential')
+    {
+        if ($PSBoundParameters.ContainsKey('CredentialNameSuffix'))
         {
             $credentialTargetName = $Script:LauncherCredentialFormat -f 'PSRemoting', $CredentialNameSuffix
-            Use-VaultCredential -TargetName $credentialTargetName | Out-Null
+        }
+        else
+        {
+            $credentialTargetName = $Script:LauncherCredentialFormat -f 'PSRemoting', $Name
         }
 
-        default
+        if ($null -eq (Get-VaultEntry -TargetName $credentialTargetName))
         {
-            $credentialTargetName = $null
+            New-VaultEntry -TargetName $credentialTargetName -Credential $Credential -Force | Out-Null
+        }
+        else
+        {
+            Use-VaultCredential -TargetName $credentialTargetName | Out-Null
         }
     }
 
@@ -70,5 +73,5 @@ function Register-ProfilePSRemoting
         Credential   = $credentialTargetName
     }
 
-    Register-ProfileObject -Type 'PSRemoting' -Name $Name -Tag $Tag -Object $object
+    Register-LauncherObject -Type 'PSRemoting' -Name $Name -Tag $Tag -Object $object
 }

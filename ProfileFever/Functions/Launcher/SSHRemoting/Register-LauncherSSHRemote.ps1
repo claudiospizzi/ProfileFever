@@ -7,7 +7,7 @@
         file stored in the users AppData folder. The name must be unique,
         already existing SSH remote connections will be overwritten.
 #>
-function Register-ProfileSSHRemote
+function Register-LauncherSSHRemote
 {
     [CmdletBinding(DefaultParameterSetName = 'PublicPrivateKey')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingPlainTextForPassword', '')]
@@ -45,34 +45,38 @@ function Register-ProfileSSHRemote
         # Instead of specifying the credentials, reuse an existing vault entry
         # as credential. If the vault entry does not exist, it will query the
         # username and password.
-        [Parameter(Mandatory = $true, ParameterSetName = 'ExisitngCredential')]
+        [Parameter(Mandatory = $false, ParameterSetName = 'SpecificCredential')]
         [System.String]
         $CredentialNameSuffix
     )
 
-    # Reset the username, if credentials were specified.
+    $credentialTargetName = $null
+
+    # Reset the username, if credential instead of public/private key were
+    # specified.
     if ($PSCmdlet.ParameterSetName -ne 'PublicPrivateKey')
     {
         $Username = $null
     }
 
-    switch ($PSCmdlet.ParameterSetName)
+    if ($PSCmdlet.ParameterSetName -eq 'SpecificCredential')
     {
-        'SpecificCredential'
-        {
-            $credentialTargetName = $Script:LauncherCredentialFormat -f 'SSHRemote', $Name
-            New-VaultEntry -TargetName $credentialTargetName -Credential $Credential -Force | Out-Null
-        }
-
-        'ExisitngCredential'
+        if ($PSBoundParameters.ContainsKey('CredentialNameSuffix'))
         {
             $credentialTargetName = $Script:LauncherCredentialFormat -f 'SSHRemote', $CredentialNameSuffix
-            Use-VaultCredential -TargetName $credentialTargetName | Out-Null
+        }
+        else
+        {
+            $credentialTargetName = $Script:LauncherCredentialFormat -f 'SSHRemote', $Name
         }
 
-        default
+        if ($null -eq (Get-VaultEntry -TargetName $credentialTargetName))
         {
-            $credentialTargetName = $null
+            New-VaultEntry -TargetName $credentialTargetName -Credential $Credential -Force | Out-Null
+        }
+        else
+        {
+            Use-VaultCredential -TargetName $credentialTargetName | Out-Null
         }
     }
 
@@ -82,5 +86,5 @@ function Register-ProfileSSHRemote
         Credential = $credentialTargetName
     }
 
-    Register-ProfileObject -Type 'SSHRemote' -Name $Name -Tag $Tag -Object $object
+    Register-LauncherObject -Type 'SSHRemote' -Name $Name -Tag $Tag -Object $object
 }

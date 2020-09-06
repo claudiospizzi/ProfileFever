@@ -4,9 +4,9 @@
         connection.
 
     .DESCRIPTION
-        Use the PowerShell Remoting connections registered in the profile to
-        connect to the remote host. This can be done by opening an interactive
-        connection, invoke a script block or create a session.
+        Use the PowerShell Remoting connections registered in the profile
+        launcher to connect to the remote host. This can be done by opening an
+        interactive connection, invoke a script block or create a session.
 
     .EXAMPLE
         PS C:\> winrm
@@ -24,7 +24,7 @@
         PS C:\> winrm srv01 'gpupdate'
         Invoke the command on the remote system.
 #>
-function Invoke-ProfilePSRemoting
+function Invoke-LauncherPSRemoting
 {
     [CmdletBinding(DefaultParameterSetName = 'Show')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseUsingScopeModifierInNewRunspaces', '')]
@@ -51,32 +51,32 @@ function Invoke-ProfilePSRemoting
         # Show all registered PowerShell Remoting connections. This may help to
         # choose the correct connection.
 
-        Get-ProfilePSRemoting
+        Get-LauncherPSRemoting
     }
 
     if ($PSCmdlet.ParameterSetName -eq 'Connect')
     {
-        $profilePSRemoting = @(Get-ProfilePSRemoting -Name $Name)
+        $launcherPSRemoting = @(Get-LauncherPSRemoting -Name $Name)
 
-        if ($null -eq $profilePSRemoting -or $profilePSRemoting.Count -eq 0)
+        if ($null -eq $launcherPSRemoting -or $launcherPSRemoting.Count -eq 0)
         {
             Write-Error "PowerShell Remoting connection named '$Name' not found."
         }
-        elseif ($profilePSRemoting.Count -gt 1)
+        elseif ($launcherPSRemoting.Count -gt 1)
         {
-            $profilePSRemoting | ForEach-Object { Write-Host "[Profile Launcher] PS Remoting target found: $($_.Name)" -ForegroundColor 'DarkYellow' }
+            $launcherPSRemoting | ForEach-Object { Write-Host "[Launcher] PS Remoting target found: $($_.Name)" -ForegroundColor 'DarkYellow' }
             Write-Error "Multiple PowerShell Remoting connections found. Be more specific."
         }
         else
         {
             # Define a splat to connect to the remoting system.
             $splat = @{
-                ComputerName = $profilePSRemoting.ComputerName
+                ComputerName = $launcherPSRemoting.ComputerName
             }
             $verbose = "'$($splat['ComputerName'])'"
-            if (-not [System.String]::IsNullOrEmpty($profilePSRemoting.Credential))
+            if (-not [System.String]::IsNullOrEmpty($launcherPSRemoting.Credential))
             {
-                $splat['Credential'] = Get-VaultCredential -TargetName $profilePSRemoting.Credential
+                $splat['Credential'] = Get-VaultCredential -TargetName $launcherPSRemoting.Credential
                 $verbose += " as '$($splat['Credential'].Username)'"
             }
 
@@ -86,7 +86,7 @@ function Invoke-ProfilePSRemoting
                 # If a script is appended to the command, execute that script on the
                 # remote system.
 
-                Write-Host "[Profile Launcher] Invoke a remote command on $verbose ..." -ForegroundColor 'DarkYellow'
+                Write-Host "[Launcher] Invoke a remote command on $verbose ..." -ForegroundColor 'DarkYellow'
 
                 if ($ScriptBlock -isnot [System.Management.Automation.ScriptBlock])
                 {
@@ -105,7 +105,7 @@ function Invoke-ProfilePSRemoting
                     # If a variable is specified as output of the command, a new
                     # remoting session will be opened and returned.
 
-                    Write-Host "[Profile Launcher] Create a new session on $verbose ..." -ForegroundColor 'DarkYellow'
+                    Write-Host "[Launcher] Create a new session on $verbose ..." -ForegroundColor 'DarkYellow'
 
                     New-PSSession @splat
                 }
@@ -115,7 +115,7 @@ function Invoke-ProfilePSRemoting
                     # If no parameters were specified, just enter into a remote
                     # session to the target system.
 
-                    Write-Host "[Profile Launcher] Enter remote shell on $verbose ..." -ForegroundColor 'DarkYellow'
+                    Write-Host "[Launcher] Enter remote shell on $verbose ..." -ForegroundColor 'DarkYellow'
 
                     $session = New-PSSession @splat
                     $stubModule = ''
@@ -152,9 +152,9 @@ function Invoke-ProfilePSRemoting
 }
 
 # Register the argument completer for the Name parameter
-Register-ArgumentCompleter -CommandName 'Invoke-ProfilePSRemoting' -ParameterName 'Name' -ScriptBlock {
+Register-ArgumentCompleter -CommandName 'Invoke-LauncherPSRemoting' -ParameterName 'Name' -ScriptBlock {
     param ($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
-    Get-ProfilePSRemoting -Name "$wordToComplete*" | ForEach-Object {
+    Get-LauncherPSRemoting -Name "$wordToComplete*" | ForEach-Object {
         [System.Management.Automation.CompletionResult]::new($_.Name, $_.Name, 'ParameterValue', $_.ComputerName)
     }
 }

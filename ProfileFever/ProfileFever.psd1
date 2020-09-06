@@ -111,21 +111,21 @@
         'Measure-Memory'
         'Measure-Storage'
         'Measure-Session'
-        # PowerShell Remoting
-        'Get-ProfilePSRemoting'
-        'Invoke-ProfilePSRemoting'
-        'Register-ProfilePSRemoting'
-        'Unregister-ProfilePSRemoting'
-        # SSH Remoting
-        'Get-ProfileSSHRemote'
-        'Invoke-ProfileSSHRemote'
-        'Register-ProfileSSHRemote'
-        'Unregister-ProfileSSHRemote'
-        # SQL Server
-        'Get-ProfileSqlServer'
-        'Invoke-ProfileSqlServer'
-        'Register-ProfileSqlServer'
-        'Unregister-ProfileSqlServer'
+        # PowerShell Remoting Launcher
+        'Get-LauncherPSRemoting'
+        'Invoke-LauncherPSRemoting'
+        'Register-LauncherPSRemoting'
+        'Unregister-LauncherPSRemoting'
+        # SSH Remoting Launcher
+        'Get-LauncherSSHRemote'
+        'Invoke-LauncherSSHRemote'
+        'Register-LauncherSSHRemote'
+        'Unregister-LauncherSSHRemote'
+        # SQL Server Launcher
+        'Get-LauncherSqlServer'
+        'Invoke-LauncherSqlServer'
+        'Register-LauncherSqlServer'
+        'Unregister-LauncherSqlServer'
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.

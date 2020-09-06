@@ -95,4 +95,4 @@ $Script:CommandNotFoundEnabled = $false
 # Initialize all relevant launcher vairables
 $Script:LauncherPath             = "$Env:AppData\PowerShell\ProfileFever"
 $Script:LauncherCredentialFormat = 'PowerShell ProfileFever {0} {1}'
-$Script:ProfileSqlServer         = $null
+$Script:LauncherSqlServer        = $null

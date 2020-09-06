@@ -1,13 +1,13 @@
 ﻿<#
     .SYNOPSIS
-        Get all SSH remote connections from the profile.
+        Get all SSH remote connections from the profile launcher.
 
     .DESCRIPTION
         By registering an SSH remote connection, the connection then can be used
-        with the Invoke-ProfileSSHRemote (alias ssh) to connect to the desired
+        with the Invoke-LauncherSSHRemote (alias ssh) to connect to the desired
         remote system with SSH remote.
 #>
-function Get-ProfileSSHRemote
+function Get-LauncherSSHRemote
 {
     [CmdletBinding()]
     param
@@ -29,12 +29,12 @@ function Get-ProfileSSHRemote
         $Tag
     )
 
-    $objects = Get-ProfileObject -Type 'SSHRemote' -Name $Name -Tag $Tag
+    $objects = Get-LauncherObject -Type 'SSHRemote' -Name $Name -Tag $Tag
 
     foreach ($object in $objects)
     {
         [PSCustomObject] @{
-            PSTypeName   = 'ProfileFever.SSHRemote.Definition'
+            PSTypeName   = 'ProfileFever.Launcher.SSHRemote.Definition'
             Name         = $object.Name
             Tag          = $object.Tag
             ComputerName = $object.Object.HostName

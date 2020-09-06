@@ -1,12 +1,12 @@
 ﻿<#
     .SYNOPSIS
-        Unregister the SSH remote connection from the profile.
+        Unregister the SSH remote connection from the profile launcher.
 
     .DESCRIPTION
         This command will remove the stored SSH remote connection from the
         SSHRemote.json file stored in the users AppData folder.
 #>
-function Unregister-ProfileSSHRemote
+function Unregister-LauncherSSHRemote
 {
     [CmdletBinding()]
     param
@@ -19,7 +19,7 @@ function Unregister-ProfileSSHRemote
 
     process
     {
-        $object = Get-ProfileObject -Type 'SSHRemote' -Name $Name
+        $object = Get-LauncherObject -Type 'SSHRemote' -Name $Name
 
         if ($null -ne $object)
         {
@@ -28,7 +28,7 @@ function Unregister-ProfileSSHRemote
                 Get-VaultEntry -TargetName $object.Object.Credential | Remove-VaultEntry -Force
             }
 
-            Unregister-ProfileObject -Type 'SSHRemote' -Name $Name
+            Unregister-LauncherObject -Type 'SSHRemote' -Name $Name
         }
     }
 }

@@ -40,9 +40,9 @@
     </View>
 
     <View>
-      <Name>ProfileFever.SqlServer.Definition</Name>
+      <Name>ProfileFever.Launcher.SqlServer.Definition</Name>
       <ViewSelectedBy>
-        <TypeName>ProfileFever.SqlServer.Definition</TypeName>
+        <TypeName>ProfileFever.Launcher.SqlServer.Definition</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
@@ -84,9 +84,9 @@
     </View>
 
     <View>
-      <Name>ProfileFever.SqlServer.Session</Name>
+      <Name>ProfileFever.Launcher.SqlServer.Session</Name>
       <ViewSelectedBy>
-        <TypeName>ProfileFever.SqlServer.Session</TypeName>
+        <TypeName>ProfileFever.Launcher.SqlServer.Session</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
@@ -135,9 +135,9 @@
     </View>
 
     <View>
-      <Name>ProfileFever.PSRemoting.Definition</Name>
+      <Name>ProfileFever.Launcher.PSRemoting.Definition</Name>
       <ViewSelectedBy>
-        <TypeName>ProfileFever.PSRemoting.Definition</TypeName>
+        <TypeName>ProfileFever.Launcher.PSRemoting.Definition</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
@@ -179,9 +179,9 @@
     </View>
 
     <View>
-      <Name>ProfileFever.SSHRemote.Definition</Name>
+      <Name>ProfileFever.Launcher.SSHRemote.Definition</Name>
       <ViewSelectedBy>
-        <TypeName>ProfileFever.SSHRemote.Definition</TypeName>
+        <TypeName>ProfileFever.Launcher.SSHRemote.Definition</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>

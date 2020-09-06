@@ -1,13 +1,13 @@
 ﻿<#
     .SYNOPSIS
-        Get all SQL Server connections from the profile.
+        Get all SQL Server connections from the profile launcher.
 
     .DESCRIPTION
         By registering a SQL Server connection, the connection then can be used
-        with the Invoke-ProfileSqlServer (alias sql) to connect to the desired
+        with the Invoke-LauncherSqlServer (alias sql) to connect to the desired
         SQL Server.
 #>
-function Get-ProfileSqlServer
+function Get-LauncherSqlServer
 {
     [CmdletBinding()]
     param
@@ -29,12 +29,12 @@ function Get-ProfileSqlServer
         $Tag
     )
 
-    $objects = Get-ProfileObject -Type 'SqlServer' -Name $Name -Tag $Tag
+    $objects = Get-LauncherObject -Type 'SqlServer' -Name $Name -Tag $Tag
 
     foreach ($object in $objects)
     {
         [PSCustomObject] @{
-            PSTypeName    = 'ProfileFever.SqlServer.Definition'
+            PSTypeName    = 'ProfileFever.Launcher.SqlServer.Definition'
             Name          = $object.Name
             Tag           = $object.Tag
             SqlInstance   = $object.Object.SqlInstance

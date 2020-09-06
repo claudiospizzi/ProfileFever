@@ -7,7 +7,7 @@
         specified type. The JSON file is stored in the users AppData folder. The
         name must be unique, already existing objects will be overwritten.
 #>
-function Register-ProfileObject
+function Register-LauncherObject
 {
     [CmdletBinding()]
     [OutputType([System.Object[]])]

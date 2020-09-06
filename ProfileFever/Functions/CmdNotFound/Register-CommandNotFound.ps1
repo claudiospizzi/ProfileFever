@@ -13,34 +13,34 @@ function Register-CommandNotFound
         if ($Script:CommandNotFoundEnabled)
         {
             # Option 1: PS Remoting
-            $profilePSRemoting = @(Get-ProfilePSRemoting -Name $CommandName)
-            if ($profilePSRemoting.Count -eq 1)
+            $launcherPSRemoting = @(Get-LauncherPSRemoting -Name $CommandName)
+            if ($launcherPSRemoting.Count -eq 1)
             {
                 $CommandLookupEventArgs.StopSearch = $true
                 $CommandLookupEventArgs.CommandScriptBlock = {
-                    Invoke-ProfilePSRemoting -Name $CommandName
+                    Invoke-LauncherPSRemoting -Name $CommandName
                 }.GetNewClosure()
                 return
             }
 
             # Option 2: SSH Remote
-            $profileSSHRemote = @(Get-ProfileSSHRemote -Name $CommandName)
-            if ($profileSSHRemote.Count -eq 1)
+            $launcherSSHRemote = @(Get-LauncherSSHRemote -Name $CommandName)
+            if ($launcherSSHRemote.Count -eq 1)
             {
                 $CommandLookupEventArgs.StopSearch = $true
                 $CommandLookupEventArgs.CommandScriptBlock = {
-                    Invoke-ProfileSSHRemote -Name $CommandName
+                    Invoke-LauncherSSHRemote -Name $CommandName
                 }.GetNewClosure()
                 return
             }
 
             # Option 3: SQL Server
-            $profileSqlServer = @(Get-ProfileSqlServer -Name $CommandName)
-            if ($profileSqlServer.Count -eq 1)
+            $launcherSqlServer = @(Get-LauncherSqlServer -Name $CommandName)
+            if ($launcherSqlServer.Count -eq 1)
             {
                 $CommandLookupEventArgs.StopSearch = $true
                 $CommandLookupEventArgs.CommandScriptBlock = {
-                    Invoke-ProfileSqlServer-Name $CommandName
+                    Invoke-LauncherSqlServer-Name $CommandName
                 }.GetNewClosure()
                 return
             }

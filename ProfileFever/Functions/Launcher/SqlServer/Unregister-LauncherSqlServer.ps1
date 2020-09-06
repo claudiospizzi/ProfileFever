@@ -1,12 +1,12 @@
 ﻿<#
     .SYNOPSIS
-        Unregister the SQL Server connection from the profile.
+        Unregister the SQL Server connection from the profile launcher.
 
     .DESCRIPTION
         This command will remove the stored SQL Server connection from the
         SqlServer.json file stored in the users AppData folder.
 #>
-function Unregister-ProfileSqlServer
+function Unregister-LauncherSqlServer
 {
     [CmdletBinding()]
     param
@@ -19,7 +19,7 @@ function Unregister-ProfileSqlServer
 
     process
     {
-        $object = Get-ProfileObject -Type 'SqlServer' -Name $Name
+        $object = Get-LauncherObject -Type 'SqlServer' -Name $Name
 
         if ($null -ne $object)
         {
@@ -28,7 +28,7 @@ function Unregister-ProfileSqlServer
                 Get-VaultEntry -TargetName $object.Object.SqlCredential | Remove-VaultEntry -Force
             }
 
-            Unregister-ProfileObject -Type 'SqlServer' -Name $Name
+            Unregister-LauncherObject -Type 'SqlServer' -Name $Name
         }
     }
 }

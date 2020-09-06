@@ -1,12 +1,12 @@
 ﻿<#
     .SYNOPSIS
-        Unregister the PowerShell Remoting connection from the profile.
+        Unregister the PowerShell Remoting connection from the profile launcher.
 
     .DESCRIPTION
         This command will remove the stored PowerShell Remoting connection from
         the PSRemoting.json file stored in the users AppData folder.
 #>
-function Unregister-ProfilePSRemoting
+function Unregister-LauncherPSRemoting
 {
     [CmdletBinding()]
     param
@@ -19,7 +19,7 @@ function Unregister-ProfilePSRemoting
 
     process
     {
-        $object = Get-ProfileObject -Type 'PSRemoting' -Name $Name
+        $object = Get-LauncherObject -Type 'PSRemoting' -Name $Name
 
         if ($null -ne $object)
         {
@@ -28,7 +28,7 @@ function Unregister-ProfilePSRemoting
                 Get-VaultEntry -TargetName $object.Object.Credential | Remove-VaultEntry -Force
             }
 
-            Unregister-ProfileObject -Type 'PSRemoting' -Name $Name
+            Unregister-LauncherObject -Type 'PSRemoting' -Name $Name
         }
     }
 }
