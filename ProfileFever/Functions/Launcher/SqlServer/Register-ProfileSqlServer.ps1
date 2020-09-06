@@ -54,7 +54,7 @@ function Register-ProfileSqlServer
 
         'ExisitngCredential'
         {
-            $sqlCredentialTargetName = $Script:LauncherCredentialFormat -f 'SqlServer', $CredentialNameSuffix
+            $sqlCredentialTargetName = $Script:LauncherCredentialFormat -f 'SqlServer', $SqlCredentialNameSuffix
             Use-VaultCredential -TargetName $sqlCredentialTargetName | Out-Null
         }
 
