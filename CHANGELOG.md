@@ -28,6 +28,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Fixed: Don't show the full prompt if the user enters Shift+Enter
 * Fixed: Import the posh-git module in the global scope
 
+## Unreleased
+
+* Changed: Set launcher function names
+
 ## 3.2.0 - 2019-08-29
 
 * Changed: Remove dependencies to Pansis module
