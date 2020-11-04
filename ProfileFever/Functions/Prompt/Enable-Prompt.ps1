@@ -64,8 +64,17 @@ function Enable-Prompt
             $config = $Global:ProfileFeverPromptConfig
 
             # Get location and replace the user home directory
-            $location = $ExecutionContext.SessionState.Path.CurrentLocation.Path
-            $location = $location.Replace($Home, "~")
+            $locationPath = $ExecutionContext.SessionState.Path.CurrentLocation.Path
+            $locationPath = $locationPath.Replace($Home, '~')
+            $locationParts = @($locationPath -split '\\|/')
+            if ($locationParts.Count -gt 4)
+            {
+                $location = '{1}{0}...{0}{2}{0}{3}{0}{4}' -f ([System.IO.Path]::DirectorySeparatorChar), $locationParts[0], $locationParts[-3], $locationParts[-2], $locationParts[-1]
+            }
+            else
+            {
+                $location = $locationParts -join ([System.IO.Path]::DirectorySeparatorChar)
+            }
 
 
             ## WINDOW TITLE

@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+
+* Fixed: Prevent long paths in the prompt
+
 ## 3.4.0 - 2020-08-23
 
 * Added: Function to show the last errors with more details (Show-Error)
