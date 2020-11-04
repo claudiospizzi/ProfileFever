@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+* Changed: Set launcher function names
 * Fixed: Prevent long paths in the prompt
 
 ## 3.4.0 - 2020-08-23
@@ -31,10 +32,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 * Fixed: Don't show the full prompt if the user enters Shift+Enter
 * Fixed: Import the posh-git module in the global scope
-
-## Unreleased
-
-* Changed: Set launcher function names
 
 ## 3.2.0 - 2019-08-29
 
