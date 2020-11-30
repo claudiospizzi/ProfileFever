@@ -210,6 +210,11 @@ function Start-Profile
         }
     }
 
+    if ($config.ReadLinePredictionSource)
+    {
+        Set-PSReadLineOption -PredictionSource 'History'
+    }
+
 
     ##
     ## STRICT MODE

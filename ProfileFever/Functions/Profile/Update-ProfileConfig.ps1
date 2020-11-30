@@ -86,6 +86,10 @@ function Update-ProfileConfig
     {
         $config | Add-Member -MemberType 'NoteProperty' -Name 'ReadLinePesterTest' -Value $true
     }
+    if ($null -eq $config.ReadLinePredictionSource)
+    {
+        $config | Add-Member -MemberType 'NoteProperty' -Name 'ReadLinePredictionSource' -Value $true
+    }
     if ($null -eq $config.StrictMode)
     {
         $config | Add-Member -MemberType 'NoteProperty' -Name 'StrictMode' -Value $false
