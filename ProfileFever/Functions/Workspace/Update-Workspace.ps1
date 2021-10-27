@@ -5,16 +5,16 @@
 
     .DESCRIPTION
         By default the path $HOME\Workspace is used to prepare the project list
-        for the vscode-open-project extension. All *.code-workspace files in the
-        root of the path are used for grouped Visual Studio Code workspaces.
+        for the vscode-open-project extension. All .code-workspace files in the
+        root of the path or in the .vscode subfolder are used for grouped
+        Visual Studio Code workspaces.
 
-    .PARAMETER Path
-        Path to the workspace. $HOME\Workspace is used by default.
-
-    .PARAMETER ProjectListPath
-        Path to the JSON config file of the vscode-open-project extension.
+    .EXAMPLE
+        PS C:\> Update-Workspace
+        Update the workspace using the default paths.
 
     .LINK
+        https://github.com/claudiospizzi/ProfileFever
         https://marketplace.visualstudio.com/items?itemName=svetlozarangelov.vscode-open-project
 #>
 function Update-Workspace
@@ -22,25 +22,24 @@ function Update-Workspace
     [CmdletBinding(SupportsShouldProcess = $true)]
     param
     (
+        # Path to the workspace. $HOME\Workspace is used by default.
         [Parameter(Mandatory = $false)]
         [ValidateScript({Test-Path -Path $_})]
         [System.String[]]
         $Path = "$HOME\Workspace",
 
+        # Path to the JSON config file of the vscode-open-project extension.
         [Parameter(Mandatory = $false)]
         [System.String]
         $ProjectListPath = "$Env:AppData\Code\User\projectlist.json"
     )
 
-    begin
+    try
     {
         $projectList = @{
             projects = [Ordered] @{}
         }
-    }
 
-    process
-    {
         foreach ($currentPath in $Path)
         {
             foreach ($workspace in (Get-ChildItem -Path "$currentPath\.vscode" -Filter '*.code-workspace' -File))
@@ -58,13 +57,14 @@ function Update-Workspace
                 }
             }
         }
-    }
 
-    end
-    {
         if ($PSCmdlet.ShouldProcess($ProjectListPath, 'Update Project List'))
         {
             $projectList | ConvertTo-Json | Set-Content -Path $ProjectListPath
         }
+    }
+    catch
+    {
+        $PSCmdlet.ThrowTerminatingError($_)
     }
 }

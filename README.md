@@ -4,126 +4,85 @@
 
 # ProfileFever PowerShell Module
 
-PowerShell module with functions to configure a PowerShell console.
+PowerShell module with functions to extend the PowerShell console.
 
 ## Introduction
 
 The module is primary aligned to be used by myself - but feel free to use it. It
-supports the new Windows Terminal.
+supports the new Windows Terminal. Most of the prompt features are removed with
+version 4.0.0 as I've switched to a [Oh My Posh](https://ohmyposh.dev/) prompt
+with a class profile file.
 
 ## Features
 
-### Profile
+### Launcher
 
-* **Start-Profile**  
-  Initialize the PowerShell console profile.
+* **Register-Launcher**  
+  Register the command not found action callback for the launcher.
 
-* **Install-Profile**  
-  Install all dependencies for the profile.
+* **Invoke-LauncherPSRemoting**  
+  Connect to a remote system by using a registered PowerShell Remoting
+  connection.
 
-* **Update-ProfileConfig**  
-  Create and update the profile configuration.
+* **Invoke-LauncherSqlServer**  
+  Connect to a SQL Server by using a registered connection.
 
-* **Get-ProfileHeadline**  
-  Return the headline with information about the local system and current user.
+* **Invoke-LauncherSSHRemote**  
+  Connect to a remote system by using a registered SSH remote connection.
 
-### Prompt
+* **Get-LauncherPSRemoting**  
+  Get all PowerShell Remoting connections from the profile launcher.
 
-* **Enable-Prompt**  
-  Enable the custom prompt by replacing the default prompt.
+* **Register-LauncherPSRemoting**  
+  Register the PowerShell Remoting connection in the profile.
 
-* **Enable-PromptAlias**  
-  Enable the prompt alias recommendation output after each command.
+* **Unregister-LauncherPSRemoting**  
+  Unregister the PowerShell Remoting connection from the profile launcher.
 
-* **Enable-PromptGit**  
-  Enable the git repository status in the prompt.
+* **Get-LauncherSqlServer**  
+  Get all SQL Server connections from the profile launcher.
 
-* **Enable-PromptTimeSpan**  
-  Enable the prompt timestamp output.
+* **Register-LauncherSqlServer**  
+  Register the SQL Server connection in the profile.
 
-* **Disable-Prompt**  
-  Disable the custom prompt and restore the default prompt.
+* **Unregister-LauncherSqlServer**  
+  Unregister the SQL Server connection from the profile launcher.
 
-* **Disable-PromptAlias**  
-  Disable the prompt alias recommendation output after each command.
+* **Get-LauncherSSHRemote**  
+  Get all SSH remote connections from the profile launcher.
 
-* **Disable-PromptGit**  
-  Disable the git repository status in the prompt.
+* **Register-LauncherSSHRemote**  
+  Register the SSH remote connection in the profile.
 
-* **Disable-PromptTimeSpan**  
-  Disable the prompt timestamp output.
-
-* **Set-PromptTitle**  
-  Set a static prompt title.
-
-* **Clear-PromptTitle**  
-  Clear the static prompt title.
-
-* **Show-PromptAliasSuggestion**  
-  Show the alias suggestion for the latest command.
-
-* **Show-PromptLastCommandDuration**  
-  Show the during of the last executed command.
-
-### ReadLine
-
-* **Enable-PSReadLineCommandHelp**  
-  Enable command help.
-
-* **Enable-PSReadLineHistoryHelper**  
-  Enable the history browser, basic history search and history save.
-
-* **Enable-PSReadLineLocationMark**  
-  Use this helper function to easy jump around in the shell.
-
-* **Enable-PSReadLineSmartInsertDelete**  
-  Enable the smart insert/delete.
-
-### Stream
-
-* **Enable-Verbose**  
-  Enable the verbose output stream for the global shell.
-
-* **Disable-Verbose**  
-  Disable the verbose output stream for the global shell.
-
-* **Enable-Information**  
-  Enable the information output stream for the global shell.
-
-* **Disable-Information**  
-  Disable the information output stream for the global shell.
+* **Unregister-LauncherSSHRemote**  
+  Unregister the SSH remote connection from the profile launcher.
 
 ### Format
 
 * **Format-HostText**  
   Format the text with RGB colors and weight.
 
-### Git
+### Performance
 
-* **Test-GitRepository**  
-  Test if the current directory is a git repository.
+* **Measure-System**  
+  Get the current local system info.
 
-### Command Not Found Action
+* **Measure-Processor**  
+  Get the current processor usage on the local system.
 
-* **Register-CommandNotFound**  
-  Register the command not found action callback.
+* **Measure-Memory**  
+  Get the current memory usage on the local system.
 
-* **Unregister-CommandNotFound**  
-  Unregister the command not found action callback.
+* **Measure-Storage**  
+  Get the current storage usage on the local system.
 
-* **Enable-CommandNotFound**  
-  Enable the command not found actions.
-
-* **Disable-CommandNotFound**  
-  Disable the command not found actions.
-
-* **Get-CommandNotFoundAction**  
-  Get the registered command not found actions.
-
-* **Add-CommandNotFoundAction**  
-   Add a command not found action to the list of actions.
+* **Measure-Session**  
+  Get all sessions on the local system.
 
 ### Workspace
+
+* **Get-Workspace**  
+  Get the workspace configuration of Visual Studio Code.
 
 * **Update-Workspace**  
   Update the workspace configuration for Visual Studio Code which is used by the
@@ -152,29 +111,26 @@ manually on your local system:
 
 ## Requirements
 
-The following minimum requirements are necessary to use this module, or in other
-words are used to test this module:
+The following minimum requirements are necessary to use this module:
 
-* Windows 10
 * Windows PowerShell 5.1
+* Windows 10
 
 ## Contribute
 
-Please feel free to contribute by opening new issues or providing pull requests.
-For the best development experience, open this project as a folder in Visual
-Studio Code and ensure that the PowerShell extension is installed.
+Please feel free to contribute to this project. For the best development
+experience, please us the following tools:
 
 * [Visual Studio Code] with the [PowerShell Extension]
-* [Pester], [PSScriptAnalyzer] and [psake] PowerShell Modules
+* [Pester], [PSScriptAnalyzer], [InvokeBuild], [InvokeBuildHelper] modules
 
-[PowerShell Gallery]: https://www.powershellgallery.com/packages/ProfileFever
-[GitHub Releases]: https://github.com/claudiospizzi/ProfileFever/releases
-[Installing a PowerShell Module]: https://msdn.microsoft.com/en-us/library/dd878350
-
+[PowerShell Gallery]: https://powershellgallery.com/
 [CHANGELOG.md]: CHANGELOG.md
 
 [Visual Studio Code]: https://code.visualstudio.com/
 [PowerShell Extension]: https://marketplace.visualstudio.com/items?itemName=ms-vscode.PowerShell
+
 [Pester]: https://www.powershellgallery.com/packages/Pester
 [PSScriptAnalyzer]: https://www.powershellgallery.com/packages/PSScriptAnalyzer
-[psake]: https://www.powershellgallery.com/packages/psake
+[InvokeBuild]: https://www.powershellgallery.com/packages/InvokeBuild
+[InvokeBuildHelper]: https://www.powershellgallery.com/packages/InvokeBuildHelper

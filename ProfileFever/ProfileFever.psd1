@@ -21,7 +21,7 @@
     Copyright = 'Copyright (c) 2019 by Claudio Spizzi. Licensed under MIT license.'
 
     # Description of the functionality provided by this module
-    Description = 'PowerShell Module with functions to configure a system and the PowerShell profile.'
+    Description = 'PowerShell module with functions to extend the PowerShell console.'
 
     # Minimum version of the Windows PowerShell engine required by this module
     PowerShellVersion = '5.1'
@@ -65,52 +65,16 @@
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
     FunctionsToExport = @(
-        # CmdNotFound
-        'Register-CommandNotFound'
-        'Unregister-CommandNotFound'
-        'Enable-CommandNotFound'
-        'Disable-CommandNotFound'
         # Format
         'Format-HostText'
-        # Git
-        'Test-GitRepository'
-        # Profile
-        'Start-Profile'
-        'Install-Profile'
-        'Update-ProfileConfig'
-        'Get-ProfileHeadline'
-        # Prompt
-        'Enable-Prompt'
-        'Disable-Prompt'
-        'Enable-PromptAlias'
-        'Disable-PromptAlias'
-        'Enable-PromptGit'
-        'Disable-PromptGit'
-        'Enable-PromptTimeSpan'
-        'Disable-PromptTimeSpan'
-        'Set-PromptTitle'
-        'Clear-PromptTitle'
-        'Show-PromptAliasSuggestion'
-        'Show-PromptLastCommandDuration'
-        # ReadLine
-        'Enable-PSReadLineCommandHelp'
-        'Enable-PSReadLineHistoryHelper'
-        'Enable-PSReadLineLocationMark'
-        'Enable-PSReadLineSmartInsertDelete'
-        # Stream
-        'Enable-Verbose'
-        'Disable-Verbose'
-        'Enable-Information'
-        'Disable-Information'
-        'Show-Error'
-        # Workspace
-        'Update-Workspace'
         # Performance
         'Measure-System'
         'Measure-Processor'
         'Measure-Memory'
         'Measure-Storage'
         'Measure-Session'
+        # Launcher
+        'Register-Launcher'
         # PowerShell Remoting Launcher
         'Get-LauncherPSRemoting'
         'Invoke-LauncherPSRemoting'
@@ -126,6 +90,9 @@
         'Invoke-LauncherSqlServer'
         'Register-LauncherSqlServer'
         'Unregister-LauncherSqlServer'
+        # Workspace
+        'Get-Workspace'
+        'Update-Workspace'
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
@@ -136,20 +103,6 @@
 
     # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
     AliasesToExport = @(
-        # Prompt
-        'ealias'
-        'dalias'
-        'egit'
-        'dgit'
-        'etimestamp'
-        'dtimestamp'
-        'title'
-        'ctitle'
-        # Stream
-        'ev'
-        'dv'
-        'ei'
-        'di'
         # PowerShell Remoting
         'winrm'
         'win'

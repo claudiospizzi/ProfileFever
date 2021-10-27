@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+
+* Changed: BREAKING CHANGE: Remove the major prompt features as they are
+  duplicated to the [Oh My Posh](https://ohmyposh.dev/) module/tool.
+
 ## 3.6.0 - 2020-11-30
 
 * Added: Predict source for PSReadLine

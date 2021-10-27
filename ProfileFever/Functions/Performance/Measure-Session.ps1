@@ -4,7 +4,6 @@
 
     .DESCRIPTION
         Use the qwinsta.exe command to retrieve all local sessions.
-        ...
 
     .EXAMPLE
         PS C:\> session

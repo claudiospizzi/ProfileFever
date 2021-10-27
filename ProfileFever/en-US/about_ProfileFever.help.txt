@@ -3,8 +3,7 @@ TOPIC
     about_ProfileFever
 
 SHORT DESCRIPTION
-    PowerShell Module with functions to configure a system and the PowerShell
-    profile.
+    PowerShell module with functions to extend the PowerShell console.
 
 LONG DESCRIPTION
     To get more information about this module, check the open source GitHub

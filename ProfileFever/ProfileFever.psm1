@@ -11,6 +11,69 @@
 using namespace System.Management.Automation
 using namespace System.Management.Automation.Language
 
+# Meta: Module metadata.
+$Script:PSModulePath    = [System.IO.Path]::GetDirectoryName($PSCommandPath)
+$Script:PSModuleName    = [System.IO.Path]::GetFileName($PSCommandPath).Split('.')[0]
+$Script:PSModuleVersion = (Import-PowerShellDataFile -Path "$Script:PSModulePath\$Script:PSModuleName.psd1")['ModuleVersion']
+
+
+
+
+
+<#
+    .SYNOPSIS
+        Root module file to bootstrap the module features.
+
+    .DESCRIPTION
+        The root module file loads all classes, helpers and functions into the
+        module context. It will enable best practices
+#>
+
+
+
+
+# # Behaviour: Best practices with strict mode.
+# $ErrorActionPreference = 'Stop'
+# $ProgressPreference = 'SilentlyContinue'
+# Set-StrictMode -Version 'latest'
+
+# # Classes: Get and dot source all internal model classes.
+# Split-Path -Path $PSCommandPath |
+#     Get-ChildItem -Filter 'Classes' -Directory |
+#         Get-ChildItem -Include '*.ps1' -File -Recurse |
+#             ForEach-Object { . $_.FullName }
+
+# # Helpers: Get and dot source all internal helper functions.
+# Split-Path -Path $PSCommandPath |
+#     Get-ChildItem -Filter 'Helpers' -Directory |
+#         Get-ChildItem -Include '*.ps1' -File -Recurse |
+#             ForEach-Object { . $_.FullName }
+
+# # Functions: Get and dot source all public functions.
+# Split-Path -Path $PSCommandPath |
+#     Get-ChildItem -Filter 'Functions' -Directory |
+#         Get-ChildItem -Include '*.ps1' -File -Recurse |
+#             ForEach-Object { . $_.FullName }
+
+# # Meta: Module metadata.
+# $Script:PSModulePath    = [System.IO.Path]::GetDirectoryName($PSCommandPath)
+# $Script:PSModuleName    = [System.IO.Path]::GetFileName($PSCommandPath).Split('.')[0]
+# $Script:PSModuleVersion = (Import-PowerShellDataFile -Path "$Script:PSModulePath\$Script:PSModuleName.psd1")['ModuleVersion']
+
+# # Jira Insight session.
+# $Script:Session = $null
+
+
+
+
+
+
+
+
+
+
+
+
 # Get and dot source all classes (internal)
 Split-Path -Path $PSCommandPath |
     Get-ChildItem -Filter 'Classes' -Directory |
