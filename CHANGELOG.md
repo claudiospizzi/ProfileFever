@@ -1,11 +1,11 @@
-﻿# Changelog
+# Changelog
 
 All notable changes to this project will be documented in this file.
 
 The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## Unreleased
+## 4.0.0 - 2021-11-18
 
 * Changed: BREAKING CHANGE: Remove the major prompt features as they are
   duplicated to the [Oh My Posh](https://ohmyposh.dev/) module/tool.
