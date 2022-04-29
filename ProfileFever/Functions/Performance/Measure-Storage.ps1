@@ -68,6 +68,7 @@ function Measure-Storage
                 Name       = '{0} {1}' -f $partition.DiskNumber, $volume.Name
                 Size       = $volume.Capacity / 1GB
                 Free       = $volume.FreeSpace / 1GB
+                Used       = ($volume.Capacity - $volume.FreeSpace) / 1GB
                 DiskTime   = $perfCounterStorage.CounterSamples.Where({$_.Path -like "\\*\PhysicalDisk($perfCounterStorageIdentifier)\% Disk Time"}).CookedValue
                 DiskQueue  = $perfCounterStorage.CounterSamples.Where({$_.Path -like "\\*\PhysicalDisk($perfCounterStorageIdentifier)\Current Disk Queue Length"}).CookedValue
                 AvgRead    = $perfCounterStorage.CounterSamples.Where({$_.Path -like "\\*\PhysicalDisk($perfCounterStorageIdentifier)\Avg. Disk sec/Read"}).CookedValue
