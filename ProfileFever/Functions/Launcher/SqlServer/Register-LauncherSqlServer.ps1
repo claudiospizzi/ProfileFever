@@ -50,11 +50,11 @@ function Register-LauncherSqlServer
     {
         if ($PSBoundParameters.ContainsKey('SqlCredentialNameSuffix'))
         {
-            $sqlCredentialTargetName = $Script:LauncherCredentialFormat -f 'SqlServer', $SqlCredentialNameSuffix
+            $sqlCredentialTargetName = $Script:LAUNCHER_CREDENTIAL_FORMAT -f 'SqlServer', $SqlCredentialNameSuffix
         }
         else
         {
-            $sqlCredentialTargetName = $Script:LauncherCredentialFormat -f 'SqlServer', $Name
+            $sqlCredentialTargetName = $Script:LAUNCHER_CREDENTIAL_FORMAT -f 'SqlServer', $Name
         }
 
         if ($null -eq (Get-VaultEntry -TargetName $sqlCredentialTargetName))

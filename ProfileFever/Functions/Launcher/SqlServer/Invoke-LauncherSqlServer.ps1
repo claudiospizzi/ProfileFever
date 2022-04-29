@@ -40,7 +40,7 @@ function Invoke-LauncherSqlServer
 
     if ($PSCmdlet.ParameterSetName -eq 'Show')
     {
-        if ($null -eq $Script:LauncherSqlServer)
+        if ($null -eq $Script:LAUNCHER_SQL_SERVER)
         {
             # Show all registered SQL Server connections. This may help to
             # choose the correct connection.
@@ -51,7 +51,7 @@ function Invoke-LauncherSqlServer
         {
             # Get the current connection.
 
-            $Script:LauncherSqlServer
+            $Script:LAUNCHER_SQL_SERVER
         }
     }
 
@@ -89,7 +89,7 @@ function Invoke-LauncherSqlServer
                 $Global:PSDefaultParameterValues['Test-SqlConnection:SqlInstance'] = $launcherSqlServer.SqlInstance
                 $Global:PSDefaultParameterValues.Remove('Test-SqlConnection:SqlCredential')
 
-                $Script:LauncherSqlServer = [PSCustomObject] @{
+                $Script:LAUNCHER_SQL_SERVER = [PSCustomObject] @{
                     PSTypeName    = 'ProfileFever.Launcher.SqlServer.Session'
                     SqlInstance   = $launcherSqlServer.SqlInstance
                     SqlCredential = ''
@@ -98,7 +98,7 @@ function Invoke-LauncherSqlServer
                     Version       = $result.Version
                 }
 
-                return $Script:LauncherSqlServer
+                return $Script:LAUNCHER_SQL_SERVER
             }
             else
             {
@@ -117,7 +117,7 @@ function Invoke-LauncherSqlServer
                 $Global:PSDefaultParameterValues['Test-SqlConnection:SqlInstance'] = $launcherSqlServer.SqlInstance
                 $Global:PSDefaultParameterValues['Test-SqlConnection:SqlCredential'] = $sqlCredential
 
-                $Script:LauncherSqlServer = [PSCustomObject] @{
+                $Script:LAUNCHER_SQL_SERVER = [PSCustomObject] @{
                     PSTypeName    = 'ProfileFever.Launcher.SqlServer.Session'
                     SqlInstance   = $launcherSqlServer.SqlInstance
                     SqlCredential = $sqlCredential.Username
@@ -126,19 +126,19 @@ function Invoke-LauncherSqlServer
                     Version       = $result.Version
                 }
 
-                return $Script:LauncherSqlServer
+                return $Script:LAUNCHER_SQL_SERVER
             }
         }
     }
 
     if ($PSCmdlet.ParameterSetName -eq 'Disconnect')
     {
-        if ($null -ne $Script:LauncherSqlServer)
+        if ($null -ne $Script:LAUNCHER_SQL_SERVER)
         {
             # Disconnect from the SQL Server connection by cleaning the default
             # parameter values for the dbatools cmdlets.
 
-            Write-Host "[Launcher] Disconnect from the SQL Server '$($Script:LauncherSqlServer.SqlInstance)' ..." -ForegroundColor 'DarkYellow'
+            Write-Host "[Launcher] Disconnect from the SQL Server '$($Script:LAUNCHER_SQL_SERVER.SqlInstance)' ..." -ForegroundColor 'DarkYellow'
 
             $Global:PSDefaultParameterValues.Remove('*-Dba*:SqlInstance')
             $Global:PSDefaultParameterValues.Remove('*-Dba*:SqlCredential')
@@ -149,7 +149,7 @@ function Invoke-LauncherSqlServer
             $Global:PSDefaultParameterValues.Remove('Test-SqlConnection:SqlInstance')
             $Global:PSDefaultParameterValues.Remove('Test-SqlConnection:SqlCredential')
 
-            $Script:LauncherSqlServer = $null
+            $Script:LAUNCHER_SQL_SERVER = $null
         }
     }
 }

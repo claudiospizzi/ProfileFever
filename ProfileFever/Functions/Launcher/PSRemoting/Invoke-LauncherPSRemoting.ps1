@@ -60,92 +60,112 @@ function Invoke-LauncherPSRemoting
 
         if ($null -eq $launcherPSRemoting -or $launcherPSRemoting.Count -eq 0)
         {
-            Write-Error "PowerShell Remoting connection named '$Name' not found."
+            throw "PowerShell Remoting connection named '$Name' not found."
         }
-        elseif ($launcherPSRemoting.Count -gt 1)
+
+        if ($launcherPSRemoting.Count -gt 1)
         {
             $launcherPSRemoting | ForEach-Object { Write-Host "[Launcher] PS Remoting target found: $($_.Name)" -ForegroundColor 'DarkYellow' }
-            Write-Error "Multiple PowerShell Remoting connections found. Be more specific."
+            throw "Multiple PowerShell Remoting connections named '$Name' found. Be more specific."
+        }
+
+        # Define a splat to connect to the remoting system.
+        $splat = @{
+            ComputerName = $launcherPSRemoting.ComputerName
+        }
+
+        # Credentials specified by using the local Credential Vault. Query the
+        # credential by name.
+        if (-not [System.String]::IsNullOrEmpty($launcherPSRemoting.Credential))
+        {
+            $splat['Credential'] = Get-VaultCredential -TargetName $launcherPSRemoting.Credential
+
+        }
+
+        # Credentials specified by using a local callback script. Invoke the
+        # script to get the credentials.
+        if (-not [System.String]::IsNullOrEmpty($launcherPSRemoting.CredentialCallback))
+        {
+            $credentialCallback = [System.Management.Automation.ScriptBlock]::Create($launcherPSRemoting.CredentialCallback)
+            $splat['Credential'] = $credentialCallback.Invoke()
+            if ($splat['Credential'] -isnot [System.Management.Automation.PSCredential])
+            {
+                throw "The credential callback for '$Name' did not return a valid credential object."
+            }
+            $verbose += " as '$($splat['Credential'].Username)'"
+        }
+
+        $verbose = "'{0}'" -f $splat['ComputerName']
+        if ($splat.ContainsKey('Credential'))
+        {
+            $verbose += " as '{0}'" -f $splat['Credential'].Username
+        }
+
+        if ($PSBoundParameters.ContainsKey('ScriptBlock'))
+        {
+            # Option 1: Invoke Command
+            # If a script is appended to the command, execute that script on the
+            # remote system.
+
+            Write-Host "[Launcher] Invoke a remote command on $verbose ..." -ForegroundColor 'DarkYellow'
+
+            if ($ScriptBlock -isnot [System.Management.Automation.ScriptBlock])
+            {
+                $ScriptBlock = [System.Management.Automation.ScriptBlock]::Create([System.String] $ScriptBlock)
+            }
+
+            Invoke-Command @splat -ScriptBlock $ScriptBlock
         }
         else
         {
-            # Define a splat to connect to the remoting system.
-            $splat = @{
-                ComputerName = $launcherPSRemoting.ComputerName
-            }
-            $verbose = "'$($splat['ComputerName'])'"
-            if (-not [System.String]::IsNullOrEmpty($launcherPSRemoting.Credential))
+            $commandLine = (Get-PSCallStack)[1].Position.Text.Trim()
+
+            if ($commandLine -like '$*')
             {
-                $splat['Credential'] = Get-VaultCredential -TargetName $launcherPSRemoting.Credential
-                $verbose += " as '$($splat['Credential'].Username)'"
-            }
+                # Option 2: Open Session
+                # If a variable is specified as output of the command, a new
+                # remoting session will be opened and returned.
 
-            if ($PSBoundParameters.ContainsKey('ScriptBlock'))
-            {
-                # Option 1: Invoke Command
-                # If a script is appended to the command, execute that script on the
-                # remote system.
+                Write-Host "[Launcher] Create a new session on $verbose ..." -ForegroundColor 'DarkYellow'
 
-                Write-Host "[Launcher] Invoke a remote command on $verbose ..." -ForegroundColor 'DarkYellow'
-
-                if ($ScriptBlock -isnot [System.Management.Automation.ScriptBlock])
-                {
-                    $ScriptBlock = [System.Management.Automation.ScriptBlock]::Create([System.String] $ScriptBlock)
-                }
-
-                Invoke-Command @splat -ScriptBlock $ScriptBlock
+                New-PSSession @splat
             }
             else
             {
-                $commandLine = (Get-PSCallStack)[1].Position.Text.Trim()
+                # Option 3: Enter Session
+                # If no parameters were specified, just enter into a remote
+                # session to the target system.
 
-                if ($commandLine -like '$*')
-                {
-                    # Option 2: Open Session
-                    # If a variable is specified as output of the command, a new
-                    # remoting session will be opened and returned.
+                Write-Host "[Launcher] Enter remote shell on $verbose ..." -ForegroundColor 'DarkYellow'
 
-                    Write-Host "[Launcher] Create a new session on $verbose ..." -ForegroundColor 'DarkYellow'
-
-                    New-PSSession @splat
+                $session = New-PSSession @splat
+                $stubModule = ''
+                $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Performance\Measure-System.ps1" -Raw
+                $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Performance\Measure-Processor.ps1" -Raw
+                $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Performance\Measure-Memory.ps1" -Raw
+                $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Performance\Measure-Storage.ps1" -Raw
+                $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Performance\Measure-Session.ps1" -Raw
+                $stubFormat = Get-Content -Path "$PSScriptRoot\..\..\..\ProfileFever.Xml.Format.ps1xml" -Raw
+                Invoke-Command -Session $session -ScriptBlock {
+                    Set-Content -Path "$Env:Temp\ProfileFeverStub.Xml.Format.ps1xml" -Value $using:stubFormat -Force
+                    Set-Content -Path "$Env:Temp\ProfileFeverStub.psm1" -Value $using:stubModule -Force
+                    Update-FormatData -AppendPath "$Env:Temp\ProfileFeverStub.Xml.Format.ps1xml"
+                    Import-Module -Name "$Env:Temp\ProfileFeverStub.psm1"
+                    Set-Location -Path "$Env:SystemDrive\"
                 }
-                else
+                if ($Host.Name -eq 'ConsoleHost')
                 {
-                    # Option 3: Enter Session
-                    # If no parameters were specified, just enter into a remote
-                    # session to the target system.
-
-                    Write-Host "[Launcher] Enter remote shell on $verbose ..." -ForegroundColor 'DarkYellow'
-
-                    $session = New-PSSession @splat
-                    $stubModule = ''
-                    $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Performance\Measure-System.ps1" -Raw
-                    $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Performance\Measure-Processor.ps1" -Raw
-                    $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Performance\Measure-Memory.ps1" -Raw
-                    $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Performance\Measure-Storage.ps1" -Raw
-                    $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Performance\Measure-Session.ps1" -Raw
-                    $stubFormat = Get-Content -Path "$PSScriptRoot\..\..\..\ProfileFever.Xml.Format.ps1xml" -Raw
                     Invoke-Command -Session $session -ScriptBlock {
-                        Set-Content -Path "$Env:Temp\ProfileFeverStub.Xml.Format.ps1xml" -Value $using:stubFormat -Force
-                        Set-Content -Path "$Env:Temp\ProfileFeverStub.psm1" -Value $using:stubModule -Force
-                        Update-FormatData -AppendPath "$Env:Temp\ProfileFeverStub.Xml.Format.ps1xml"
-                        Import-Module -Name "$Env:Temp\ProfileFeverStub.psm1"
-                        Set-Location -Path "$Env:SystemDrive\"
-                    }
-                    if ($Host.Name -eq 'ConsoleHost')
-                    {
-                        Invoke-Command -Session $session -ScriptBlock {
-                            $PromptLabel = $Env:ComputerName.ToUpper()
-                            $PromptIndent = $using:session.ComputerName.Length + 4
-                            function Global:prompt
-                            {
-                                $Host.UI.RawUI.WindowTitle = "$Env:Username@$Env:ComputerName | $($executionContext.SessionState.Path.CurrentLocation)"
-                                Write-Host "[$PromptLabel]" -NoNewline -ForegroundColor Cyan; "$("`b `b" * $PromptIndent) $($executionContext.SessionState.Path.CurrentLocation)$('>' * ($nestedPromptLevel + 1)) "
-                            }
+                        $PromptLabel = $Env:ComputerName.ToUpper()
+                        $PromptIndent = $using:session.ComputerName.Length + 4
+                        function Global:prompt
+                        {
+                            $Host.UI.RawUI.WindowTitle = "$Env:Username@$Env:ComputerName | $($executionContext.SessionState.Path.CurrentLocation)"
+                            Write-Host "[$PromptLabel]" -NoNewline -ForegroundColor Cyan; "$("`b `b" * $PromptIndent) $($executionContext.SessionState.Path.CurrentLocation)$('>' * ($nestedPromptLevel + 1)) "
                         }
                     }
-                    Enter-PSSession -Session $session
                 }
+                Enter-PSSession -Session $session
             }
         }
     }

@@ -170,7 +170,7 @@
                 <PropertyName>ComputerName</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <ScriptBlock>if ([System.String]::IsNullOrEmpty($_.Credential)) { '(Current User)' } else { $_.Credential }</ScriptBlock>
+                <ScriptBlock>if ([System.String]::IsNullOrEmpty($_.Credential)) { if ([System.String]::IsNullOrEmpty($_.CredentialCallback)) { '(Current User)' } else { '(Callback Script)' } } else { $_.Credential }</ScriptBlock>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>
@@ -305,7 +305,7 @@
                 <PropertyName>Name</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <ScriptBlock>if($_.HyperV -eq 'n/a') { $_.HyperV } else { '{0:0.0}' -f $_.HyperV }</ScriptBlock>
+                <ScriptBlock>if($_.HyperV -eq -1) { 'n/a' } else { '{0:0.0}' -f $_.HyperV }</ScriptBlock>
               </TableColumnItem>
               <TableColumnItem>
                 <ScriptBlock>'{0:0.0}' -f $_.Usage</ScriptBlock>
@@ -536,6 +536,327 @@
               </TableColumnItem>
               <TableColumnItem>
                 <ScriptBlock>'{0:0}' -f ($_.Memory / 1MB)</ScriptBlock>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+
+    <View>
+      <Name>ProfileFever.Analyzer.Domain.Generic</Name>
+      <ViewSelectedBy>
+        <TypeName>ProfileFever.Analyzer.Domain.Generic</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Width>48</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>8</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>8</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>16</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>24</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>32</Width>
+          </TableColumnHeader>
+          <TableColumnHeader/>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Name</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Type</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>TTL</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>IP4Address</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>IP6Address</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>NameHost</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>ServiceTarget</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+
+    <View>
+      <Name>ProfileFever.Analyzer.Domain.StartOfAuthority</Name>
+      <ViewSelectedBy>
+        <TypeName>ProfileFever.Analyzer.Domain.StartOfAuthority</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Width>48</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>8</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>8</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>14</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>14</Width>
+          </TableColumnHeader>
+          <TableColumnHeader />
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Name</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Type</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>TTL</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>SerialNumber</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>DefaultTTL</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Administrator</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+
+    <View>
+      <Name>ProfileFever.Analyzer.Domain.NameServer</Name>
+      <ViewSelectedBy>
+        <TypeName>ProfileFever.Analyzer.Domain.NameServer</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Width>48</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>8</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>8</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>16</Width>
+          </TableColumnHeader>
+          <TableColumnHeader />
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Name</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Type</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>TTL</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>IP4Address</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>IP6Address</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+
+    <View>
+      <Name>ProfileFever.Analyzer.Domain.DnsSecurityExtension</Name>
+      <ViewSelectedBy>
+        <TypeName>ProfileFever.Analyzer.Domain.DnsSecurityExtension</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Width>48</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>8</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>8</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>12</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>12</Width>
+          </TableColumnHeader>
+          <TableColumnHeader/>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Name</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Type</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>TTL</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Protocol</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Algorithm</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Key</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+
+    <View>
+      <Name>ProfileFever.Analyzer.Domain.MailExchanger</Name>
+      <ViewSelectedBy>
+        <TypeName>ProfileFever.Analyzer.Domain.MailExchanger</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Width>48</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>8</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>8</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>12</Width>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Name</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Type</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>TTL</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Preference</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+
+    <View>
+      <Name>ProfileFever.Analyzer.Domain.SenderPolicyFramework</Name>
+      <ViewSelectedBy>
+        <TypeName>ProfileFever.Analyzer.Domain.SenderPolicyFramework</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Width>48</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>8</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>8</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>12</Width>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Name</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Type</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>TTL</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>ValueType</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+
+    <View>
+      <Name>ProfileFever.Analyzer.Domain.XX</Name>
+      <ViewSelectedBy>
+        <TypeName>ProfileFever.Analyzer.Domain.XX</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Width>48</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>8</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>8</Width>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Name</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Type</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>TTL</PropertyName>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>

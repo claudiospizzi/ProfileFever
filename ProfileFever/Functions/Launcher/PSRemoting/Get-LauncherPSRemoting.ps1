@@ -34,11 +34,12 @@ function Get-LauncherPSRemoting
     foreach ($object in $objects)
     {
         [PSCustomObject] @{
-            PSTypeName   = 'ProfileFever.Launcher.PSRemoting.Definition'
-            Name         = $object.Name
-            Tag          = $object.Tag
-            ComputerName = $object.Object.ComputerName
-            Credential   = $object.Object.Credential
+            PSTypeName         = 'ProfileFever.Launcher.PSRemoting.Definition'
+            Name               = $object.Name
+            Tag                = $object.Tag
+            ComputerName       = $object.Object.ComputerName
+            Credential         = $object.Object.Credential
+            CredentialCallback = $object.Object.ScriptBlock
         }
     }
 }

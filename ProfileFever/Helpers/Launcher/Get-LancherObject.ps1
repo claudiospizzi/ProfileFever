@@ -34,7 +34,7 @@ function Get-LauncherObject
         $Tag
     )
 
-    $file = "$Script:LauncherPath\$Type.json"
+    $file = "$Script:LAUNCHER_PATH\$Type.json"
 
     if (Test-Path -Path $file)
     {

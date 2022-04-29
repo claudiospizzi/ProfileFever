@@ -63,11 +63,11 @@ function Register-LauncherSSHRemote
     {
         if ($PSBoundParameters.ContainsKey('CredentialNameSuffix'))
         {
-            $credentialTargetName = $Script:LauncherCredentialFormat -f 'SSHRemote', $CredentialNameSuffix
+            $credentialTargetName = $Script:LAUNCHER_CREDENTIAL_FORMAT -f 'SSHRemote', $CredentialNameSuffix
         }
         else
         {
-            $credentialTargetName = $Script:LauncherCredentialFormat -f 'SSHRemote', $Name
+            $credentialTargetName = $Script:LAUNCHER_CREDENTIAL_FORMAT -f 'SSHRemote', $Name
         }
 
         if ($null -eq (Get-VaultEntry -TargetName $credentialTargetName))

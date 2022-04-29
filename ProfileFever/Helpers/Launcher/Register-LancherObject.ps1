@@ -35,7 +35,7 @@ function Register-LauncherObject
         $Object
     )
 
-    $file = "$Script:LauncherPath\$Type.json"
+    $file = "$Script:LAUNCHER_PATH\$Type.json"
 
     if (Test-Path -Path $file)
     {
@@ -45,7 +45,7 @@ function Register-LauncherObject
     else
     {
         # Ensure the parent path exists, important for the export at the end.
-        New-Item -Path $Script:LauncherPath -ItemType 'Directory' -ErrorAction 'SilentlyContinue' | Out-Null
+        New-Item -Path $Script:LAUNCHER_PATH -ItemType 'Directory' -ErrorAction 'SilentlyContinue' | Out-Null
 
         [System.Object[]] $objects
     }

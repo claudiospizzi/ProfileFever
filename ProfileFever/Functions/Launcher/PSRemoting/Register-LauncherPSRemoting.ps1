@@ -42,7 +42,13 @@ function Register-LauncherPSRemoting
         # username and password.
         [Parameter(Mandatory = $false, ParameterSetName = 'SpecificCredential')]
         [System.String]
-        $CredentialNameSuffix
+        $CredentialNameSuffix,
+
+        # Provide a script block to get the remoting credentials on demand, e.g.
+        # by using a central password management tool.
+        [Parameter(Mandatory = $true, ParameterSetName = 'CredentialCallback')]
+        [System.Management.Automation.ScriptBlock]
+        $CredentialCallbackScript
     )
 
     $credentialTargetName = $null
@@ -51,11 +57,11 @@ function Register-LauncherPSRemoting
     {
         if ($PSBoundParameters.ContainsKey('CredentialNameSuffix'))
         {
-            $credentialTargetName = $Script:LauncherCredentialFormat -f 'PSRemoting', $CredentialNameSuffix
+            $credentialTargetName = $Script:LAUNCHER_CREDENTIAL_FORMAT -f 'PSRemoting', $CredentialNameSuffix
         }
         else
         {
-            $credentialTargetName = $Script:LauncherCredentialFormat -f 'PSRemoting', $Name
+            $credentialTargetName = $Script:LAUNCHER_CREDENTIAL_FORMAT -f 'PSRemoting', $Name
         }
 
         if ($null -eq (Get-VaultEntry -TargetName $credentialTargetName))
@@ -68,9 +74,17 @@ function Register-LauncherPSRemoting
         }
     }
 
+    $credentialScript = $null
+
+    if ($PSCmdlet.ParameterSetName -eq 'CredentialCallback')
+    {
+        $credentialScript = $CredentialCallbackScript.ToString()
+    }
+
     $object = [PSCustomObject] @{
-        ComputerName = $ComputerName
-        Credential   = $credentialTargetName
+        ComputerName       = $ComputerName
+        Credential         = $credentialTargetName
+        CredentialCallback = $credentialScript
     }
 
     Register-LauncherObject -Type 'PSRemoting' -Name $Name -Tag $Tag -Object $object
