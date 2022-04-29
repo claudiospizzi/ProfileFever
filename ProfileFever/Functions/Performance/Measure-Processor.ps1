@@ -65,7 +65,7 @@ function Measure-Processor
             PSTypeName = 'ProfileFever.Performance.Processor'
             Timestamp  = Get-Date
             Name       = '{0:0}x{1:0} Processors' -f $cimProcessorInfo.Count, ($cimProcessorInfo.Sum / $cimProcessorInfo.Count)
-            HyperV     = $(if ($vmmSvcActive) { [System.Math]::Round($perfCounterProcessor.CounterSamples.Where({$_.Path -like '\\*\Hyper-V Hypervisor Logical Processor(_Total)\% Total Run Time'}).CookedValue, 1) } else { 'n/a' })
+            HyperV     = $(if ($vmmSvcActive) { [System.Math]::Round($perfCounterProcessor.CounterSamples.Where({$_.Path -like '\\*\Hyper-V Hypervisor Logical Processor(_Total)\% Total Run Time'}).CookedValue, 1) } else { -1 })
             Usage      = $perfCounterProcessor.CounterSamples.Where({$_.Path -like '\\*\Processor Information(_Total)\% Processor Time'}).CookedValue
             Queue      = $perfCounterProcessor.CounterSamples.Where({$_.Path -like '\\*\System\Processor Queue Length'}).CookedValue
             Clock      = ($cimProcessorClock | Measure-Object -Average 'CurrentClockSpeed').Average
