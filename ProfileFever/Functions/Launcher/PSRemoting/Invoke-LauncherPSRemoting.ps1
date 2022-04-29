@@ -70,7 +70,7 @@ function Invoke-LauncherPSRemoting
         }
 
         # Define a splat to connect to the remoting system.
-        $splat = @{
+        $connectionSplat = @{
             ComputerName = $launcherPSRemoting.ComputerName
         }
 
@@ -78,7 +78,7 @@ function Invoke-LauncherPSRemoting
         # credential by name.
         if (-not [System.String]::IsNullOrEmpty($launcherPSRemoting.Credential))
         {
-            $splat['Credential'] = Get-VaultCredential -TargetName $launcherPSRemoting.Credential
+            $connectionSplat['Credential'] = Get-VaultCredential -TargetName $launcherPSRemoting.Credential
 
         }
 
@@ -87,18 +87,18 @@ function Invoke-LauncherPSRemoting
         if (-not [System.String]::IsNullOrEmpty($launcherPSRemoting.CredentialCallback))
         {
             $credentialCallback = [System.Management.Automation.ScriptBlock]::Create($launcherPSRemoting.CredentialCallback)
-            $splat['Credential'] = $credentialCallback.Invoke()
-            if ($splat['Credential'] -isnot [System.Management.Automation.PSCredential])
+            $connectionSplat['Credential'] = $credentialCallback.Invoke()
+            if ($connectionSplat['Credential'] -isnot [System.Management.Automation.PSCredential])
             {
                 throw "The credential callback for '$Name' did not return a valid credential object."
             }
-            $verbose += " as '$($splat['Credential'].Username)'"
+            $verbose += " as '$($connectionSplat['Credential'].Username)'"
         }
 
-        $verbose = "'{0}'" -f $splat['ComputerName']
-        if ($splat.ContainsKey('Credential'))
+        $verbose = "'{0}'" -f $connectionSplat['ComputerName']
+        if ($connectionSplat.ContainsKey('Credential'))
         {
-            $verbose += " as '{0}'" -f $splat['Credential'].Username
+            $verbose += " as '{0}'" -f $connectionSplat['Credential'].Username
         }
 
         if ($PSBoundParameters.ContainsKey('ScriptBlock'))
@@ -114,7 +114,7 @@ function Invoke-LauncherPSRemoting
                 $ScriptBlock = [System.Management.Automation.ScriptBlock]::Create([System.String] $ScriptBlock)
             }
 
-            Invoke-Command @splat -ScriptBlock $ScriptBlock
+            Invoke-Command @connectionSplat -ScriptBlock $ScriptBlock
         }
         else
         {
@@ -128,7 +128,7 @@ function Invoke-LauncherPSRemoting
 
                 Write-Host "[Launcher] Create a new session on $verbose ..." -ForegroundColor 'DarkYellow'
 
-                New-PSSession @splat
+                New-PSSession @connectionSplat
             }
             else
             {
@@ -138,7 +138,7 @@ function Invoke-LauncherPSRemoting
 
                 Write-Host "[Launcher] Enter remote shell on $verbose ..." -ForegroundColor 'DarkYellow'
 
-                $session = New-PSSession @splat
+                $session = New-PSSession @connectionSplat
                 $stubModule = ''
                 $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Performance\Measure-System.ps1" -Raw
                 $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Performance\Measure-Processor.ps1" -Raw
