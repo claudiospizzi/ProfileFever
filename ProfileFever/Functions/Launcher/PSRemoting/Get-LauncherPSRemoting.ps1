@@ -39,7 +39,7 @@ function Get-LauncherPSRemoting
             Tag                = $object.Tag
             ComputerName       = $object.Object.ComputerName
             Credential         = $object.Object.Credential
-            CredentialCallback = $object.Object.ScriptBlock
+            CredentialCallback = $object.Object.CredentialCallback
         }
     }
 }

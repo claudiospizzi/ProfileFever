@@ -65,7 +65,7 @@ function Invoke-LauncherPSRemoting
 
         if ($launcherPSRemoting.Count -gt 1)
         {
-            $launcherPSRemoting | ForEach-Object { Write-Host "[Launcher] PS Remoting target found: $($_.Name)" -ForegroundColor 'DarkYellow' }
+            $launcherPSRemoting | ForEach-Object { Write-Host "[Launcher] PS Remoting target found: $($_.Name)" -ForegroundColor 'Yellow' }
             throw "Multiple PowerShell Remoting connections named '$Name' found. Be more specific."
         }
 
@@ -74,25 +74,26 @@ function Invoke-LauncherPSRemoting
             ComputerName = $launcherPSRemoting.ComputerName
         }
 
-        # Credentials specified by using the local Credential Vault. Query the
-        # credential by name.
+        # Credentials specified by using the local Credential Vault. Get the
+        # credential by name out of the vault.
         if (-not [System.String]::IsNullOrEmpty($launcherPSRemoting.Credential))
         {
             $connectionSplat['Credential'] = Get-VaultCredential -TargetName $launcherPSRemoting.Credential
-
         }
 
         # Credentials specified by using a local callback script. Invoke the
-        # script to get the credentials.
+        # script to get the credentials. Check a credential object is returned.
         if (-not [System.String]::IsNullOrEmpty($launcherPSRemoting.CredentialCallback))
         {
+            Write-Host "[Launcher] Invoke a credential callback: { $($launcherPSRemoting.CredentialCallback) } ..." -ForegroundColor 'Yellow'
+
             $credentialCallback = [System.Management.Automation.ScriptBlock]::Create($launcherPSRemoting.CredentialCallback)
-            $connectionSplat['Credential'] = $credentialCallback.Invoke()
+            $connectionSplat['Credential'] = $credentialCallback.Invoke() | Select-Object -First 1
+
             if ($connectionSplat['Credential'] -isnot [System.Management.Automation.PSCredential])
             {
                 throw "The credential callback for '$Name' did not return a valid credential object."
             }
-            $verbose += " as '$($connectionSplat['Credential'].Username)'"
         }
 
         $verbose = "'{0}'" -f $connectionSplat['ComputerName']
@@ -101,20 +102,36 @@ function Invoke-LauncherPSRemoting
             $verbose += " as '{0}'" -f $connectionSplat['Credential'].Username
         }
 
+        # It's time to open the remoting session. Try to open an encrypted
+        # session if possible. If not, fall back to an unencrypted session.
+        Write-Host "[Launcher] Create an encrypted session on $verbose ..." -ForegroundColor 'Yellow'
+        try
+        {
+            $sessionOption = New-PSSessionOption -SkipCACheck -SkipCNCheck -SkipRevocationCheck
+            $session = New-PSSession @connectionSplat -SessionOption $sessionOption -UseSSL
+        }
+        catch
+        {
+            Write-Host "[Launcher] Create an plain text session on $verbose ..." -ForegroundColor 'Yellow'
+            $session = New-PSSession @connectionSplat
+        }
+
         if ($PSBoundParameters.ContainsKey('ScriptBlock'))
         {
             # Option 1: Invoke Command
             # If a script is appended to the command, execute that script on the
             # remote system.
 
-            Write-Host "[Launcher] Invoke a remote command on $verbose ..." -ForegroundColor 'DarkYellow'
+            Write-Host "[Launcher] Invoke a remote command on $verbose ..." -ForegroundColor 'Yellow'
 
             if ($ScriptBlock -isnot [System.Management.Automation.ScriptBlock])
             {
                 $ScriptBlock = [System.Management.Automation.ScriptBlock]::Create([System.String] $ScriptBlock)
             }
 
-            Invoke-Command @connectionSplat -ScriptBlock $ScriptBlock
+            Invoke-Command -Session $session -ScriptBlock $ScriptBlock
+
+            Remove-Session -Session $session
         }
         else
         {
@@ -126,9 +143,9 @@ function Invoke-LauncherPSRemoting
                 # If a variable is specified as output of the command, a new
                 # remoting session will be opened and returned.
 
-                Write-Host "[Launcher] Create a new session on $verbose ..." -ForegroundColor 'DarkYellow'
+                Write-Host "[Launcher] Return the new session on $verbose ..." -ForegroundColor 'Yellow'
 
-                New-PSSession @connectionSplat
+                Write-Output $session
             }
             else
             {
@@ -136,23 +153,29 @@ function Invoke-LauncherPSRemoting
                 # If no parameters were specified, just enter into a remote
                 # session to the target system.
 
-                Write-Host "[Launcher] Enter remote shell on $verbose ..." -ForegroundColor 'DarkYellow'
+                Write-Host "[Launcher] Enter remote shell on $verbose  ..." -ForegroundColor 'Yellow'
 
-                $session = New-PSSession @connectionSplat
+                # Upload a stub module with helper commands to troubleshoot a
+                # Windows system.
                 $stubModule = ''
                 $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Performance\Measure-System.ps1" -Raw
                 $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Performance\Measure-Processor.ps1" -Raw
                 $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Performance\Measure-Memory.ps1" -Raw
                 $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Performance\Measure-Storage.ps1" -Raw
                 $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Performance\Measure-Session.ps1" -Raw
+                $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Format\Format-HostText.ps1" -Raw
+                $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Analyzer\Invoke-WindowsAnalyzer.ps1" -Raw
                 $stubFormat = Get-Content -Path "$PSScriptRoot\..\..\..\ProfileFever.Xml.Format.ps1xml" -Raw
                 Invoke-Command -Session $session -ScriptBlock {
-                    Set-Content -Path "$Env:Temp\ProfileFeverStub.Xml.Format.ps1xml" -Value $using:stubFormat -Force
                     Set-Content -Path "$Env:Temp\ProfileFeverStub.psm1" -Value $using:stubModule -Force
-                    Update-FormatData -AppendPath "$Env:Temp\ProfileFeverStub.Xml.Format.ps1xml"
                     Import-Module -Name "$Env:Temp\ProfileFeverStub.psm1"
+                    Set-Content -Path "$Env:Temp\ProfileFeverStub.Xml.Format.ps1xml" -Value $using:stubFormat -Force
+                    Update-FormatData -AppendPath "$Env:Temp\ProfileFeverStub.Xml.Format.ps1xml"
                     Set-Location -Path "$Env:SystemDrive\"
                 }
+
+                # Update the prompt of the remoting session to show the name of
+                # the connected server.
                 if ($Host.Name -eq 'ConsoleHost')
                 {
                     Invoke-Command -Session $session -ScriptBlock {
@@ -165,6 +188,7 @@ function Invoke-LauncherPSRemoting
                         }
                     }
                 }
+
                 Enter-PSSession -Session $session
             }
         }
