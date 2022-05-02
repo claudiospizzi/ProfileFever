@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 * Added: Update Launcher to support a credential callback script block
 * Added: Show used space in the storage measurement
+* Added: Add Windows troubleshooting command Invoke-WindowsAnalyzer
+* Added: Add DNS troubleshooting command Invoke-DnsDomainAnalyzer
 
 ## 4.0.0 - 2021-11-18
 

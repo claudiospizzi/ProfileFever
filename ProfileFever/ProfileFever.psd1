@@ -68,6 +68,7 @@
         # Format
         'Format-HostText'
         # Performance
+        'Invoke-WindowsAnalyzer'
         'Measure-System'
         'Measure-Processor'
         'Measure-Memory'
