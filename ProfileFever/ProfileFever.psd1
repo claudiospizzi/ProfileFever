@@ -68,6 +68,7 @@
         # Format
         'Format-HostText'
         # Performance
+        'Invoke-DnsDomainAnalyzer'
         'Invoke-WindowsAnalyzer'
         'Measure-System'
         'Measure-Processor'
