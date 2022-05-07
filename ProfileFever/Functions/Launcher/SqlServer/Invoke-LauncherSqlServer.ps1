@@ -128,6 +128,8 @@ function Invoke-LauncherSqlServer
 
                 return $Script:LAUNCHER_SQL_SERVER
             }
+
+            $Env:OHMYPOSH_SQLSERVERCONNECTION = $launcherSqlServer.SqlInstance
         }
     }
 
@@ -150,6 +152,8 @@ function Invoke-LauncherSqlServer
             $Global:PSDefaultParameterValues.Remove('Test-SqlConnection:SqlCredential')
 
             $Script:LAUNCHER_SQL_SERVER = $null
+
+            $Env:OHMYPOSH_SQLSERVERCONNECTION = $null
         }
     }
 }

@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+
+* Added: Integration to oh-my-posh for the SQL Server launcher
+
 ## 4.1.0 - 2022-05-02
 
 * Added: Update Launcher to support a credential callback script block
