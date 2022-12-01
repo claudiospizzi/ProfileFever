@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 
 * Added: Integration to oh-my-posh for the SQL Server launcher
+* Fixed: Verify workspace folder and project files, optimize output
 
 ## 4.1.0 - 2022-05-02
 

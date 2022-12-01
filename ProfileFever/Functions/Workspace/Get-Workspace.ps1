@@ -31,6 +31,7 @@ function Get-Workspace
 
         # Path to the JSON config file of the vscode-open-project extension.
         [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-Path -Path $_ })]
         [System.String]
         $ProjectListPath = "$Env:AppData\Code\User\projectlist.json"
     )

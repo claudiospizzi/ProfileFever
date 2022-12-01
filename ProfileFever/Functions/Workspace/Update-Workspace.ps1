@@ -42,9 +42,16 @@ function Update-Workspace
 
         foreach ($currentPath in $Path)
         {
-            foreach ($workspace in (Get-ChildItem -Path "$currentPath\.vscode" -Filter '*.code-workspace' -File))
+            if (Test-Path -Path "$currentPath\.vscode")
             {
-                $projectList.projects.Add(('Workspace {0}' -f $workspace.BaseName), $workspace.FullName)
+                foreach ($workspace in (Get-ChildItem -Path "$currentPath\.vscode" -Filter '*.code-workspace' -File))
+                {
+                    $projectList.projects.Add(('Workspace {0}' -f $workspace.BaseName), $workspace.FullName)
+                }
+            }
+            else
+            {
+                Write-Warning "The path '$currentPath\.vscode' to the workspace files was not found, skip it."
             }
 
             foreach ($group in (Get-ChildItem -Path $currentPath -Directory))
