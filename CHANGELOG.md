@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## Unreleased
+## 4.3.0 - 2022-12-22
 
 * Changed: Add more details to the system troubleshooting
 * Fixed: Fix the PowerShell remoting inject commands
