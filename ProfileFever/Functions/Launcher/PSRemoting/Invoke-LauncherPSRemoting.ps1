@@ -158,13 +158,13 @@ function Invoke-LauncherPSRemoting
                 # Upload a stub module with helper commands to troubleshoot a
                 # Windows system.
                 $stubModule = ''
-                $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Performance\Measure-System.ps1" -Raw
-                $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Performance\Measure-Processor.ps1" -Raw
-                $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Performance\Measure-Memory.ps1" -Raw
-                $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Performance\Measure-Storage.ps1" -Raw
-                $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Performance\Measure-Session.ps1" -Raw
+                $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Troubleshooting\Invoke-WindowsAnalyzer.ps1" -Raw
+                $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Troubleshooting\Measure-System.ps1" -Raw
+                $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Troubleshooting\Measure-Processor.ps1" -Raw
+                $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Troubleshooting\Measure-Memory.ps1" -Raw
+                $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Troubleshooting\Measure-Storage.ps1" -Raw
+                $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Troubleshooting\Measure-Session.ps1" -Raw
                 $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Format\Format-HostText.ps1" -Raw
-                $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Analyzer\Invoke-WindowsAnalyzer.ps1" -Raw
                 $stubFormat = Get-Content -Path "$PSScriptRoot\..\..\..\ProfileFever.Xml.Format.ps1xml" -Raw
                 Invoke-Command -Session $session -ScriptBlock {
                     Set-Content -Path "$Env:Temp\ProfileFeverStub.psm1" -Value $using:stubModule -Force
