@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+* Changed: Add more details to the system troubleshooting
 * Fixed: Fix the PowerShell remoting inject commands
 
 ## 4.2.0 - 2022-12-06

@@ -17,14 +17,22 @@ function Measure-System
     [Alias('system')]
     param ()
 
-    $cimOperatingSystem = Get-CimInstance -ClassName 'Win32_OperatingSystem' -Property 'LastBootUpTime'
-
-    $timestamp = Get-Date
+    $cimComputerSystem  = Get-CimInstance -ClassName 'Win32_ComputerSystem' -Property 'Name', 'Domain', 'TotalPhysicalMemory', 'Manufacturer', 'Model'
+    $cimOperatingSystem = Get-CimInstance -ClassName 'Win32_OperatingSystem' -Property 'Caption', 'LocalDateTime', 'LastBootUpTime'
+    $cimProcessorInfo   = Get-CimInstance -ClassName 'Win32_Processor' -Property 'Name', 'NumberOfLogicalProcessors'
+    # $cimLogicalDisks    = Get-CimInstance -ClassName 'Win32_LogicalDisk' -Property  | Where-Object { $_.DriveType -eq 3 }
 
     [PSCustomObject] @{
-        PSTypeName = 'ProfileFever.Performance.System'
-        Timestamp  = $timestamp
-        Name       = $Env:ComputerName
-        Uptime     = $timestamp - $cimOperatingSystem.LastBootUpTime
+        PSTypeName       = 'ProfileFever.Performance.System'
+        Name             = $cimComputerSystem.Name
+        Domain           = $cimComputerSystem.Domain
+        Timestamp        = $cimOperatingSystem.LocalDateTime
+        Uptime           = $cimOperatingSystem.LocalDateTime - $cimOperatingSystem.LastBootUpTime
+        OperatingSystem  = $cimOperatingSystem.Caption
+        Manufacturer     = $cimComputerSystem.Manufacturer
+        Model            = $cimComputerSystem.Model
+        ProcessorInfo    = $cimProcessorInfo.Name
+        ProcessorCores   = $cimProcessorInfo | Measure-Object -Sum 'NumberOfLogicalProcessors' | Select-Object -ExpandProperty 'Sum'
+        PhysicalMemoryMB = $cimComputerSystem.TotalPhysicalMemory / 1MB -as [int]
     }
 }

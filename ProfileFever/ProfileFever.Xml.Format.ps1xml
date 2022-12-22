@@ -227,37 +227,51 @@
       <ViewSelectedBy>
         <TypeName>ProfileFever.Performance.System</TypeName>
       </ViewSelectedBy>
-      <TableControl>
-        <TableHeaders>
-          <TableColumnHeader>
-            <Label>Time</Label>
-            <Width>10</Width>
-          </TableColumnHeader>
-          <TableColumnHeader>
-            <Width>16</Width>
-          </TableColumnHeader>
-          <TableColumnHeader>
-            <Label>Uptime</Label>
-            <Width>10</Width>
-            <Alignment>Right</Alignment>
-          </TableColumnHeader>
-        </TableHeaders>
-        <TableRowEntries>
-          <TableRowEntry>
-            <TableColumnItems>
-              <TableColumnItem>
-                <ScriptBlock>$_.Timestamp.ToString('HH:mm:ss')</ScriptBlock>
-              </TableColumnItem>
-              <TableColumnItem>
+      <ListControl>
+        <ListEntries>
+          <ListEntry>
+            <ListItems>
+              <ListItem>
                 <PropertyName>Name</PropertyName>
-              </TableColumnItem>
-              <TableColumnItem>
-                <ScriptBlock>$_.Uptime.ToString('d\d\ hh\.mm')</ScriptBlock>
-              </TableColumnItem>
-            </TableColumnItems>
-          </TableRowEntry>
-        </TableRowEntries>
-      </TableControl>
+              </ListItem>
+              <ListItem>
+                <PropertyName>Domain</PropertyName>
+              </ListItem>
+              <ListItem>
+                <PropertyName>Timestamp</PropertyName>
+                <FormatString>dd.MM.yyyy HH:mm:ss</FormatString>
+              </ListItem>
+              <ListItem>
+                <PropertyName>Uptime</PropertyName>
+                <FormatString>d\d\ hh\:m</FormatString>
+              </ListItem>
+              <ListItem>
+                <Label>Operating System</Label>
+                <PropertyName>OperatingSystem</PropertyName>
+              </ListItem>
+              <ListItem>
+                <PropertyName>Manufacturer</PropertyName>
+              </ListItem>
+              <ListItem>
+                <PropertyName>Model</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>Processor Info</Label>
+                <PropertyName>ProcessorInfo</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>Processor Cores</Label>
+                <PropertyName>ProcessorCores</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>Physical Memory</Label>
+                <PropertyName>PhysicalMemoryMB</PropertyName>
+                <FormatString>0 \M\B</FormatString>
+              </ListItem>
+            </ListItems>
+          </ListEntry>
+        </ListEntries>
+      </ListControl>
     </View>
 
     <View>
