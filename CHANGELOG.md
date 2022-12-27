@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+
+* Added: Stream function to enable and disable streams
+* Added: Function to show and analyze errors
+* Changed: Add support for Project Manager exception in the Update-Workspace command
+
 ## 4.3.0 - 2022-12-22
 
 * Changed: Add more details to the system troubleshooting

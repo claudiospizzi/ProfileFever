@@ -67,7 +67,7 @@
     FunctionsToExport = @(
         # Format
         'Format-HostText'
-        # Performance
+        # Troubleshooting
         'Invoke-DnsDomainAnalyzer'
         'Invoke-WindowsAnalyzer'
         'Measure-System'
@@ -75,6 +75,16 @@
         'Measure-Memory'
         'Measure-Storage'
         'Measure-Session'
+        # Stream
+        'Show-Error'
+        'Enable-InformationStream'
+        'Disable-InformationStream'
+        'Enable-VerboseStream'
+        'Disable-VerboseStream'
+        'Enable-DebugStream'
+        'Disable-DebugStream'
+        'Enable-ProgressStream'
+        'Disable-ProgressStream'
         # Launcher
         'Register-Launcher'
         # PowerShell Remoting Launcher
@@ -105,6 +115,22 @@
 
     # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
     AliasesToExport = @(
+        # Troubleshooting
+        'system'
+        'processor'
+        'memory'
+        'storage'
+        'session'
+        # Stream
+        'err'
+        'ei'
+        'di'
+        'ev'
+        'dv'
+        'ed'
+        'dd'
+        'ep'
+        'dp'
         # PowerShell Remoting
         'winrm'
         'win'
@@ -114,12 +140,6 @@
         'l'
         # SQL Server
         'sql'
-        # Performance
-        'system'
-        'processor'
-        'memory'
-        'storage'
-        'session'
     )
 
     # DSC resources to export from this module
