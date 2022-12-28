@@ -38,6 +38,8 @@ function Get-Workspace
 
     try
     {
+        Write-Warning "This command will only return workspace projects of the vscode-open-project extension. For the Project Manager extension, please review the VS Code extension tab."
+
         $projectList = Get-Content -Path $ProjectListPath | ConvertFrom-Json
 
         foreach ($projectDisplay in $projectList.projects.PSObject.Properties.Name)

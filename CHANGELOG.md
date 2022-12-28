@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 * Added: Stream function to enable and disable streams
 * Added: Function to show and analyze errors
+* Added: Deprecation warning for Get-Workspace command
 * Changed: Add support for Project Manager exception in the Update-Workspace command
 
 ## 4.3.0 - 2022-12-22
