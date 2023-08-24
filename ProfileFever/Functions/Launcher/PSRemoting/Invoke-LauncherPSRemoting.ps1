@@ -189,6 +189,43 @@ function Invoke-LauncherPSRemoting
                     }
                 }
 
+                # Show the system state on the remote prompt.
+                $state = Invoke-Command -Session $session -ScriptBlock {
+                    $perfCounter = Get-Counter -Counter '\Processor Information(_Total)\% Processor Time', '\Memory\Available MBytes' -SampleInterval 1 -MaxSamples 1
+                    $computerSystem = Get-CimInstance -ClassName 'Win32_ComputerSystem' -Property 'Name'
+                    $operatingSystem = Get-CimInstance -ClassName 'Win32_OperatingSystem' -Property 'Caption', 'LastBootUpTime', 'TotalVisibleMemorySize'
+                    $systemDisk = Get-CimInstance -ClassName 'Win32_Volume' -Filter "DriveLetter = 'C:'" -Property 'FreeSpace', 'Capacity'
+                    $pageFile = Get-CimInstance -ClassName 'Win32_PageFileUsage'
+                    [PSCustomObject] @{
+                        Hostname        = $computerSystem.Name
+                        OperatingSystem = $operatingSystem.Caption.Replace('Microsoft Windows', 'Windows')
+                        Timestamp       = Get-Date
+                        LastBootUp      = $operatingSystem.LastBootUpTime
+                        Uptime          = (Get-Date) - $operatingSystem.LastBootUpTime
+                        SystemLoad      = $perfCounter.CounterSamples.Where({$_.Path -like '\\*\Processor Information(_Total)\% Processor Time'}).CookedValue
+                        DiskUsage       = ($systemDisk.Capacity  - $systemDisk.FreeSpace) / $systemDisk.Capacity * 100
+                        DiskSize        = $systemDisk.Capacity / 1GB
+                        MemoryUsage     = (($operatingSystem.TotalVisibleMemorySize / 1KB) - $perfCounter.CounterSamples.Where({$_.Path -like '\\*\Memory\Available MBytes'}).CookedValue) / ($operatingSystem.TotalVisibleMemorySize / 1KB) * 100
+                        MemorySize      = $operatingSystem.TotalVisibleMemorySize / 1MB
+                        PageUsage       = $pageFile.CurrentUsage / $pageFile.AllocatedBaseSize * 100
+                        PageSize        = $pageFile.AllocatedBaseSize / 1KB
+                        ProcessCount    = (Get-Process).Count
+                        SessionCount    = (qwinsta.exe).Count - 3
+                    }
+                }
+                Write-Host ''
+                Write-Host ('  System information as of {0:dd.MM.yyyy HH:mm:ss zzz} on {1}' -f $state.Timestamp, $state.Hostname)
+                Write-Host ''
+                Write-Host ('  System load:  {0:0.0}%' -f $state.SystemLoad).PadRight(40)                              ('Processes:        {0:0}' -f $state.ProcessCount)
+                Write-Host ('  Disk used:    {0:0.0}% of {1:0}GB (C:\)' -f $state.DiskUsage, $state.DiskSize).PadRight(40)   ('User sessions:    {0:0}' -f $state.SessionCount)
+                Write-Host ('  Memory usage: {0:0}% of {1:0}GB' -f $state.MemoryUsage, $state.MemorySize).PadRight(40) ('Operating System: {0}' -f $state.OperatingSystem)
+                Write-Host ('  Page usage:   {0:0}% of {1:0}GB' -f $state.PageUsage, $state.PageSize).PadRight(40)     ('Last boot time:   {0:dd.MM.yyyy HH:mm:ss} / {1:d\d\ h\h\ m\m}' -f $state.LastBootUp, $state.Uptime)
+                Write-Host ''
+                Write-Host '  Troubleshooting:' -ForegroundColor 'DarkGray'
+                Write-Host '  Invoke-WindowsAnalyzer     Measure-Processor       Measure-Storage' -ForegroundColor 'DarkGray'
+                Write-Host '  Measure-System             Measure-Memory          Measure-Session' -ForegroundColor 'DarkGray'
+                Write-Host ''
+
                 Enter-PSSession -Session $session
             }
         }

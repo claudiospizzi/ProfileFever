@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+
+* Added: System information on new remoting connection
+
 ## 4.4.0 - 2022-12-27
 
 * Added: Stream function to enable and disable streams
