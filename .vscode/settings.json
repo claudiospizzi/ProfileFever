@@ -51,6 +51,9 @@
     "powershell.codeFormatting.whitespaceBeforeOpenParen": true,
 
     "cSpell.words": [
-        "qwinsta"
+        "ansi",
+        "gpupdate",
+        "qwinsta",
+        "winrm"
     ]
 }

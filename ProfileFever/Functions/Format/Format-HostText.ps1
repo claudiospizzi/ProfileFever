@@ -13,7 +13,7 @@ function Format-HostText
     param
     (
         # Optional string builder. If specified, the text will be appended to
-        # the existing string builer. Else returned as string.
+        # the existing string builder. Else returned as string.
         [Parameter(Mandatory = $false)]
         [System.Text.StringBuilder]
         $StringBuilder,
@@ -23,6 +23,11 @@ function Format-HostText
         [AllowEmptyString()]
         [System.String]
         $Message,
+
+        # Add a new line break at the end.
+        [Parameter(Mandatory = $false)]
+        [Switch]
+        $AppendLine,
 
         # Set the foreground color as RGB with an ANSI escape sequence.
         [Parameter(Mandatory = $false)]
@@ -88,6 +93,12 @@ function Format-HostText
     if ($PSBoundParameters.ContainsKey('ForegroundColor'))
     {
         $StringBuilder.Append("$ansiEscape[0m") | Out-Null
+    }
+
+    # Add new line is specified
+    if ($AppendLine.IsPresent)
+    {
+        $StringBuilder.AppendLine() | Out-Null
     }
 
     if (-not $PSBoundParameters.ContainsKey('StringBuilder'))

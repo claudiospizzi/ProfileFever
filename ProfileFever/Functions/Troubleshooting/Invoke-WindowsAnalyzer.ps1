@@ -9,7 +9,7 @@
 
     .EXAMPLE
         PS C:\> Invoke-WindowsAnalyzer
-        Invoke the rroubleshooter on the local system.
+        Invoke the troubleshooter on the local system.
 
     .LINK
         https://github.com/claudiospizzi/ProfileFever
@@ -109,7 +109,7 @@ function Invoke-WindowsAnalyzer
 
                 $metricBarStep  = ($MetricThreshold[3] - $MetricThreshold[0]) / $metricBarWidth
 
-                # Calculate the acutal test result by using the provided metric
+                # Calculate the actual test result by using the provided metric
                 # and the two thresholds.
                 $Result = 'Passed'
                 if ($Metric -ge $MetricThreshold[2])
@@ -127,7 +127,7 @@ function Invoke-WindowsAnalyzer
                 {
                     $metricBarThreshold = $MetricThreshold[0] + ($i * $metricBarStep)
 
-                    $metricChar = [char]63191 # Three horizonzal dots
+                    $metricChar = [char]63191 # Three horizontal dots
                     if ($Metric -ge $metricBarThreshold)
                     {
                         $metricChar = [char]64610 # Filled square
