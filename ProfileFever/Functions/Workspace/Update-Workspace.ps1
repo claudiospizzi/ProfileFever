@@ -87,7 +87,14 @@ function Update-Workspace
         ## Generate config for the Project Manager extension.
         ##
 
-        $config = Get-Content -Path $ProjectManagerPath -Encoding 'UTF8' | ConvertFrom-Json
+        if (Test-Path -Path $ProjectManagerPath)
+        {
+            $config = @(Get-Content -Path $ProjectManagerPath -Encoding 'UTF8' | ConvertFrom-Json)
+        }
+        else
+        {
+            $config = @()
+        }
 
         foreach ($currentPath in $Path)
         {
@@ -114,10 +121,13 @@ function Update-Workspace
                         {
                             if ($config[$i].rootPath -eq $repo.FullName)
                             {
-                                $config[$i].name     = $repo.BaseName
-                                $config[$i].paths    = @()
-                                $config[$i].tags     = @('{0} / {1}' -f $currentPath.BaseName, $group.BaseName)
-                                $config[$i].enabled  = $true
+                                $config[$i] = [PSCustomObject] @{
+                                    name     = $repo.BaseName
+                                    rootPath = $repo.FullName
+                                    paths    = @()
+                                    tags     = @('{0} / {1}' -f $currentPath.BaseName, $group.BaseName)
+                                    enabled  = $true
+                                }
                                 break
                             }
                         }
@@ -126,7 +136,10 @@ function Update-Workspace
             }
         }
 
-        $config | ConvertTo-Json | Set-Content -Path $ProjectManagerPath -Encoding 'UTF8'
+        # Use the .NET class to write the JSON file to prevent writing the UTF-8
+        # BOM header, as the Project Manager is not able to read the profile
+        # file with an UTF-8 BOM header.
+        [System.IO.File]::WriteAllLines($ProjectManagerPath, ($config | ConvertTo-Json))
     }
     catch
     {
