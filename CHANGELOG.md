@@ -8,8 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 
 * Added: System information on new remoting connection
-* Fixed: Fix the Update-Workspace command to write a config file without the UTF-8 BOM header
-* Fixed: Fix the Update-Workspace command if no config file is present
+* Changed: Update and fix the Workspace commands to only support the Project Manager extension (BREAKING)
 
 ## 4.4.0 - 2022-12-27
 
