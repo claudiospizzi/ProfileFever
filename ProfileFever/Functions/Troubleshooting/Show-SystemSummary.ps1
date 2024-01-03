@@ -70,17 +70,17 @@ function Show-SystemSummary
         # output. Two entries are displayed per line.
         $summaryNarrowEntries = @(
             @{
-                Icon    = '󰅐 '
+                Icon    = ' '
                 Name    = 'Current time'
                 Value   = '{0:dd\.MM\.yyyy\ HH\:mm}' -f $data.ComputerSystem.Timestamp
                 Color   = $(if ([System.Math]::Abs($timestampDiffSec) -gt 60) { 'Red' } elseif ([System.Math]::Abs($timestampDiffSec) -gt 3) { 'Yellow' } else { 'Default' })
                 Sidecar = ''
             }
             @{
-                Icon    = ' '
+                Icon    = '󰅐 '
                 Name    = 'Boot time'
                 Value   = '{0:dd\.MM\.yyyy\ HH\:mm}' -f $data.ComputerSystem.BootTime
-                Color   = $(if ($data.ComputerSystem.Uptime.TotalMinutes -lt 180) { 'Yellow' } else { 'Default' })
+                Color   = $(if ($data.ComputerSystem.Uptime.TotalMinutes -lt 720) { 'Yellow' } else { 'Default' })
                 Sidecar = '(up {0:d\d\ h\h\ m\m})' -f $data.ComputerSystem.Uptime
             }
             @{
@@ -127,7 +127,7 @@ function Show-SystemSummary
             }
             @{
                 Icon    = '󰋊 '
-                Name    = 'Disk C:\ usage'
+                Name    = 'Storage usage'
                 Value   = '{0:0.0%}' -f $systemDisk.Usage
                 Color   = $(if ($systemDisk.Usage -ge 0.9) { 'Red' } elseif ($systemDisk.Usage -ge 0.8) { 'Yellow' } else { 'Green' })
                 Sidecar = 'of {0:0}GB' -f ($systemDisk.Size / 1GB)
@@ -144,48 +144,53 @@ function Show-SystemSummary
         # All entries which are displayed in a wide column layout. Only one
         # entry is displayed per line.
         $summaryWideEntries = @()
-        foreach ($dataDisk in @($data.Disks | Sort-Object -Property 'AccessPath'))
+        foreach ($dataDisk in $data.Disks)
         {
-            if ([System.String]::IsNullOrEmpty($dataDisk.AccessPath))
+            # Calculate the disk usage. Hide it, if the disk usage is unknown.
+            $dataDiskUsage = ''
+            if ($null -ne $dataDisk.Usage -and $dataDisk.Usage -gt 0)
             {
-                continue
+                $dataDiskUsage = '{0:0%}' -f $dataDisk.Usage
+            }
+
+            # Calculate the disk size and us an appropriate unit. Append the of
+            # pronoun if the disk usage is available.
+            $dataDiskSize = '{0:0}GB' -f ($dataDisk.Size / 1GB)
+            if ($dataDisk.Size -lt 1GB)
+            {
+                $dataDiskSize = '{0:0}MB' -f ($dataDisk.Size / 1MB)
+            }
+            if ($null -ne $dataDisk.Usage -and $dataDisk.Usage -gt 0)
+            {
+                $dataDiskSize = 'of {0}' -f $dataDiskSize
+            }
+
+            $dataDiskAccessPath = ''
+            if (-not [System.String]::IsNullOrEmpty($dataDisk.AccessPath))
+            {
+                $dataDiskAccessPath = ' on {0}' -f $dataDisk.AccessPath
+            }
+
+            $dataDiskLabel = ''
+            if (-not [System.String]::IsNullOrEmpty($dataDisk.Label))
+            {
+                $dataDiskLabel = ' ({0})' -f $dataDisk.Label
             }
 
             $summaryWideEntries += @{
                 Icon    = '󰋊 '
-                Name    = 'Disk #{0}' -f $dataDisk.Id
-                Value   = '{0:0%}' -f $dataDisk.Usage
+                Name    = 'Volume {0}' -f $dataDisk.Id
+                Value   = $dataDiskUsage
                 Color   = $(if ($dataDisk.Usage -ge 0.9) { 'Red' } elseif ($dataDisk.Usage -ge 0.8) { 'Yellow' } else { 'Green' })
-                Sidecar = 'of {0:0}GB on {1}' -f ($dataDisk.Size / 1GB), $dataDisk.AccessPath
+                Sidecar = '{0}{1}{2}' -f $dataDiskSize, $dataDiskAccessPath, $dataDiskLabel
             }
         }
-
-
-        # $summaryDiskUsed = Format-HostText -Message ('{0:0.0%}' -f $data.SystemDiskUsage) -ForegroundColor (Get-Color -Value $data.SystemDiskUsage -WarningThreshold 0.8 -ErrorThreshold 0.9)
-        # $summaryDiskUsed = '{0} of {1:0}GB' -f $summaryDiskUsed, $data.SystemDiskSize
-
-        # # # If the all disk size is greater than the system disk (plus 2GB for the
-        # # the EFI boot and recovery partition), show it after the system disk
-        # # size in ths system information summary.
-        # $summaryDiskAllSizeText = ''
-        # if ($data.AllDiskSize -gt ($data.SystemDiskSize + 2))
-        # {
-        #     $summaryDiskAllSizeText = '+{0:0}GB' -f ($data.AllDiskSize - $data.SystemDiskSize)
-        # }
-
-        # $summaryMemoryUsage = Format-HostText -Message ('{0:0%}' -f $data.MemoryUsage) -ForegroundColor (Get-Color -Value $data.MemoryUsage -WarningThreshold 0.7 -ErrorThreshold 0.85)
-        # $summaryMemoryUsage = '{0} of {1:0}GB' -f $summaryMemoryUsage, $data.MemorySize
-
-        # $summaryPageUsage = Format-HostText -Message ('{0:0%}' -f $data.PageUsage) -ForegroundColor (Get-Color -Value $data.PageUsage -WarningThreshold 0.6 -ErrorThreshold 0.8)
-        # $summaryPageUsage = '{0} of {1:0}GB' -f $summaryPageUsage, $data.PageSize
-
-        # $summaryCurrentTime = '{0} {1}' -f $data.Timestamp.ToShortDateString(), $data.Timestamp.ToLongTimeString()
 
         $summary = [System.Text.StringBuilder]::new()
         [void] $summary.AppendLine()
         [void] $summary.AppendFormat('Welcome to PowerShell {0}.{1} on {2}', $data.PowerShell.Major, $data.PowerShell.Minor, $data.OperatingSystem.Name).AppendLine()
         [void] $summary.AppendLine()
-        [void] $summary.AppendFormat('   {0}  󰓯 {1}   {2}   {3}  󰚗 {4:0}GB  󰋊 {5:0}GB', $data.OperatingSystem.Version, $data.OperatingSystem.Architecture, $data.OperatingSystem.Language, $data.Processor.Count, $data.Memory.Size, $allDiskSize / 1GB).AppendLine()
+        [void] $summary.AppendFormat('   {0}  󰓯 {1}   {2}   {3}x{4}  󰚗 {5:0}GB  󰋊 {6:0}GB', $data.OperatingSystem.Version, $data.OperatingSystem.Architecture, $data.OperatingSystem.Language, $data.Processor.SocketCount, ($data.Processor.CoreCount / $data.Processor.SocketCount), $data.Memory.Size, $allDiskSize / 1GB).AppendLine()
         [void] $summary.AppendLine()
 
         # Format the narrow entries in a two column layout
@@ -225,12 +230,17 @@ function Show-SystemSummary
 
             [void] $summary.AppendFormat('  {0,1} {1,-10} : ', $summaryEntry.Icon, $summaryEntry.Name)
 
-            switch ($summaryEntry.Color)
+            if (-not [System.String]::IsNullOrEmpty($summaryEntry.Value))
             {
-                'Default' { [void] $summary.Append($summaryEntry.Value) }
-                'Red'     { [void] $summary.Append((Format-HostText -Message $summaryEntry.Value -ForegroundColor $colorDarkRed)) }
-                'Yellow'  { [void] $summary.Append((Format-HostText -Message $summaryEntry.Value -ForegroundColor $colorDarkYellow)) }
-                'Green'   { [void] $summary.Append((Format-HostText -Message $summaryEntry.Value -ForegroundColor $colorDarkGreen)) }
+                switch ($summaryEntry.Color)
+                {
+                    'Default' { [void] $summary.Append($summaryEntry.Value) }
+                    'Red'     { [void] $summary.Append((Format-HostText -Message $summaryEntry.Value -ForegroundColor $colorDarkRed)) }
+                    'Yellow'  { [void] $summary.Append((Format-HostText -Message $summaryEntry.Value -ForegroundColor $colorDarkYellow)) }
+                    'Green'   { [void] $summary.Append((Format-HostText -Message $summaryEntry.Value -ForegroundColor $colorDarkGreen)) }
+                }
+
+                [void] $summary.Append(' ')
             }
 
             $summarySidecarLength = 14 - $summaryEntry.Value.Length
@@ -238,7 +248,7 @@ function Show-SystemSummary
             {
                 $summarySidecarLength = 0
             }
-            [void] $summary.AppendFormat(" {0,-$summarySidecarLength}", [System.String] $summaryEntry.Sidecar)
+            [void] $summary.AppendFormat("{0,-$summarySidecarLength}", [System.String] $summaryEntry.Sidecar)
 
             [void] $summary.AppendLine()
         }

@@ -55,6 +55,7 @@
         "ansi",
         "gpupdate",
         "qwinsta",
-        "winrm"
+        "winrm",
+        "XINT"
     ]
 }
