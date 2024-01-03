@@ -75,6 +75,7 @@
         'Measure-Memory'
         'Measure-Storage'
         'Measure-Session'
+        'Get-SystemSummary'
         'Show-SystemSummary'
         # Stream
         'Show-Error'

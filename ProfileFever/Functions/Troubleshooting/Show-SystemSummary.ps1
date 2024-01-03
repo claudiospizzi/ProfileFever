@@ -53,87 +53,196 @@ function Show-SystemSummary
 
     try
     {
-        $queryScriptBlock = {
+        $data = Get-SystemSummary -Session $Session
 
-            # Gather data from performance counters and CIM system
-            $perfCounter        = Get-Counter -Counter '\Processor Information(_Total)\% Processor Utility', '\Memory\Available MBytes' -SampleInterval 1 -MaxSamples 1
-            $cimComputerSystem  = Get-CimInstance -ClassName 'Win32_ComputerSystem' -Property 'Name', 'Domain', 'NumberOfLogicalProcessors'
-            $cimOperatingSystem = Get-CimInstance -ClassName 'Win32_OperatingSystem' -Property 'Caption', 'Version', 'OSLanguage', 'OSArchitecture', 'LastBootUpTime', 'TotalVisibleMemorySize'
-            $cimVolumeSystem    = Get-CimInstance -ClassName 'Win32_Volume' -Filter "DriveLetter = 'C:'" -Property 'FreeSpace', 'Capacity'
-            $cimVolumeAll       = Get-CimInstance -ClassName 'Win32_Volume' -Property 'Capacity'
-            $cimPageFile        = Get-CimInstance -ClassName 'Win32_PageFileUsage' -Property 'CurrentUsage', 'AllocatedBaseSize'
-            $processCount       = (Get-Process).Count
-            $connectionCount    = (netstat.exe -n).Count - 4    # Subtract the netstat header
-            $sessionCount       = (qwinsta.exe).Count - 3   # Subtract the qwinsta header and the two built-in sessions
+        $timestamp = [System.DateTime]::Now #.AddSeconds(61)
+        $timestampDiffSec = ($data.ComputerSystem.Timestamp - $timestamp).TotalSeconds
 
-            [PSCustomObject] @{
-                Timestamp       = [System.DateTime]::Now
-                Hostname        = $cimComputerSystem.Name + $(if ($cimComputerSystem.Domain -ne 'WORKGROUP') { '.' + $cimComputerSystem.Domain } )
-                PowerShell      = $PSVersionTable.PSVersion
-                OperatingSystem = [PSCustomObject] @{
-                    Name            = $cimOperatingSystem.Caption.Replace('Microsoft Windows', 'Windows')
-                    Version         = $cimOperatingSystem.Version
-                    Language        = [System.Globalization.CultureInfo]::new([int] $cimOperatingSystem.OSLanguage).Name
-                    Architecture    = $cimOperatingSystem.OSArchitecture
-                }
-                SystemUptime    = [System.DateTime]::Now - $cimOperatingSystem.LastBootUpTime
-                SystemBootTime  = $cimOperatingSystem.LastBootUpTime
-                ProcessorLoad   = $perfCounter.CounterSamples.Where({$_.Path -like '\\*\Processor Information(_Total)\% Processor Utility'}).CookedValue * $cimComputerSystem.NumberOfLogicalProcessors / 100
-                ProcessorUsage  = $perfCounter.CounterSamples.Where({$_.Path -like '\\*\Processor Information(_Total)\% Processor Utility'}).CookedValue / 100
-                ProcessorCount  = $cimComputerSystem.NumberOfLogicalProcessors
-                SystemDiskUsage = ($cimVolumeSystem.Capacity - $cimVolumeSystem.FreeSpace) / $cimVolumeSystem.Capacity
-                SystemDiskSize  = $cimVolumeSystem.Capacity / 1GB
-                AllDiskSize     = ($cimVolumeAll | Measure-Object -Property 'Capacity' -Sum | Select-Object -ExpandProperty 'Sum') / 1GB
-                MemoryUsage     = (($cimOperatingSystem.TotalVisibleMemorySize / 1KB) - $perfCounter.CounterSamples.Where({$_.Path -like '\\*\Memory\Available MBytes'}).CookedValue) / ($cimOperatingSystem.TotalVisibleMemorySize / 1KB)
-                MemorySize      = $cimOperatingSystem.TotalVisibleMemorySize / 1MB
-                PageUsage       = $cimPageFile.CurrentUsage / $cimPageFile.AllocatedBaseSize
-                PageSize        = $cimPageFile.AllocatedBaseSize / 1KB
-                ProcessCount    = $processCount
-                ConnectionCount = $connectionCount
-                SessionCount    = $sessionCount
+        # Special calculations for the summary output
+        $systemDisk  = $data.Disks | Where-Object { $_.IsSystem } | Select-Object -First 1
+        $allDiskSize = $data.Disks | Measure-Object -Property 'Size' -Sum | Select-Object -ExpandProperty 'Sum'
+
+        # [void] $summary.AppendFormat('  󰚗  Memory usage  : {0,-40:0}     Processes     : {1}', $summaryMemoryUsage, $data.ProcessCount).AppendLine()
+        # [void] $summary.AppendFormat('  󱪓  Page usage    : {0,-40:0}   󰴽  Connections   : {1}', $summaryPageUsage, $data.ConnectionCount).AppendLine()
+        # [void] $summary.AppendFormat('  󰋊  C:\ disk used : {0,-40:0}   󰡉  User sessions : {1}', $summaryDiskUsed, $data.SessionCount).AppendLine()
+
+        # All entries which are displayed in a narrow column layout in the
+        # output. Two entries are displayed per line.
+        $summaryNarrowEntries = @(
+            @{
+                Icon    = '󰅐 '
+                Name    = 'Current time'
+                Value   = '{0:dd\.MM\.yyyy\ HH\:mm}' -f $data.ComputerSystem.Timestamp
+                Color   = $(if ([System.Math]::Abs($timestampDiffSec) -gt 60) { 'Red' } elseif ([System.Math]::Abs($timestampDiffSec) -gt 3) { 'Yellow' } else { 'Default' })
+                Sidecar = ''
+            }
+            @{
+                Icon    = ' '
+                Name    = 'Boot time'
+                Value   = '{0:dd\.MM\.yyyy\ HH\:mm}' -f $data.ComputerSystem.BootTime
+                Color   = $(if ($data.ComputerSystem.Uptime.TotalMinutes -lt 180) { 'Yellow' } else { 'Default' })
+                Sidecar = '(up {0:d\d\ h\h\ m\m})' -f $data.ComputerSystem.Uptime
+            }
+            @{
+                Icon    = ' '
+                Name    = 'System load'
+                Value   = '{0:0.000}' -f $data.Processor.Load
+                Color   = $(if ($data.Processor.Usage -ge 0.8) { 'Red' } elseif ($data.Processor.Usage -ge 0.6) { 'Yellow' } else { 'Green' })
+                Sidecar = '({0:0%})' -f $data.Processor.Usage
+            }
+            @{
+                Icon    = ' '
+                Name    = 'Hostname'
+                Value   = $(if($data.Domain -eq 'WORKGROUP') { '{0} ({1})' -f $data.Hostname, $data.Domain } else { '{0}.{1}' -f $data.Hostname, $data.Domain })
+                Color   = 'Default'
+                Sidecar = ''
+            }
+            @{
+                Icon    = '󰚗 '
+                Name    = 'Memory usage'
+                Value   = '{0:0%}' -f $data.Memory.Usage
+                Color   = $(if ($data.Memory.Usage -ge 0.9) { 'Red' } elseif ($data.Memory.Usage -ge 0.8) { 'Yellow' } else { 'Green' })
+                Sidecar = 'of {0:0}GB' -f $data.Memory.Size
+            }
+            @{
+                Icon    = ' '
+                Name    = 'Processes'
+                Value   = $data.Processes.Count
+                Color   = 'Default'
+                Sidecar = ''
+            }
+            @{
+                Icon    = '󱪓 '
+                Name    = 'Page usage'
+                Value   = '{0:0%}' -f $data.Page.Usage
+                Color   = $(if ($data.Page.Usage -ge 0.5) { 'Red' } elseif ($data.Page.Usage -ge 0.2) { 'Yellow' } else { 'Green' })
+                Sidecar = 'of {0:0}GB' -f $data.Page.Size
+            }
+            @{
+                Icon    = '󰴽 '
+                Name    = 'Connections'
+                Value   = $data.Connections.Count
+                Color   = 'Default'
+                Sidecar = ''
+            }
+            @{
+                Icon    = '󰋊 '
+                Name    = 'Disk C:\ usage'
+                Value   = '{0:0.0%}' -f $systemDisk.Usage
+                Color   = $(if ($systemDisk.Usage -ge 0.9) { 'Red' } elseif ($systemDisk.Usage -ge 0.8) { 'Yellow' } else { 'Green' })
+                Sidecar = 'of {0:0}GB' -f ($systemDisk.Size / 1GB)
+            }
+            @{
+                Icon    = '󰡉 '
+                Name    = 'User sessions'
+                Value   = $data.Sessions.Count
+                Color   = 'Default'
+                Sidecar = ''
+            }
+        )
+
+        # All entries which are displayed in a wide column layout. Only one
+        # entry is displayed per line.
+        $summaryWideEntries = @()
+        foreach ($dataDisk in @($data.Disks | Sort-Object -Property 'AccessPath'))
+        {
+            if ([System.String]::IsNullOrEmpty($dataDisk.AccessPath))
+            {
+                continue
+            }
+
+            $summaryWideEntries += @{
+                Icon    = '󰋊 '
+                Name    = 'Disk #{0}' -f $dataDisk.Id
+                Value   = '{0:0%}' -f $dataDisk.Usage
+                Color   = $(if ($dataDisk.Usage -ge 0.9) { 'Red' } elseif ($dataDisk.Usage -ge 0.8) { 'Yellow' } else { 'Green' })
+                Sidecar = 'of {0:0}GB on {1}' -f ($dataDisk.Size / 1GB), $dataDisk.AccessPath
             }
         }
 
-        if ($PSBoundParameters.ContainsKey('Session'))
-        {
-            $queryResult = Invoke-Command -Session $Session -ScriptBlock $queryScriptBlock
-        }
-        else
-        {
-            $queryResult = & $queryScriptBlock
-        }
 
-        $summarySystemLoad = Format-HostText -Message ('{0:0.000}' -f $queryResult.ProcessorLoad) -ForegroundColor (Get-Color -Value $queryResult.ProcessorUsage -WarningThreshold 0.6 -ErrorThreshold 0.8)
+        # $summaryDiskUsed = Format-HostText -Message ('{0:0.0%}' -f $data.SystemDiskUsage) -ForegroundColor (Get-Color -Value $data.SystemDiskUsage -WarningThreshold 0.8 -ErrorThreshold 0.9)
+        # $summaryDiskUsed = '{0} of {1:0}GB' -f $summaryDiskUsed, $data.SystemDiskSize
 
-        $summaryDiskUsed = Format-HostText -Message ('{0:0.0%}' -f $queryResult.SystemDiskUsage) -ForegroundColor (Get-Color -Value $queryResult.SystemDiskUsage -WarningThreshold 0.8 -ErrorThreshold 0.9)
-        $summaryDiskUsed = '{0} of {1:0}GB' -f $summaryDiskUsed, $queryResult.SystemDiskSize
+        # # # If the all disk size is greater than the system disk (plus 2GB for the
+        # # the EFI boot and recovery partition), show it after the system disk
+        # # size in ths system information summary.
+        # $summaryDiskAllSizeText = ''
+        # if ($data.AllDiskSize -gt ($data.SystemDiskSize + 2))
+        # {
+        #     $summaryDiskAllSizeText = '+{0:0}GB' -f ($data.AllDiskSize - $data.SystemDiskSize)
+        # }
 
-        # If the all disk size is greater than the system disk (plus 2GB for the
-        # the EFI boot and recovery partition), show it after the system disk
-        # size in ths system information summary.
-        $summaryDiskAllSizeText = ''
-        if ($queryResult.AllDiskSize -gt ($queryResult.SystemDiskSize + 2))
-        {
-            $summaryDiskAllSizeText = '+{0:0}GB' -f ($queryResult.AllDiskSize - $queryResult.SystemDiskSize)
-        }
+        # $summaryMemoryUsage = Format-HostText -Message ('{0:0%}' -f $data.MemoryUsage) -ForegroundColor (Get-Color -Value $data.MemoryUsage -WarningThreshold 0.7 -ErrorThreshold 0.85)
+        # $summaryMemoryUsage = '{0} of {1:0}GB' -f $summaryMemoryUsage, $data.MemorySize
 
-        $summaryMemoryUsage = Format-HostText -Message ('{0:0%}' -f $queryResult.MemoryUsage) -ForegroundColor (Get-Color -Value $queryResult.MemoryUsage -WarningThreshold 0.7 -ErrorThreshold 0.85)
-        $summaryMemoryUsage = '{0} of {1:0}GB' -f $summaryMemoryUsage, $queryResult.MemorySize
+        # $summaryPageUsage = Format-HostText -Message ('{0:0%}' -f $data.PageUsage) -ForegroundColor (Get-Color -Value $data.PageUsage -WarningThreshold 0.6 -ErrorThreshold 0.8)
+        # $summaryPageUsage = '{0} of {1:0}GB' -f $summaryPageUsage, $data.PageSize
 
-        $summaryPageUsage = Format-HostText -Message ('{0:0%}' -f $queryResult.PageUsage) -ForegroundColor (Get-Color -Value $queryResult.PageUsage -WarningThreshold 0.6 -ErrorThreshold 0.8)
-        $summaryPageUsage = '{0} of {1:0}GB' -f $summaryPageUsage, $queryResult.PageSize
+        # $summaryCurrentTime = '{0} {1}' -f $data.Timestamp.ToShortDateString(), $data.Timestamp.ToLongTimeString()
 
         $summary = [System.Text.StringBuilder]::new()
         [void] $summary.AppendLine()
-        [void] $summary.AppendFormat('Welcome to PowerShell {0}.{1} on {2}', $queryResult.PowerShell.Major, $queryResult.PowerShell.Minor, $queryResult.OperatingSystem.Name).AppendLine()
+        [void] $summary.AppendFormat('Welcome to PowerShell {0}.{1} on {2}', $data.PowerShell.Major, $data.PowerShell.Minor, $data.OperatingSystem.Name).AppendLine()
         [void] $summary.AppendLine()
-        [void] $summary.AppendFormat('  System information as of {0:dd.MM.yyyy HH:mm:ss zzz}', $queryResult.Timestamp).AppendLine()
-        [void] $summary.AppendFormat('   {0}  󰓯 {1}   {2}   {3}  󰚗 {4:0}GB  󰋊 {5:0}GB{6}', $queryResult.OperatingSystem.Version, $queryResult.OperatingSystem.Architecture, $queryResult.OperatingSystem.Language, $queryResult.ProcessorCount, $queryResult.MemorySize, $queryResult.SystemDiskSize, $summaryDiskAllSizeText).AppendLine()
+        [void] $summary.AppendFormat('   {0}  󰓯 {1}   {2}   {3}  󰚗 {4:0}GB  󰋊 {5:0}GB', $data.OperatingSystem.Version, $data.OperatingSystem.Architecture, $data.OperatingSystem.Language, $data.Processor.Count, $data.Memory.Size, $allDiskSize / 1GB).AppendLine()
         [void] $summary.AppendLine()
-        [void] $summary.AppendFormat('    System load   : {0,-40:0}     Hostname      : {1}', $summarySystemLoad, $queryResult.Hostname).AppendLine()
-        [void] $summary.AppendFormat('  󰚗  Memory usage  : {0,-40:0}     Processes     : {1}', $summaryMemoryUsage, $queryResult.ProcessCount).AppendLine()
-        [void] $summary.AppendFormat('  󱪓  Page usage    : {0,-40:0}   󰴽  Connections   : {1}', $summaryPageUsage, $queryResult.ConnectionCount).AppendLine()
-        [void] $summary.AppendFormat('  󰋊  C:\ disk used : {0,-40:0}   󰡉  User sessions : {1}', $summaryDiskUsed, $queryResult.SessionCount).AppendLine()
+
+        # Format the narrow entries in a two column layout
+        for ($i = 0; $i -lt $summaryNarrowEntries.Count; $i++)
+        {
+            $summaryEntry = $summaryNarrowEntries[$i]
+
+            [void] $summary.AppendFormat('  {0,1} {1,-15} : ', $summaryEntry.Icon, $summaryEntry.Name)
+
+            switch ($summaryEntry.Color)
+            {
+                'Default' { [void] $summary.Append($summaryEntry.Value) }
+                'Red'     { [void] $summary.Append((Format-HostText -Message $summaryEntry.Value -ForegroundColor $colorDarkRed)) }
+                'Yellow'  { [void] $summary.Append((Format-HostText -Message $summaryEntry.Value -ForegroundColor $colorDarkYellow)) }
+                'Green'   { [void] $summary.Append((Format-HostText -Message $summaryEntry.Value -ForegroundColor $colorDarkGreen)) }
+            }
+
+            $summarySidecarLength = 20 - $summaryEntry.Value.Length
+            if ($summarySidecarLength -lt 0)
+            {
+                $summarySidecarLength = 0
+            }
+            [void] $summary.AppendFormat(" {0,-$summarySidecarLength}", [System.String] $summaryEntry.Sidecar)
+
+            if ($i % 2 -eq 1)
+            {
+                [void] $summary.AppendLine()
+            }
+        }
+
+        [void] $summary.AppendLine()
+
+        # Format the wide entries in a one column layout
+        for ($i = 0; $i -lt $summaryWideEntries.Count; $i++)
+        {
+            $summaryEntry = $summaryWideEntries[$i]
+
+            [void] $summary.AppendFormat('  {0,1} {1,-10} : ', $summaryEntry.Icon, $summaryEntry.Name)
+
+            switch ($summaryEntry.Color)
+            {
+                'Default' { [void] $summary.Append($summaryEntry.Value) }
+                'Red'     { [void] $summary.Append((Format-HostText -Message $summaryEntry.Value -ForegroundColor $colorDarkRed)) }
+                'Yellow'  { [void] $summary.Append((Format-HostText -Message $summaryEntry.Value -ForegroundColor $colorDarkYellow)) }
+                'Green'   { [void] $summary.Append((Format-HostText -Message $summaryEntry.Value -ForegroundColor $colorDarkGreen)) }
+            }
+
+            $summarySidecarLength = 14 - $summaryEntry.Value.Length
+            if ($summarySidecarLength -lt 0)
+            {
+                $summarySidecarLength = 0
+            }
+            [void] $summary.AppendFormat(" {0,-$summarySidecarLength}", [System.String] $summaryEntry.Sidecar)
+
+            [void] $summary.AppendLine()
+        }
+
         [void] $summary.AppendLine()
         Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  󰢫  Troubleshooting' -AppendLine
         Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  ¦ Invoke-WindowsAnalyzer    Measure-Processor         Measure-Storage' -AppendLine
@@ -145,12 +254,13 @@ function Show-SystemSummary
         Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  ¦ Get-SystemAuditGroupPolicy        Get-SystemAuditUserSession' -AppendLine
         Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  ¦ Get-SystemAuditMsiInstaller       Get-SystemAuditWindowsService' -AppendLine
         [void] $summary.AppendLine()
-        [void] $summary.AppendFormat('Up since {0:d\d\ h\h\ m\m} startet on {1:ddd d. MMMM yyyy HH:mm}', $queryResult.SystemUptime, $queryResult.SystemBootTime).AppendLine()
+        # [void] $summary.AppendFormat('Up since {0:d\d\ h\h\ m\m}', $data.SystemUptime).AppendLine()
 
         Write-Host $summary.ToString()
     }
     catch
     {
-        $PSCmdlet.ThrowTerminatingError($_)
+        # Write-Warning "Failed to show system summary: $_"
+        throw $_
     }
 }
