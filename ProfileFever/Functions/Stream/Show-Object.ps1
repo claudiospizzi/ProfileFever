@@ -431,24 +431,24 @@ function Show-Object
 
                 if ($null -eq $Object)
                 {
-                    return 'Null'
+                    Write-Output 'Null'
                 }
                 elseif ($Object -is [System.String] -or $Object -is [System.Char])
                 {
-                    return 'String'
+                    Write-Output 'String'
                 }
                 elseif ($Object -is [System.Boolean])
                 {
-                    return 'Boolean'
+                    Write-Output 'Boolean'
                 }
                 elseif ($Object -is [System.Enum])
                 {
-                    return 'Enum'
+                    Write-Output 'Enum'
                 }
                 elseif ($Object -is [System.DateTime] -or $Object -is [System.DateTimeKind] -or
                         $Object -is [System.DateTimeOffset] -or $Object -is [System.TimeSpan])
                 {
-                    return 'Date'
+                    Write-Output 'Date'
                 }
                 elseif ($Object -is [System.Byte] -or $Object -is [System.SByte] -or
                         $Object -is [System.Int16] -or $Object -is [System.UInt16] -or
@@ -456,11 +456,11 @@ function Show-Object
                         $Object -is [System.Int64] -or $Object -is [System.UInt64] -or
                         $Object -is [System.Single] -or $Object -is [System.Double] -or $Object -is [System.Decimal])
                 {
-                    return 'Number'
+                    Write-Output 'Number'
                 }
                 else
                 {
-                    return 'Object'
+                    Write-Output 'Object'
                 }
             }
 
