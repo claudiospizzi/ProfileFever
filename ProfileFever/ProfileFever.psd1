@@ -79,6 +79,7 @@
         'Show-SystemSummary'
         # Stream
         'Show-Error'
+        'Show-Object'
         'Enable-InformationStream'
         'Disable-InformationStream'
         'Enable-VerboseStream'
