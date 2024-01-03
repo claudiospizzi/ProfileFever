@@ -43,7 +43,7 @@ $Script:PSModuleName = [System.IO.Path]::GetFileName($PSCommandPath).Split('.')[
 
 
 
-# Initialize all relevant launcher vairables
+# Initialize all relevant launcher variables
 $Script:LAUNCHER_PATH             = "$Env:AppData\PowerShell\ProfileFever"
 $Script:LAUNCHER_CREDENTIAL_FORMAT = 'PowerShell ProfileFever {0} {1}'
 $Script:LAUNCHER_SQL_SERVER        = $null
