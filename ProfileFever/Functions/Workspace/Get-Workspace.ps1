@@ -23,49 +23,27 @@ function Get-Workspace
     [CmdletBinding()]
     param
     (
-        # Option to filter the type.
-        [Parameter(Mandatory = $false)]
-        [ValidateSet('Workspace', 'Project')]
-        [System.String]
-        $Type,
-
-        # Path to the JSON config file of the vscode-open-project extension.
+        # Path to the JSON config file of the Project Manager extension.
         [Parameter(Mandatory = $false)]
         [ValidateScript({ Test-Path -Path $_ })]
         [System.String]
-        $ProjectListPath = "$Env:AppData\Code\User\projectlist.json"
+        $ProjectManagerPath = "$Env:AppData\Code\User\globalStorage\alefragnani.project-manager\projects.json"
     )
 
     try
     {
-        Write-Warning "This command will only return workspace projects of the vscode-open-project extension. For the Project Manager extension, please review the VS Code extension tab."
-
-        $projectList = Get-Content -Path $ProjectListPath | ConvertFrom-Json
-
-        foreach ($projectDisplay in $projectList.projects.PSObject.Properties.Name)
+        $projects =
+            Get-Content -Path $ProjectManagerPath |
+                ConvertFrom-Json
+        foreach ($project in $projects)
         {
-            $projectName = $projectDisplay.Split('\')[-1].Trim()
-
-            # Define the output type by the display name.
-            $projectType = 'Project'
-            if ($projectName -like 'Workspace *' -and $projectName -notlike '*\*')
-            {
-                $projectName = $projectName.Substring(10)
-                $projectType = 'Workspace'
-            }
-
-            # Filter the type, if specified.
-            if ($PSBoundParameters.ContainsKey('Type') -and $Type -ne $projectType)
-            {
-                continue
-            }
-
             [PSCustomObject] @{
                 PSTypeName = 'ProfileFever.Workspace'
-                Type       = $projectType
-                Name       = $projectName
-                Display    = $projectDisplay
-                Path       = $projectList.projects.$projectDisplay
+                Name    = $project.name
+                Tag     = [System.String] $project.tags
+                Type    = $(if ($project.rootPath -like '*.code-workspace') { 'Workspace' } else { 'Project' })
+                Path    = $project.rootPath
+                Enabled = $project.enabled
             }
         }
     }
