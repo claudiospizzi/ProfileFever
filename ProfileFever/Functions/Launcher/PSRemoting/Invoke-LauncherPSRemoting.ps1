@@ -189,7 +189,14 @@ function Invoke-LauncherPSRemoting
                     }
                 }
 
-                Show-SystemSummary -Session $session
+                try
+                {
+                    Show-SystemSummary -Session $session
+                }
+                catch
+                {
+                    Write-Warning "Failed to show system summary: $_"
+                }
 
                 Enter-PSSession -Session $session
             }

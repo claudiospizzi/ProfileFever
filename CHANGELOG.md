@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 
 * Added: New function to show an object in an interactive UI (Show-Object)
-* Added: System information on new remoting connection
+* Added: System information on new remoting connection (Invoke-LauncherPSRemoting)
 * Changed: Update and fix the Workspace commands to only support the Project Manager extension (BREAKING)
 
 ## 4.4.0 - 2022-12-27
