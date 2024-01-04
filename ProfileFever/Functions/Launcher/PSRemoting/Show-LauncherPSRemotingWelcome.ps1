@@ -9,16 +9,17 @@
         displayed in a nice way on the console.
 
     .EXAMPLE
-        PS C:\> Show-SystemSummary
+        PS C:\> Show-LauncherPSRemotingWelcome
         Show the local system summary.
 
     .EXAMPLE
-        PS C:\> Show-SystemSummary -Session $session
+        PS C:\> Show-LauncherPSRemotingWelcome -Session $session
         Show the system summary of the host behind the session.
 #>
-function Show-SystemSummary
+function Show-LauncherPSRemotingWelcome
 {
     [CmdletBinding()]
+    [Alias('Show-SystemSummary')]
     param
     (
         # Optional session to use for the system summary.
@@ -53,7 +54,7 @@ function Show-SystemSummary
 
     try
     {
-        $data = Get-SystemSummary -Session $Session
+        $data = Get-LauncherPSRemotingWelcome -Session $Session
 
         $timestamp = [System.DateTime]::Now #.AddSeconds(61)
         $timestampDiffSec = ($data.ComputerSystem.Timestamp - $timestamp).TotalSeconds
@@ -61,10 +62,6 @@ function Show-SystemSummary
         # Special calculations for the summary output
         $systemDisk  = $data.Disks | Where-Object { $_.IsSystem } | Select-Object -First 1
         $allDiskSize = $data.Disks | Measure-Object -Property 'Size' -Sum | Select-Object -ExpandProperty 'Sum'
-
-        # [void] $summary.AppendFormat('  󰚗  Memory usage  : {0,-40:0}     Processes     : {1}', $summaryMemoryUsage, $data.ProcessCount).AppendLine()
-        # [void] $summary.AppendFormat('  󱪓  Page usage    : {0,-40:0}   󰴽  Connections   : {1}', $summaryPageUsage, $data.ConnectionCount).AppendLine()
-        # [void] $summary.AppendFormat('  󰋊  C:\ disk used : {0,-40:0}   󰡉  User sessions : {1}', $summaryDiskUsed, $data.SessionCount).AppendLine()
 
         # All entries which are displayed in a narrow column layout in the
         # output. Two entries are displayed per line.
@@ -264,13 +261,11 @@ function Show-SystemSummary
         Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  ¦ Get-SystemAuditGroupPolicy        Get-SystemAuditUserSession' -AppendLine
         Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  ¦ Get-SystemAuditMsiInstaller       Get-SystemAuditWindowsService' -AppendLine
         [void] $summary.AppendLine()
-        # [void] $summary.AppendFormat('Up since {0:d\d\ h\h\ m\m}', $data.SystemUptime).AppendLine()
 
         Write-Host $summary.ToString()
     }
     catch
     {
-        # Write-Warning "Failed to show system summary: $_"
-        throw $_
+        $PSCmdlet.ThrowTerminatingError($_)
     }
 }

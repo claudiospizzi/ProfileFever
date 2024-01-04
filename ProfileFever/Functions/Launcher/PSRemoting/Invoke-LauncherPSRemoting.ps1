@@ -191,7 +191,7 @@ function Invoke-LauncherPSRemoting
 
                 try
                 {
-                    Show-SystemSummary -Session $session
+                    Show-LauncherPSRemotingWelcome -Session $session
                 }
                 catch
                 {

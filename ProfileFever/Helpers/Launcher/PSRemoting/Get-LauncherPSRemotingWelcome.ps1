@@ -1,6 +1,7 @@
 ﻿<#
     .SYNOPSIS
-        Get the core performance counter and system information.
+        Get the core performance counter and system information for the
+        PowerShell Remoting launcher welcome screen.
 
     .DESCRIPTION
         This command will use CIM and Performance Counter as well as some other
@@ -8,10 +9,14 @@
         be returned as a PowerShell object.
 
     .EXAMPLE
-        PS C:\> Show-SystemSummary -Session $session
-        Get the system summary of the host behind the session.
+        PS C:\> Get-LauncherPSRemotingWelcome
+        Get the system summary of the local system.
+
+    .EXAMPLE
+        PS C:\> Get-LauncherPSRemotingWelcome -Session $session
+        Get the system summary of the system behind the session.
 #>
-function Get-SystemSummary
+function Get-LauncherPSRemotingWelcome
 {
     [CmdletBinding()]
     param
@@ -158,7 +163,7 @@ function Get-SystemSummary
                     Architecture    = $cimOperatingSystem.OSArchitecture
                 }
                 Processor       = [PSCustomObject] @{
-                    SocketCount     = $cimComputerSystem.NumberOfProcessors1
+                    SocketCount     = $cimComputerSystem.NumberOfProcessors
                     CoreCount       = $cimComputerSystem.NumberOfLogicalProcessors
                     Load            = $perfCounter.CounterSamples.Where({$_.Path -like "\\*$perfProcessorUtilityName"}).CookedValue * $cimComputerSystem.NumberOfLogicalProcessors / 100
                     Usage           = $perfCounter.CounterSamples.Where({$_.Path -like "\\*$perfProcessorUtilityName"}).CookedValue / 100
