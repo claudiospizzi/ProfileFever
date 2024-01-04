@@ -59,6 +59,7 @@
         "qwinsta",
         "SQLSERVERCONNECTION",
         "winrm",
+        "wsmprovhost",
         "XINT"
     ]
 }

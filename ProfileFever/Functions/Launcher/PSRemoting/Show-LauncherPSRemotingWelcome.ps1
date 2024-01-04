@@ -102,10 +102,10 @@ function Show-LauncherPSRemotingWelcome
                 Sidecar = 'of {0:0}GB' -f $data.Memory.Size
             }
             @{
-                Icon    = ' '
-                Name    = 'Processes'
-                Value   = $data.Processes.Count
-                Color   = 'Default'
+                Icon    = '󰡉 '
+                Name    = 'User Sessions'
+                Value   = $data.Sessions.Count
+                Color   = $(if ($data.WinRMSessions.Count -ge 10) { 'Yellow' } else { 'Default' })
                 Sidecar = ''
             }
             @{
@@ -116,10 +116,10 @@ function Show-LauncherPSRemotingWelcome
                 Sidecar = 'of {0:0}GB' -f $data.Page.Size
             }
             @{
-                Icon    = '󰴽 '
-                Name    = 'Connections'
-                Value   = $data.Connections.Count
-                Color   = 'Default'
+                Icon    = '󰨊 '
+                Name    = 'PS Sessions'
+                Value   = $data.PSSessions.Count
+                Color   = $(if ($data.WinRMSessions.Count -ge 5) { 'Yellow' } else { 'Default' })
                 Sidecar = ''
             }
             @{
@@ -130,18 +130,33 @@ function Show-LauncherPSRemotingWelcome
                 Sidecar = 'of {0:0}GB' -f ($systemDisk.Size / 1GB)
             }
             @{
-                Icon    = '󰡉 '
-                Name    = 'User sessions'
-                Value   = $data.Sessions.Count
-                Color   = 'Default'
+                Icon    = '󰢹 '
+                Name    = 'WinRM Sessions'
+                Value   = $data.WinRMSessions.Count
+                Color   = $(if ($data.WinRMSessions.Count -ge 5) { 'Yellow' } else { 'Default' })
                 Sidecar = ''
             }
+            # @{
+            #     Icon    = ' '
+            #     Name    = 'Processes'
+            #     Value   = $data.Processes.Count
+            #     Color   = 'Default'
+            #     Sidecar = ''
+            # }
+            # @{
+            #     Icon    = '󰴽 '
+            #     Name    = 'Connections'
+            #     Value   = $data.Connections.Count
+            #     Color   = 'Default'
+            #     Sidecar = ''
+            # }
         )
 
         # All entries which are displayed in a wide column layout. Only one
         # entry is displayed per line.
         $summaryWideEntries = @()
-        foreach ($dataDisk in $data.Disks)
+        $dataDisks = $data.Disks | Where-Object { -not [System.String]::IsNullOrEmpty($_.AccessPath) } | Sort-Object -Property 'AccessPath'
+        foreach ($dataDisk in $dataDisks)
         {
             # Calculate the disk usage. Hide it, if the disk usage is unknown.
             $dataDiskUsage = ''
@@ -250,18 +265,24 @@ function Show-LauncherPSRemotingWelcome
             [void] $summary.AppendLine()
         }
 
-        [void] $summary.AppendLine()
-        Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  󰢫  Troubleshooting' -AppendLine
-        Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  ¦ Invoke-WindowsAnalyzer    Measure-Processor         Measure-Storage' -AppendLine
-        Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  ¦ Measure-System            Measure-Memory            Measure-Session' -AppendLine
+
+        ## As of Jan 2024, the Troubleshooting functions were removed from the
+        ## ProfileFever module. This will in the future be replaced with a
+        ## better solution.
+        #
+        # [void] $summary.AppendLine()
+        # Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  󰢫  Troubleshooting' -AppendLine
+        # Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  ¦ Invoke-WindowsAnalyzer    Measure-Processor         Measure-Storage' -AppendLine
+        # Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  ¦ Measure-System            Measure-Memory            Measure-Session' -AppendLine
+
         [void] $summary.AppendLine()
         Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '    System Auditing' -AppendLine
-        Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  ¦ Install-Module -Name "SecurityFever" -Repository "PSGallery" -Force' -AppendLine
+        Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  ¦ Install-Module -Name ''SecurityFever'' -Repository ''PSGallery'' -Scope ''CurrentUser'' -Force' -AppendLine
         Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  ¦ Get-SystemAuditFileSystem         Get-SystemAuditPowerCycle' -AppendLine
         Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  ¦ Get-SystemAuditGroupPolicy        Get-SystemAuditUserSession' -AppendLine
         Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  ¦ Get-SystemAuditMsiInstaller       Get-SystemAuditWindowsService' -AppendLine
-        [void] $summary.AppendLine()
 
+        [void] $summary.AppendLine()
         Write-Host $summary.ToString()
     }
     catch

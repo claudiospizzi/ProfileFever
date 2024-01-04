@@ -60,7 +60,7 @@ function Get-LauncherPSRemotingWelcome
             $connectionCount    = (netstat.exe -n).Count - 4    # Subtract the netstat header
 
             # Enumerate the sessions
-            $sessions = @(@(qwinsta.exe) | Where-Object { $_ -match 'Active' } | Select-Object @{ N = 'Id'; E = { $_.Substring(41,5).Trim() } }, @{ N = 'User'; E = { $_.Substring(19,22).Trim() } }, @{ N = 'Session'; E = { $_.Substring(1,18).Trim() } })
+            $sessions = @(@(qwinsta.exe) | Where-Object { $_ -match '(Active|Aktiv)' } | Select-Object @{ N = 'Id'; E = { $_.Substring(41,5).Trim() } }, @{ N = 'User'; E = { $_.Substring(19,22).Trim() } }, @{ N = 'Session'; E = { $_.Substring(1,18).Trim() } })
 
             $outputDisks = @()
             foreach ($cimDisk in $cimDisks)
@@ -124,7 +124,7 @@ function Get-LauncherPSRemotingWelcome
                         {
                             if (-not [System.String]::IsNullOrEmpty($cimVolume.FileSystemLabel))
                             {
-                                $outputDisk.Label = '{0}: {1}' -f $partitionType, $cimVolume.FileSystemLabel
+                                $outputDisk.Label = $cimVolume.FileSystemLabel
                             }
 
                             $outputDisk.Size  = $cimVolume.Size
@@ -185,6 +185,12 @@ function Get-LauncherPSRemotingWelcome
                 }
                 Sessions        = [PSCustomObject] @{
                     Count           = $sessions.Count
+                }
+                PSSessions     = [PSCustomObject] @{
+                    Count           = @(Get-Process -Name 'pwsh', 'powershell' -ErrorAction 'SilentlyContinue').Count
+                }
+                WinRMSessions   = [PSCustomObject] @{
+                    Count           = @(Get-Process -Name 'wsmprovhost' -ErrorAction 'SilentlyContinue').Count
                 }
             }
 
