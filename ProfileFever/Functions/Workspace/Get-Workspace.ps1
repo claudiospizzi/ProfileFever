@@ -1,22 +1,19 @@
 ﻿<#
     .SYNOPSIS
-        Get the workspace configuration of Visual Studio Code.
+        Get the workspace configuration of Visual Studio Code which is used by
+        the extension Project Manager.
 
     .DESCRIPTION
-        Use the workspace file of the VS Code extension vscode-open-project and
-        extract all projects and workspaces.
+        The project file of the Visual Studio Code Project Manager is loaded and
+        parsed. The result is returned as PowerShell objects.
 
     .EXAMPLE
         PS C:\> Get-Workspace
         Get all projects and workspaces.
 
-    .EXAMPLE
-        PS C:\> Get-Workspace -Type 'Project'
-        Get all projects.
-
     .LINK
         https://github.com/claudiospizzi/ProfileFever
-        https://marketplace.visualstudio.com/items?itemName=svetlozarangelov.vscode-open-project
+        https://marketplace.visualstudio.com/items?itemName=alefragnani.project-manager
 #>
 function Get-Workspace
 {

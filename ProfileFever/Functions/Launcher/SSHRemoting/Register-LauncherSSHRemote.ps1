@@ -3,7 +3,7 @@
         Register the SSH remote connection in the profile.
 
     .DESCRIPTION
-        This command will store the SSH temote connection in the SSHRemote.json
+        This command will store the SSH remote connection in the SSHRemote.json
         file stored in the users AppData folder. The name must be unique,
         already existing SSH remote connections will be overwritten.
 #>

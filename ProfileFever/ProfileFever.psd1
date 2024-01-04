@@ -65,21 +65,30 @@
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
     FunctionsToExport = @(
-        # Format
+        # Host
         'Format-HostText'
-        # Troubleshooting
-        'Invoke-DnsDomainAnalyzer'
-        'Invoke-WindowsAnalyzer'
-        'Measure-System'
-        'Measure-Processor'
-        'Measure-Memory'
-        'Measure-Storage'
-        'Measure-Session'
-        'Get-SystemSummary'
-        'Show-SystemSummary'
-        # Stream
+        # Launcher
+        'Register-Launcher'
+        # Launcher > PowerShell Remoting
+        'Get-LauncherPSRemoting'
+        'Invoke-LauncherPSRemoting'
+        'Register-LauncherPSRemoting'
+        'Unregister-LauncherPSRemoting'
+        'Show-LauncherPSRemotingWelcome'
+        # Launcher > SSH Remoting
+        'Get-LauncherSSHRemote'
+        'Invoke-LauncherSSHRemote'
+        'Register-LauncherSSHRemote'
+        'Unregister-LauncherSSHRemote'
+        # Launcher > SQL Server
+        'Get-LauncherSqlServer'
+        'Invoke-LauncherSqlServer'
+        'Register-LauncherSqlServer'
+        'Unregister-LauncherSqlServer'
+        # Productivity
         'Show-Error'
         'Show-Object'
+        # Stream
         'Enable-InformationStream'
         'Disable-InformationStream'
         'Enable-VerboseStream'
@@ -88,23 +97,6 @@
         'Disable-DebugStream'
         'Enable-ProgressStream'
         'Disable-ProgressStream'
-        # Launcher
-        'Register-Launcher'
-        # PowerShell Remoting Launcher
-        'Get-LauncherPSRemoting'
-        'Invoke-LauncherPSRemoting'
-        'Register-LauncherPSRemoting'
-        'Unregister-LauncherPSRemoting'
-        # SSH Remoting Launcher
-        'Get-LauncherSSHRemote'
-        'Invoke-LauncherSSHRemote'
-        'Register-LauncherSSHRemote'
-        'Unregister-LauncherSSHRemote'
-        # SQL Server Launcher
-        'Get-LauncherSqlServer'
-        'Invoke-LauncherSqlServer'
-        'Register-LauncherSqlServer'
-        'Unregister-LauncherSqlServer'
         # Workspace
         'Get-Workspace'
         'Update-Workspace'
@@ -118,12 +110,17 @@
 
     # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
     AliasesToExport = @(
-        # Troubleshooting
-        'system'
-        'processor'
-        'memory'
-        'storage'
-        'session'
+
+        # Launcher > PowerShell Remoting
+        'winrm'
+        'win'
+        'w'
+        'Show-SystemSummary'
+        # Launcher > SSH Remoting
+        'shell'
+        'l'
+        # Launcher > SQL Server
+        'sql'
         # Stream
         'err'
         'ei'
@@ -134,15 +131,6 @@
         'dd'
         'ep'
         'dp'
-        # PowerShell Remoting
-        'winrm'
-        'win'
-        'w'
-        # SSH Remote
-        'shell'
-        'l'
-        # SQL Server
-        'sql'
     )
 
     # DSC resources to export from this module
