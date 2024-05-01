@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+
+* Fixed: Progress stream alias now using ep and dp
+
 ## 5.0.0 - 2024-01-04
 
 * Added: New function to show an object in an interactive UI (Show-Object)

@@ -16,7 +16,7 @@
 function Enable-ProgressStream
 {
     [CmdletBinding()]
-    [Alias('ei')]
+    [Alias('ep')]
     param ()
 
     try

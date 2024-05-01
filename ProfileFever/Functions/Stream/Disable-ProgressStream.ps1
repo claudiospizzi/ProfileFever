@@ -17,7 +17,7 @@
 function Disable-ProgressStream
 {
     [CmdletBinding()]
-    [Alias('di')]
+    [Alias('dp')]
     param ()
 
     try
