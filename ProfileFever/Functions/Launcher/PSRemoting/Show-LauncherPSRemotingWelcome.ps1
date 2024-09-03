@@ -25,7 +25,12 @@ function Show-LauncherPSRemotingWelcome
         # Optional session to use for the system summary.
         [Parameter(Mandatory = $false)]
         [System.Management.Automation.Runspaces.PSSession]
-        $Session
+        $Session,
+
+        # Show the command help.
+        [Parameter(Mandatory = $false)]
+        [Switch]
+        $ShowHelp
     )
 
     $colorDarkRed    = 197, 15, 31
@@ -124,7 +129,7 @@ function Show-LauncherPSRemotingWelcome
             }
             @{
                 Icon    = '󰋊 '
-                Name    = 'Storage usage'
+                Name    = 'System volume'
                 Value   = '{0:0.0%}' -f $systemDisk.Usage
                 Color   = $(if ($systemDisk.Usage -ge 0.9) { 'Red' } elseif ($systemDisk.Usage -ge 0.8) { 'Yellow' } else { 'Green' })
                 Sidecar = 'of {0:0}GB' -f ($systemDisk.Size / 1GB)
@@ -180,7 +185,7 @@ function Show-LauncherPSRemotingWelcome
             $dataDiskAccessPath = ''
             if (-not [System.String]::IsNullOrEmpty($dataDisk.AccessPath))
             {
-                $dataDiskAccessPath = ' on {0}' -f $dataDisk.AccessPath
+                $dataDiskAccessPath = ' used on {0}' -f $dataDisk.AccessPath
             }
 
             $dataDiskLabel = ''
@@ -191,7 +196,7 @@ function Show-LauncherPSRemotingWelcome
 
             $summaryWideEntries += @{
                 Icon    = '󰋊 '
-                Name    = 'Volume {0}' -f $dataDisk.Id
+                Name    = 'Data Volume {0}' -f $dataDisk.Id
                 Value   = $dataDiskUsage
                 Color   = $(if ($dataDisk.Usage -ge 0.9) { 'Red' } elseif ($dataDisk.Usage -ge 0.8) { 'Yellow' } else { 'Green' })
                 Sidecar = '{0}{1}{2}' -f $dataDiskSize, $dataDiskAccessPath, $dataDiskLabel
@@ -266,21 +271,24 @@ function Show-LauncherPSRemotingWelcome
         }
 
 
-        ## As of Jan 2024, the Troubleshooting functions were removed from the
-        ## ProfileFever module. This will in the future be replaced with a
-        ## better solution.
-        #
-        # [void] $summary.AppendLine()
-        # Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  󰢫  Troubleshooting' -AppendLine
-        # Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  ¦ Invoke-WindowsAnalyzer    Measure-Processor         Measure-Storage' -AppendLine
-        # Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  ¦ Measure-System            Measure-Memory            Measure-Session' -AppendLine
+        if ($ShowHelp.IsPresent)
+        {
+            ## As of Jan 2024, the Troubleshooting functions were removed from the
+            ## ProfileFever module. This will in the future be replaced with a
+            ## better solution.
+            #
+            # [void] $summary.AppendLine()
+            # Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  󰢫  Troubleshooting' -AppendLine
+            # Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  ¦ Invoke-WindowsAnalyzer    Measure-Processor         Measure-Storage' -AppendLine
+            # Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  ¦ Measure-System            Measure-Memory            Measure-Session' -AppendLine
 
-        [void] $summary.AppendLine()
-        Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '    System Auditing' -AppendLine
-        Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  ¦ Install-Module -Name ''SecurityFever'' -Repository ''PSGallery'' -Scope ''CurrentUser'' -Force' -AppendLine
-        Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  ¦ Get-SystemAuditFileSystem         Get-SystemAuditPowerCycle' -AppendLine
-        Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  ¦ Get-SystemAuditGroupPolicy        Get-SystemAuditUserSession' -AppendLine
-        Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  ¦ Get-SystemAuditMsiInstaller       Get-SystemAuditWindowsService' -AppendLine
+            [void] $summary.AppendLine()
+            Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '    System Auditing' -AppendLine
+            Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  ¦ Install-Module -Name ''SecurityFever'' -Repository ''PSGallery'' -Scope ''CurrentUser'' -Force' -AppendLine
+            Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  ¦ Get-SystemAuditFileSystem         Get-SystemAuditPowerCycle' -AppendLine
+            Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  ¦ Get-SystemAuditGroupPolicy        Get-SystemAuditUserSession' -AppendLine
+            Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  ¦ Get-SystemAuditMsiInstaller       Get-SystemAuditWindowsService' -AppendLine
+        }
 
         [void] $summary.AppendLine()
         Write-Host $summary.ToString()
