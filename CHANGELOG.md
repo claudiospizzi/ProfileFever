@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## Unreleased
+## 5.1.0 - 2024-09-04
 
 * Changed: Add an option to hide the help commands in the remoting welcome prompt
 * Fixed: Prevent polluting the remoting session after showing the remoting welcome prompt
