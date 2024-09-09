@@ -98,6 +98,12 @@
         'Disable-DebugStream'
         'Enable-ProgressStream'
         'Disable-ProgressStream'
+        # Troubleshooting
+        'Measure-Memory'
+        'Measure-Processor'
+        'Measure-Session'
+        'Measure-Storage'
+        'Measure-System'
         # Workspace
         'Get-Workspace'
         'Update-Workspace'
@@ -132,6 +138,12 @@
         'dd'
         'ep'
         'dp'
+        # Troubleshooting
+        'memory'
+        'processor'
+        'session'
+        'storage'
+        'system'
     )
 
     # DSC resources to export from this module

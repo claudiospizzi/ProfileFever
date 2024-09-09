@@ -285,6 +285,11 @@
                 <FormatString>d\d\ hh\:m</FormatString>
               </ListItem>
               <ListItem>
+                <Label>Startup Date</Label>
+                <PropertyName>StartupDate</PropertyName>
+                <FormatString>dd.MM.yyyy HH:mm:ss</FormatString>
+              </ListItem>
+              <ListItem>
                 <Label>Operating System</Label>
                 <PropertyName>OperatingSystem</PropertyName>
               </ListItem>
@@ -306,6 +311,11 @@
                 <Label>Physical Memory</Label>
                 <PropertyName>PhysicalMemoryMB</PropertyName>
                 <FormatString>0 \M\B</FormatString>
+              </ListItem>
+              <ListItem>
+                <Label>Installation Date</Label>
+                <PropertyName>InstallationDate</PropertyName>
+                <FormatString>dd.MM.yyyy</FormatString>
               </ListItem>
             </ListItems>
           </ListEntry>

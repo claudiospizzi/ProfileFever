@@ -26,14 +26,14 @@ function Measure-Session
 
     if ($Mode -eq 'qwinsta')
     {
-        $rawSesssions = qwinsta.exe
-        $rawSesssions = $rawSesssions | Select-Object -Skip 1
+        $rawSessions = qwinsta.exe
+        $rawSessions = $rawSessions | Select-Object -Skip 1
 
         $processesBySessionId = Get-Process | Group-Object -Property 'SessionId' -AsHashTable
 
-        foreach ($rawSesssion in $rawSesssions)
+        foreach ($rawSession in $rawSessions)
         {
-            if ($rawSesssion.PadRight(68) -match '^(?<Active>.{1})(?<Name>.{18})(?<User>.{22})(?<Id>.{5})  (?<Status>.{8})(?<Type>.{12})(?<Device>.*)$')
+            if ($rawSession.PadRight(68) -match '^(?<Active>.{1})(?<Name>.{18})(?<User>.{22})(?<Id>.{5})  (?<Status>.{8})(?<Type>.{12})(?<Device>.*)$')
             {
                 $counterSession = [PSCustomObject] @{
                     PSTypeName = 'ProfileFever.Performance.Session'
@@ -88,7 +88,7 @@ function Measure-Session
         }
     }
 
-    if ($Mode -eq 'wmi')
+    if ($Mode -eq 'process')
     {
         $cimSessions = Get-CimInstance -ClassName 'Win32_Process' | Group-Object -Property 'SessionId' -AsHashTable
         $sessionIds  = $cimSessions.Keys | Sort-Object
