@@ -75,6 +75,7 @@
         'Register-LauncherPSRemoting'
         'Unregister-LauncherPSRemoting'
         'Show-LauncherPSRemotingWelcome'
+        'Register-LauncherPSRemotingTroubleshootingFunction'
         # Launcher > SSH Remoting
         'Get-LauncherSSHRemote'
         'Invoke-LauncherSSHRemote'

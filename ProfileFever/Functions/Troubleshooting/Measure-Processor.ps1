@@ -32,7 +32,26 @@ function Measure-Processor
         [Parameter(Mandatory = $false)]
         [Alias('c')]
         [Switch]
-        $Continue
+        $Continue,
+
+        # Threshold for the processor usage in percent. If the threshold is
+        # reached, a warning message will be shown.
+        [Parameter(Mandatory = $false)]
+        [System.Int32]
+        $ProcessorUsagePercentThreshold = 80,
+
+        # Threshold for the processor queue length. If the threshold is reached,
+        # a warning message will be shown.
+        [Parameter(Mandatory = $false)]
+        [System.Int32]
+        $ProcessorQueueLengthThreshold = 10,
+
+        # Threshold for the Hyper-V Hypervisor Logical Processor Total Run Time
+        # in percent. If the threshold is reached, a warning message will be
+        # shown.
+        [Parameter(Mandatory = $false)]
+        [System.Int32]
+        $HyperVUsagePercentThreshold = 75
     )
 
     $vmmService = Get-Service -Name 'vmms' -ErrorAction 'SilentlyContinue'
@@ -73,17 +92,17 @@ function Measure-Processor
         Write-Output $counterProc
 
         # Show warning messages if thresholds are reached
-        if ($counterProc.Usage -gt 80)
+        if ($counterProc.Usage -gt $ProcessorUsagePercentThreshold)
         {
-            Write-Warning ('The Processor Time is {0:0.0}% exceeding 80%' -f $counterProc.Usage)
+            Write-Warning ('The Processor Time is {0:0.0}% exceeding {1}%' -f $counterProc.Usage, $ProcessorUsagePercentThreshold)
         }
-        if ($counterProc.Queue -gt 10)
+        if ($counterProc.Queue -gt $ProcessorQueueLengthThreshold)
         {
-            Write-Warning ('The Processor Queue Length is {0:0} exceeding 10' -f $counterProc.Queue)
+            Write-Warning ('The Processor Queue Length is {0:0} exceeding {1}' -f $counterProc.Queue, $ProcessorQueueLengthThreshold)
         }
-        if ($counterProc.HyperV -ne 'n/a' -and $counterProc.HyperV -gt 75)
+        if ($counterProc.HyperV -ne 'n/a' -and $counterProc.HyperV -gt $HyperVUsagePercentThreshold)
         {
-            Write-Warning ('The Hyper-V Hypervisor Logical Processor Total Run Time is {0:0.0}% exceeding 75%' -f $counterProc.HyperV)
+            Write-Warning ('The Hyper-V Hypervisor Logical Processor Total Run Time is {0:0.0}% exceeding {1}%' -f $counterProc.HyperV. $HyperVUsagePercentThreshold)
         }
     }
     while ($Continue.IsPresent)

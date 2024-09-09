@@ -33,7 +33,25 @@ function Measure-Memory
         [Parameter(Mandatory = $false)]
         [Alias('c')]
         [Switch]
-        $Continue
+        $Continue,
+
+        # Threshold for the memory available in mega bytes. If the threshold is
+        # reached, a warning message will be shown.
+        [Parameter(Mandatory = $false)]
+        [System.Int32]
+        $MemoryAvailableMegaByteThreshold = 100,
+
+        # Threshold for the memory available in percent. If the threshold is
+        # reached, a warning message will be shown.
+        [Parameter(Mandatory = $false)]
+        [System.Int32]
+        $MemoryAvailablePercentThreshold = 10,
+
+        # Threshold for the page file usage in percent. If the threshold is
+        # reached, a warning message will be shown.
+        [Parameter(Mandatory = $false)]
+        [System.Int32]
+        $PageFileUsedPercentThreshold = 80
     )
 
     $counterNames = '\Memory\Available MBytes',
@@ -78,19 +96,19 @@ function Measure-Memory
         Write-Output $counterPage
 
         # Show warning messages if thresholds are reached.
-        if ($counterMemory.Available -lt 100)
+        if ($counterMemory.Available -lt $MemoryAvailableMegaByteThreshold)
         {
-            Write-Warning ('The Memory Available is {0:0}MB falling below 100MB' -f $counterMemory.Available)
+            Write-Warning ('The Memory Available is {0:0}MB falling below {1}MB' -f $counterMemory.Available, $MemoryAvailableMegaByteThreshold)
         }
         $counterMemoryAvailablePercent = $counterMemory.Available / $counterMemory.Total * 100
-        if ($counterMemoryAvailablePercent -lt 10)
+        if ($counterMemoryAvailablePercent -lt $MemoryAvailablePercentThreshold)
         {
-            Write-Warning ('The Memory Available is {0:0}% falling below 10%' -f $counterMemoryAvailablePercent)
+            Write-Warning ('The Memory Available is {0:0}% falling below {1}%' -f $counterMemoryAvailablePercent, $MemoryAvailablePercentThreshold)
         }
         $counterPageUsedOfMemoryPercent = $counterPage.Used / $counterMemory.Total * 100
-        if ($counterPageUsedOfMemoryPercent -gt 80)
+        if ($counterPageUsedOfMemoryPercent -gt $PageFileUsedPercentThreshold)
         {
-            Write-Warning ('The Page File Usage is {0:0.0}% exceeding 80% compared to the Memory Total' -f $counterPageUsedOfMemoryPercent)
+            Write-Warning ('The Page File Usage is {0:0.0}% exceeding {1}% compared to the Memory Total' -f $counterPageUsedOfMemoryPercent, $PageFileUsedPercentThreshold)
         }
     }
     while ($Continue.IsPresent)

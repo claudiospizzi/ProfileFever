@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+
+* Added: Bring back the system measurement functions for processor, memory, storage and general system information
+
 ## 5.1.0 - 2024-09-04
 
 * Changed: Add an option to hide the help commands in the remoting welcome prompt

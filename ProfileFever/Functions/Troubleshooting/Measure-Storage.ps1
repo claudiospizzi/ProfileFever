@@ -34,7 +34,43 @@ function Measure-Storage
         [Parameter(Mandatory = $false)]
         [Alias('c')]
         [Switch]
-        $Continue
+        $Continue,
+
+        # Threshold for the disk free space in giga bytes. If the threshold is
+        # reached, a warning message will be shown.
+        [Parameter(Mandatory = $false)]
+        [System.Int32]
+        $DiskFreeGigaByteThreshold = 5,
+
+        # Threshold for the disk free space in percent. If the threshold is
+        # reached, a warning message will be shown.
+        [Parameter(Mandatory = $false)]
+        [System.Int32]
+        $DiskFreePercentThreshold = 5,
+
+        # Threshold for the disk time in percent. If the threshold is reached, a
+        # warning message will be shown.
+        [Parameter(Mandatory = $false)]
+        [System.Int32]
+        $DiskTimePercentThreshold = 80,
+
+        # Threshold for the disk queue length. If the threshold is reached, a
+        # warning message will be shown.
+        [Parameter(Mandatory = $false)]
+        [System.Int32]
+        $DiskQueueLengthThreshold = 2,
+
+        # Threshold for the average read time in seconds. If the threshold is
+        # reached, a warning message will be shown.
+        [Parameter(Mandatory = $false)]
+        [System.Int32]
+        $AvgReadTimeMillisecondThreshold = 10,
+
+        # Threshold for the average write time in seconds. If the threshold is
+        # reached, a warning message will be shown.
+        [Parameter(Mandatory = $false)]
+        [System.Int32]
+        $AvgWriteTimeMillisecondThreshold = 10
     )
 
     $counterNames = '\PhysicalDisk(*)\% Disk Time',
@@ -78,30 +114,32 @@ function Measure-Storage
             Write-Output $counterDisk
 
             # Show warning messages if thresholds are reached.
-            if ($counterDisk.Free -lt 1)
+            if ($counterDisk.Free -lt $DiskFreeGigaByteThreshold)
             {
-                Write-Warning ('The Disk {0} Free Space is {1:0}MB falling below 1GB' -f $counterDisk.Name, ($counterDisk.Free * 1000))
+                Write-Warning ('The Disk {0} Free Space is {1:0}MB falling below {2}GB' -f $counterDisk.Name, ($counterDisk.Free * 1000), $DiskFreeGigaByteThreshold)
             }
             $counterDiskFreePercent = $counterDisk.Free / $counterDisk.Size * 100
-            if ($counterDiskFreePercent -lt 5)
+            if ($counterDiskFreePercent -lt $DiskFreePercentThreshold)
             {
-                Write-Warning ('The Disk {0} Free Space is {1:0.0}% falling below 5%' -f $counterDisk.Name, $counterDiskFreePercent)
+                Write-Warning ('The Disk {0} Free Space is {1:0.0}% falling below {2}%' -f $counterDisk.Name, $counterDiskFreePercent, $DiskFreePercentThreshold)
             }
-            if ($counterDisk.DiskTime -gt 80)
+            if ($counterDisk.DiskTime -gt $DiskTimePercentThreshold)
             {
-                Write-Warning ('The Disk {0} Disk Time is {1:0.0} exceeding 80%' -f $counterDisk.Name, $counterDisk.DiskTime)
+                Write-Warning ('The Disk {0} Disk Time is {1:0.0} exceeding {2}%' -f $counterDisk.Name, $counterDisk.DiskTime, $DiskTimePercentThreshold)
             }
-            if ($counterDisk.DiskQueue -gt 2)
+            if ($counterDisk.DiskQueue -gt $DiskQueueLengthThreshold)
             {
-                Write-Warning ('The Disk {0} Queue Length is {1:0} exceeding 2' -f $counterDisk.Name, $counterDisk.DiskQueue)
+                Write-Warning ('The Disk {0} Queue Length is {1:0} exceeding {2}' -f $counterDisk.Name, $counterDisk.DiskQueue, $DiskQueueLengthThreshold)
             }
-            if ($counterDisk.AvgRead -gt 0.010)
+            $counterDiskAvgReadMillisecond = $counterDisk.AvgRead * 1000
+            if ($counterDiskAvgReadMillisecond -gt $AvgReadTimeMillisecondThreshold)
             {
-                Write-Warning ('The Disk {0} Average Millisecond per Read is {1:0}ms exceeding 10ms' -f $counterDisk.Name, ($counterDisk.AvgRead * 1000))
+                Write-Warning ('The Disk {0} Average Millisecond per Read is {1:0}ms exceeding {2}ms' -f $counterDisk.Name, $counterDiskAvgReadMillisecond, $AvgReadTimeMillisecondThreshold)
             }
-            if ($counterDisk.AvgWrite -gt 0.010)
+            $counterDiskAvgWriteMillisecond = $counterDisk.AvgWrite * 1000
+            if ($counterDiskAvgWriteMillisecond -gt $AvgWriteTimeMillisecondThreshold)
             {
-                Write-Warning ('The Disk {0} Average Millisecond per Write is {1:0}ms exceeding 10ms' -f $counterDisk.Name, ($counterDisk.AvgWrite * 1000))
+                Write-Warning ('The Disk {0} Average Millisecond per Write is {1:0}ms exceeding {2}ms' -f $counterDisk.Name, $counterDiskAvgWriteMillisecond, $AvgWriteTimeMillisecondThreshold)
             }
         }
     }
