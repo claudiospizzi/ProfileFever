@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 
 * Added: Bring back the system measurement functions for processor, memory, storage and general system information
+* Fixed: Hide disks of remote cluster nodes when showing the Launcher PSRemoting welcome prompt
 
 ## 5.1.0 - 2024-09-04
 

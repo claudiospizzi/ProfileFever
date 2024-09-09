@@ -70,6 +70,13 @@ function Get-LauncherPSRemotingWelcome
                 {
                     $diskNumber = $cimDisk.Number
 
+                    # Skip the disk if it does not have a number. This indicates
+                    # a non-local disk of another failover cluster node.
+                    if ([System.String]::IsNullOrEmpty($diskNumber))
+                    {
+                        continue
+                    }
+
                     foreach ($cimPartition in ($cimPartitions | Where-Object { $_.DiskNumber -eq $cimDisk.Number }))
                     {
                         $partitionNumber = $cimPartition.PartitionNumber
