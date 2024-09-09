@@ -20,7 +20,7 @@ jobs:
         with:
           shell: powershell
           updatable: true
-          modules-to-cache: "InvokeBuild::, InvokeBuildHelper::, SecurityFever::, Pester:4.10.1"
+          modules-to-cache: "InvokeBuild::, InvokeBuildHelper::, Pester:4.10.1"
 
       - name: Build the PowerShell module assemblies
         shell: powershell
