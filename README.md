@@ -1,6 +1,7 @@
-[![PowerShell Gallery - ProfileFever](https://img.shields.io/badge/PowerShell_Gallery-ProfileFever-0072C6.svg)](https://www.powershellgallery.com/packages/ProfileFever)
-[![GitHub - Release](https://img.shields.io/github/release/claudiospizzi/ProfileFever.svg)](https://github.com/claudiospizzi/ProfileFever/releases)
-[![AppVeyor - master](https://img.shields.io/appveyor/ci/claudiospizzi/ProfileFever/master.svg)](https://ci.appveyor.com/project/claudiospizzi/ProfileFever/branch/master)
+[![PowerShell Gallery Version](https://img.shields.io/powershellgallery/v/ProfileFever?label=PowerShell%20Gallery&logo=PowerShell)](https://www.powershellgallery.com/packages/ProfileFever)
+[![Gallery Downloads](https://img.shields.io/powershellgallery/dt/ProfileFever?label=Downloads&logo=PowerShell)](https://www.powershellgallery.com/packages/ProfileFever)
+[![GitHub Release](https://img.shields.io/github/v/release/claudiospizzi/ProfileFever?label=Release&logo=GitHub&sort=semver)](https://github.com/claudiospizzi/ProfileFever/releases)
+[![GitHub CI Build](https://img.shields.io/github/actions/workflow/status/claudiospizzi/ProfileFever/ci.yml?label=CI%20Build&logo=GitHub)](https://github.com/claudiospizzi/ProfileFever/actions/workflows/ci.yml)
 
 # ProfileFever PowerShell Module
 
