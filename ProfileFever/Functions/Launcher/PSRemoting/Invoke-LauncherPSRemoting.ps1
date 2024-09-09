@@ -155,28 +155,8 @@ function Invoke-LauncherPSRemoting
 
                 Write-Host "[Launcher] Enter remote shell on $verbose  ..." -ForegroundColor 'Yellow'
 
-                ## As of Jan 2024, the Troubleshooting functions were removed
-                ## from the ProfileFever module. This will in the future be
-                ## replaced with a better solution.
-                #
-                # # Upload a stub module with helper commands to troubleshoot a
-                # # Windows system.
-                # $stubModule = ''
-                # $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Troubleshooting\Invoke-WindowsAnalyzer.ps1" -Raw
-                # $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Troubleshooting\Measure-System.ps1" -Raw
-                # $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Troubleshooting\Measure-Processor.ps1" -Raw
-                # $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Troubleshooting\Measure-Memory.ps1" -Raw
-                # $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Troubleshooting\Measure-Storage.ps1" -Raw
-                # $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Troubleshooting\Measure-Session.ps1" -Raw
-                # $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Format\Format-HostText.ps1" -Raw
-                # $stubFormat = Get-Content -Path "$PSScriptRoot\..\..\..\ProfileFever.Xml.Format.ps1xml" -Raw
-                # Invoke-Command -Session $session -ScriptBlock {
-                #     Set-Content -Path "$Env:Temp\ProfileFeverStub.psm1" -Value $using:stubModule -Force
-                #     Import-Module -Name "$Env:Temp\ProfileFeverStub.psm1"
-                #     Set-Content -Path "$Env:Temp\ProfileFeverStub.Xml.Format.ps1xml" -Value $using:stubFormat -Force
-                #     Update-FormatData -AppendPath "$Env:Temp\ProfileFeverStub.Xml.Format.ps1xml"
-                #     Set-Location -Path "$Env:SystemDrive\"
-                # }
+                # Register the troubleshooting functions in the remote session.
+                Register-LauncherPSRemotingTroubleshootingFunction -Session $session
 
                 # Update the prompt of the remoting session to show the name of
                 # the connected server.

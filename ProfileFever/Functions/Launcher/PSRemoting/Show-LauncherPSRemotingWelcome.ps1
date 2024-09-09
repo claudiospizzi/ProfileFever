@@ -270,17 +270,12 @@ function Show-LauncherPSRemotingWelcome
             [void] $summary.AppendLine()
         }
 
-
         if ($ShowHelp.IsPresent)
         {
-            ## As of Jan 2024, the Troubleshooting functions were removed from the
-            ## ProfileFever module. This will in the future be replaced with a
-            ## better solution.
-            #
-            # [void] $summary.AppendLine()
-            # Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  󰢫  Troubleshooting' -AppendLine
-            # Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  ¦ Invoke-WindowsAnalyzer    Measure-Processor         Measure-Storage' -AppendLine
-            # Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  ¦ Measure-System            Measure-Memory            Measure-Session' -AppendLine
+            [void] $summary.AppendLine()
+            Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  󰢫  Troubleshooting' -AppendLine
+            Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  ¦ Measure-System            Measure-Processor         Measure-Storage' -AppendLine
+            Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '  ¦ Measure-Session           Measure-Memory' -AppendLine
 
             [void] $summary.AppendLine()
             Format-HostText -StringBuilder $summary -ForegroundColor $colorDarkGray -Message '    System Auditing' -AppendLine
