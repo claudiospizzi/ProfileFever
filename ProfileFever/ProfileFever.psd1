@@ -1,9 +1,9 @@
-﻿@{
+@{
     # Script module or binary module file associated with this manifest.
     RootModule = 'ProfileFever.psm1'
 
     # Version number of this module.
-    ModuleVersion = '5.1.0'
+    ModuleVersion = '5.2.0'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
