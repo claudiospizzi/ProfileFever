@@ -38,10 +38,11 @@ function Register-LauncherPSRemotingTroubleshootingFunction
 
         # Register the stub module and the format data in the remote session.
         Invoke-Command -Session $Session -ScriptBlock {
-            Set-Content -Path "$Env:Temp\ProfileFeverStub.psm1" -Value $using:stubModule -Force
-            Import-Module -Name "$Env:Temp\ProfileFeverStub.psm1"
-            Set-Content -Path "$Env:Temp\ProfileFeverStub.Xml.Format.ps1xml" -Value $using:stubFormat -Force
-            Update-FormatData -AppendPath "$Env:Temp\ProfileFeverStub.Xml.Format.ps1xml"
+            $tempModulePath = [System.IO.Path]::GetTempPath().TrimEnd('\')
+            Set-Content -Path "$tempModulePath\ProfileFeverStub.psm1" -Value $using:stubModule -Force
+            Import-Module -Name "$tempModulePath\ProfileFeverStub.psm1"
+            Set-Content -Path "$tempModulePath\ProfileFeverStub.Xml.Format.ps1xml" -Value $using:stubFormat -Force
+            Update-FormatData -AppendPath "$tempModulePath\ProfileFeverStub.Xml.Format.ps1xml"
         }
     }
     catch
