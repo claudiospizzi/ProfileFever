@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## Unreleased
+## 5.3.0 - 2026-02-10
 
 * Added: Add option to set workspace path in the $ENV:WORKSPACE_PATH environment variable
 * Changed: Project setup, build scripts and documentation
