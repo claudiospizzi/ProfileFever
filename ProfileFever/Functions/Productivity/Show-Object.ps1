@@ -162,9 +162,9 @@ function Show-Object
                     }
 
                     # Get all events and show them as tree nodes.
-                    foreach ($event in @(Get-Member -InputObject $Object -MemberType 'Event'))
+                    foreach ($eventDefinition in @(Get-Member -InputObject $Object -MemberType 'Event'))
                     {
-                        Add-TreeNodeEvent -Parent $treeNode -Event $event
+                        Add-TreeNodeEvent -Parent $treeNode -EventDefinition $eventDefinition
                     }
                 }
 
@@ -348,22 +348,22 @@ function Show-Object
                     # The event to add as tree node.
                     [Parameter(Mandatory = $true)]
                     [Microsoft.PowerShell.Commands.MemberDefinition]
-                    $Event
+                    $EventDefinition
                 )
 
                 # Try to match the event definition to extract the return type and the definition itself.
-                if ($Event.Definition -match "^(?<ReturnType>.*) ((?<Interface>.*\.))?$($Event.Name)\((?<Parameter>.*)\);?$")
+                if ($EventDefinition.Definition -match "^(?<ReturnType>.*) ((?<Interface>.*\.))?$($EventDefinition.Name)\((?<Parameter>.*)\);?$")
                 {
-                    $treeNode = [System.Windows.Forms.TreeNode]::new(('{0}{1}({2})' -f $Matches['Interface'], $Event.Name, $Matches['Parameter']))
+                    $treeNode = [System.Windows.Forms.TreeNode]::new(('{0}{1}({2})' -f $Matches['Interface'], $EventDefinition.Name, $Matches['Parameter']))
 
                     Add-TreeNodeType -Parent $treeNode -Name $Matches['ReturnType']
                 }
                 else
                 {
                     # No match of an event definition
-                    Write-Warning "[Show-Object] Event definition '$($Event.Definition)' was unexpected. Show the original event definition."
+                    Write-Warning "[Show-Object] Event definition '$($EventDefinition.Definition)' was unexpected. Show the original event definition."
 
-                    $treeNode = [System.Windows.Forms.TreeNode]::new($Event.Definition)
+                    $treeNode = [System.Windows.Forms.TreeNode]::new($EventDefinition.Definition)
                 }
 
                 $treeNode.ImageIndex         = $iconDefinitions.Event.Id
