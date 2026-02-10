@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+
+* Updated: Project setup, build scripts and documentation
+
 ## 5.2.0 - 2024-09-09
 
 * Added: Bring back the system measurement functions for processor, memory, storage and general system information

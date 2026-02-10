@@ -27,9 +27,6 @@
         "**/*.user": true
     },
 
-    "powershell.powerShellDefaultVersion": "PowerShell Core 7 (x64)",
-    "powershell.integratedConsole.suppressStartupBanner": true,
-    "powershell.promptToUpdatePowerShell": false,
     "powershell.debugging.createTemporaryIntegratedConsole": true,
     "powershell.codeFormatting.addWhitespaceAroundPipe": true,
     "powershell.codeFormatting.autoCorrectAliases": false,

@@ -1,7 +1,7 @@
+[![GitHub Release](https://img.shields.io/github/v/release/claudiospizzi/ProfileFever?label=Release&logo=GitHub&sort=semver)](https://github.com/claudiospizzi/ProfileFever/releases)
+[![GitHub CI Build](https://img.shields.io/github/actions/workflow/status/claudiospizzi/ProfileFever/pwsh-ci.yml?label=CI%20Build&logo=GitHub)](https://github.com/claudiospizzi/ProfileFever/actions/workflows/pwsh-ci.yml)
 [![PowerShell Gallery Version](https://img.shields.io/powershellgallery/v/ProfileFever?label=PowerShell%20Gallery&logo=PowerShell)](https://www.powershellgallery.com/packages/ProfileFever)
 [![Gallery Downloads](https://img.shields.io/powershellgallery/dt/ProfileFever?label=Downloads&logo=PowerShell)](https://www.powershellgallery.com/packages/ProfileFever)
-[![GitHub Release](https://img.shields.io/github/v/release/claudiospizzi/ProfileFever?label=Release&logo=GitHub&sort=semver)](https://github.com/claudiospizzi/ProfileFever/releases)
-[![GitHub CI Build](https://img.shields.io/github/actions/workflow/status/claudiospizzi/ProfileFever/ci.yml?label=CI%20Build&logo=GitHub)](https://github.com/claudiospizzi/ProfileFever/actions/workflows/ci.yml)
 
 # ProfileFever PowerShell Module
 
@@ -9,10 +9,7 @@ PowerShell module with functions to extend the PowerShell console.
 
 ## Introduction
 
-The module is primary aligned to be used by myself - but feel free to use it. It
-supports the new Windows Terminal. Most of the prompt features are removed with
-version 4.0.0 as I've switched to a [Oh My Posh](https://ohmyposh.dev/) prompt
-with a class profile file.
+The module is primary aligned to be used by myself - but feel free to use it. It supports the new Windows Terminal.
 
 ## Features
 
