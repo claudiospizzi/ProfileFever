@@ -8,40 +8,30 @@
 #>
 
 
-## Module loader
+## Module Core
 
-# Get and dot source all model classes (internal)
-Split-Path -Path $PSCommandPath |
-    Get-ChildItem -Filter 'Classes' -Directory |
-        Get-ChildItem -Include '*.ps1' -File -Recurse |
-            ForEach-Object { . $_.FullName }
-
-# Get and dot source all helper functions (internal)
-Split-Path -Path $PSCommandPath |
-    Get-ChildItem -Filter 'Helpers' -Directory |
-        Get-ChildItem -Include '*.ps1' -File -Recurse |
-            ForEach-Object { . $_.FullName }
-
-# Get and dot source all external functions (public)
-Split-Path -Path $PSCommandPath |
-    Get-ChildItem -Filter 'Functions' -Directory |
-        Get-ChildItem -Include '*.ps1' -File -Recurse |
-            ForEach-Object { . $_.FullName }
-
-
-## Module configuration
-
-# Module behaviour
-$ErrorActionPreference = 'Stop'
-$ProgressPreference    = 'SilentlyContinue'
+# Module behavior
+Set-StrictMode -Version 'Latest'
+$Script:ErrorActionPreference = 'Stop'
+$Script:ProgressPreference    = 'SilentlyContinue'
 
 # Module metadata
 $Script:PSModulePath = [System.IO.Path]::GetDirectoryName($PSCommandPath)
 $Script:PSModuleName = [System.IO.Path]::GetFileName($PSCommandPath).Split('.')[0]
 
-# Module Context: Environment
+
+## Module Loader
+
+# Get and dot source all helper functions (internal)
+Get-ChildItem -Path "$Script:PSModulePath\Helpers" -Filter '*.ps1' -File -Recurse |
+    ForEach-Object { . $_.FullName }
+
+# Get and dot source all external functions (public)
+Get-ChildItem -Path "$Script:PSModulePath\Functions" -Filter '*.ps1' -File -Recurse |
+    ForEach-Object { . $_.FullName }
 
 
+## Module configuration
 
 # Initialize all relevant launcher variables
 $Script:LAUNCHER_PATH             = "$Env:AppData\PowerShell\ProfileFever"
