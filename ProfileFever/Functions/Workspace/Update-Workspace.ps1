@@ -28,11 +28,12 @@ function Update-Workspace
     [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'Medium')]
     param
     (
-        # Path to the workspace. $HOME\Workspace is used by default.
+        # Path to the workspaces. If not specified, the $Env:WORKSPACE_PATH is
+        # used if set. Otherwise, the default path $HOME\Workspace is used.
         [Parameter(Mandatory = $false)]
         [ValidateScript({Test-Path -Path $_})]
         [System.String[]]
-        $Path = "$HOME\Workspace",
+        $Path,
 
         # Path to the JSON config file of the Project Manager extension.
         [Parameter(Mandatory = $false)]
@@ -49,6 +50,18 @@ function Update-Workspace
 
     try
     {
+        if (-not $PSBoundParameters.ContainsKey('Path'))
+        {
+            if ($Env:WORKSPACE_PATH)
+            {
+                $Path = $Env:WORKSPACE_PATH -split ';'
+            }
+            else
+            {
+                $Path = "$HOME\Workspace"
+            }
+        }
+
         if (Test-Path -Path $ProjectManagerPath)
         {
             $config = @(Get-Content -Path $ProjectManagerPath -Encoding 'UTF8' | ConvertFrom-Json)
@@ -60,6 +73,14 @@ function Update-Workspace
 
         foreach ($currentPath in $Path)
         {
+            Write-Verbose "Processing workspace path: $currentPath"
+
+            if (-not (Test-Path -Path $currentPath))
+            {
+                Write-Warning "The path '$currentPath' does not exist. Skipping."
+                continue
+            }
+
             $currentPath = Get-Item -Path $currentPath
 
             $detectedPaths = @()
@@ -93,6 +114,8 @@ function Update-Workspace
 
             foreach ($detectedPath in $detectedPaths)
             {
+                Write-Verbose "Processing detected path: $($detectedPath.FullName)"
+
                 # Add a new project if it does not exist
                 if ($config.Count -eq 0 -or $config.rootPath -notcontains $detectedPath.FullName)
                 {

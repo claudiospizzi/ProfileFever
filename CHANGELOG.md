@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
-* Updated: Project setup, build scripts and documentation
+* Added: Add option to set workspace path in the $ENV:WORKSPACE_PATH environment variable
+* Changed: Project setup, build scripts and documentation
 
 ## 5.2.0 - 2024-09-09
 
