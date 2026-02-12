@@ -31,7 +31,6 @@ function Update-Workspace
         # Path to the workspaces. If not specified, the $Env:WORKSPACE_PATH is
         # used if set. Otherwise, the default path $HOME\Workspace is used.
         [Parameter(Mandatory = $false)]
-        [ValidateScript({Test-Path -Path $_})]
         [System.String[]]
         $Path,
 
@@ -54,7 +53,7 @@ function Update-Workspace
         {
             if ($Env:WORKSPACE_PATH)
             {
-                $Path = $Env:WORKSPACE_PATH -split ';'
+                $Path = @($Env:WORKSPACE_PATH -split ';') | Where-Object { -not [System.String]::IsNullOrWhiteSpace($_) }
             }
             else
             {
