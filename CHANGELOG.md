@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## Unreleased
+## 5.3.1 - 2026-02-12
 
 * Fixed: Fix path issue with the VS Code workspace update
 * Fixed: Bugs around the PowerShell Remoting launcher and the welcome prompt
