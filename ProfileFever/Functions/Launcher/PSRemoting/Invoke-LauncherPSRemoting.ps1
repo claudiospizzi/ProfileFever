@@ -41,7 +41,12 @@ function Invoke-LauncherPSRemoting
         # script block.
         [Parameter(Mandatory = $false, ParameterSetName = 'Connect', Position = 1)]
         [System.Object]
-        $ScriptBlock
+        $ScriptBlock,
+
+        # Show the command help.
+        [Parameter(Mandatory = $false)]
+        [Switch]
+        $ShowHelp
     )
 
     $ErrorActionPreference = 'Stop'
@@ -175,7 +180,7 @@ function Invoke-LauncherPSRemoting
 
                 try
                 {
-                    Show-LauncherPSRemotingWelcome -Session $session
+                    Show-LauncherPSRemotingWelcome -Session $session -ShowHelp:$ShowHelp.IsPresent
                 }
                 catch
                 {

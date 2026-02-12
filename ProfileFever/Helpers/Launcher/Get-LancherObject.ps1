@@ -1,12 +1,12 @@
 ﻿<#
     .SYNOPSIS
-        Get the regeistered objects from the profile.
+        Get the registered objects from the profile.
 
     .DESCRIPTION
-        This command will get all registerd objects from the JSON file named
+        This command will get all registered objects from the JSON file named
         like the specified type. The JSON file is stored in the users AppData
-        folder. The output can be filted by name (wildcard supported) and/or by
-        tags.
+        folder. The output can be filtered by name (wildcard supported) and/or
+        by tags.
 #>
 function Get-LauncherObject
 {
@@ -48,7 +48,7 @@ function Get-LauncherObject
         }
 
         # Filter all objects by the specified tags.
-        if ($PSBoundParameters.ContainsKey('Tag') -and $Tag.Count -gt 0)
+        if ($PSBoundParameters.ContainsKey('Tag') -and $null -ne $Tag -and $Tag.Length -gt 0)
         {
             [System.Object[]] $objects = $objects | Where-Object { [System.Linq.Enumerable]::Intersect([System.String[]] $_.Tag, [System.String[]] $Tag, [System.StringComparer]::OrdinalIgnoreCase).Count -gt 0 }
         }

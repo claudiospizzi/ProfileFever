@@ -188,19 +188,19 @@ function Get-LauncherPSRemotingWelcome
                     }
                     Disks           = $outputDisks
                     Processes       = [PSCustomObject] @{
-                        Count           = $processCount
+                        Count           = [System.Int32] $processCount
                     }
                     Connections     = [PSCustomObject] @{
-                        Count           = $connectionCount
+                        Count           = [System.Int32] $connectionCount
                     }
                     Sessions        = [PSCustomObject] @{
-                        Count           = $sessions.Count
+                        Count           = [System.Int32] $sessions.Count
                     }
-                    PSSessions     = [PSCustomObject] @{
-                        Count           = @(Get-Process -Name 'pwsh', 'powershell' -ErrorAction 'SilentlyContinue').Count
+                    PowerShellHosts = [PSCustomObject] @{
+                        Count           = [System.Int32] @(Get-Process -Name 'pwsh', 'powershell' -ErrorAction 'SilentlyContinue').Count
                     }
                     WinRMSessions   = [PSCustomObject] @{
-                        Count           = @(Get-Process -Name 'wsmprovhost' -ErrorAction 'SilentlyContinue').Count
+                        Count           = [System.Int32] @(Get-Process -Name 'wsmprovhost' -ErrorAction 'SilentlyContinue').Count
                     }
                 }
 

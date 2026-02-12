@@ -109,8 +109,8 @@ function Show-LauncherPSRemotingWelcome
             @{
                 Icon    = '󰡉 '
                 Name    = 'User Sessions'
-                Value   = $data.Sessions.Count
-                Color   = $(if ($data.WinRMSessions.Count -ge 10) { 'Yellow' } else { 'Default' })
+                Value   = [System.String] $data.Sessions.Count
+                Color   = $(if ($data.Sessions.Count -ge 10) { 'Yellow' } else { 'Default' })
                 Sidecar = ''
             }
             @{
@@ -122,36 +122,36 @@ function Show-LauncherPSRemotingWelcome
             }
             @{
                 Icon    = '󰨊 '
-                Name    = 'PS Sessions'
-                Value   = $data.PSSessions.Count
-                Color   = $(if ($data.WinRMSessions.Count -ge 5) { 'Yellow' } else { 'Default' })
+                Name    = 'PowerShell Hosts'
+                Value   = [System.String] $data.PowerShellHosts.Count
+                Color   = $(if ($data.PowerShellHosts.Count -ge 5) { 'Yellow' } else { 'Default' })
                 Sidecar = ''
             }
             @{
                 Icon    = '󰋊 '
                 Name    = 'System volume'
-                Value   = '{0:0.0%}' -f $systemDisk.Usage
+                Value   = '{0:0%}' -f $systemDisk.Usage
                 Color   = $(if ($systemDisk.Usage -ge 0.9) { 'Red' } elseif ($systemDisk.Usage -ge 0.8) { 'Yellow' } else { 'Green' })
                 Sidecar = 'of {0:0}GB' -f ($systemDisk.Size / 1GB)
             }
             @{
                 Icon    = '󰢹 '
                 Name    = 'WinRM Sessions'
-                Value   = $data.WinRMSessions.Count
+                Value   = [System.String] $data.WinRMSessions.Count
                 Color   = $(if ($data.WinRMSessions.Count -ge 5) { 'Yellow' } else { 'Default' })
                 Sidecar = ''
             }
             # @{
             #     Icon    = ' '
             #     Name    = 'Processes'
-            #     Value   = $data.Processes.Count
+            #     Value   = [System.String] $data.Processes.Count
             #     Color   = 'Default'
             #     Sidecar = ''
             # }
             # @{
             #     Icon    = '󰴽 '
             #     Name    = 'Connections'
-            #     Value   = $data.Connections.Count
+            #     Value   = [System.String] $data.Connections.Count
             #     Color   = 'Default'
             #     Sidecar = ''
             # }
@@ -215,7 +215,7 @@ function Show-LauncherPSRemotingWelcome
         {
             $summaryEntry = $summaryNarrowEntries[$i]
 
-            [void] $summary.AppendFormat('  {0,1} {1,-15} : ', $summaryEntry.Icon, $summaryEntry.Name)
+            [void] $summary.AppendFormat('  {0,1} {1,-16} : ', $summaryEntry.Icon, $summaryEntry.Name)
 
             switch ($summaryEntry.Color)
             {
@@ -245,7 +245,7 @@ function Show-LauncherPSRemotingWelcome
         {
             $summaryEntry = $summaryWideEntries[$i]
 
-            [void] $summary.AppendFormat('  {0,1} {1,-10} : ', $summaryEntry.Icon, $summaryEntry.Name)
+            [void] $summary.AppendFormat('  {0,1} {1,-16} : ', $summaryEntry.Icon, $summaryEntry.Name)
 
             if (-not [System.String]::IsNullOrEmpty($summaryEntry.Value))
             {

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 
 * Fixed: Fix path issue with the VS Code workspace update
+* Fixed: Bugs around the PowerShell Remoting launcher and the welcome prompt
 
 ## 5.3.0 - 2026-02-10
 

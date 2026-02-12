@@ -52,6 +52,7 @@
         "ansi",
         "dbatools",
         "gpupdate",
+        "Linq",
         "OHMYPOSH",
         "qwinsta",
         "SQLSERVERCONNECTION",
