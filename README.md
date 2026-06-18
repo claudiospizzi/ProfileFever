@@ -60,6 +60,14 @@ The module is primary aligned to be used by myself - but feel free to use it. It
 * **Format-HostText**  
   Format the text with RGB colors and weight.
 
+### Productivity
+
+* **Show-Error**  
+  Show the last errors with more details.
+
+* **Show-Object**  
+  Show the object with more details in an interactive UI.
+
 ### Performance
 
 * **Measure-System**  
