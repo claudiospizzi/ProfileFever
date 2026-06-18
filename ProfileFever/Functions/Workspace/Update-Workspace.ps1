@@ -55,9 +55,17 @@ function Update-Workspace
             {
                 $Path = @($Env:WORKSPACE_PATH -split ';') | Where-Object { -not [System.String]::IsNullOrWhiteSpace($_) }
             }
-            else
+            elseif (Test-Path -Path "$HOME\Workspace")
             {
                 $Path = "$HOME\Workspace"
+            }
+            elseif (Test-Path -Path "D:\Workspace")
+            {
+                $Path = "D:\Workspace"
+            }
+            else
+            {
+                throw 'No workspace path specified and no default path found. Please specify a workspace path or set the WORKSPACE_PATH environment variable.'
             }
         }
 

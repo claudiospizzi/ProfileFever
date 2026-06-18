@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+* Changed: Add additional default workspace path for D drive and throw if no workspace path is found
 * Changed: Optimize module loading time by change the dot-sourcing mode
 
 ## 5.3.1 - 2026-02-12
