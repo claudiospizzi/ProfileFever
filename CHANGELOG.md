@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## Unreleased
+## 5.4.0 - 2026-06-18
 
 * Changed: Add additional default workspace path for D drive and throw if no workspace path is found
 * Changed: Optimize module loading time by change the dot-sourcing mode
