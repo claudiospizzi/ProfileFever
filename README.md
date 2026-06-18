@@ -117,10 +117,9 @@ manually on your local system:
 
 ## Requirements
 
-The following minimum requirements are necessary to use this module:
+The following minimum requirements are recommended to use this module. It used to work on older versions and other platforms too, but they are not officially supported or tested.
 
-* Windows PowerShell 5.1
-* Windows 10
+* Windows 11 / PowerShell 7
 
 ## Contribute
 
