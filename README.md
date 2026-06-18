@@ -122,12 +122,14 @@ experience, please us the following tools:
 * [Visual Studio Code] with the [PowerShell Extension]
 * [Pester], [PSScriptAnalyzer], [InvokeBuild], [InvokeBuildHelper] modules
 
-[PowerShell Gallery]: https://powershellgallery.com/
+[PowerShell Gallery]: https://www.powershellgallery.com/packages/ProfileFever
+[GitHub Releases]: https://github.com/claudiospizzi/ProfileFever/releases
+[Installing a PowerShell Module]: https://learn.microsoft.com/en-us/powershell/scripting/developer/module/installing-a-powershell-module
+
 [CHANGELOG.md]: CHANGELOG.md
 
 [Visual Studio Code]: https://code.visualstudio.com/
 [PowerShell Extension]: https://marketplace.visualstudio.com/items?itemName=ms-vscode.PowerShell
-
 [Pester]: https://www.powershellgallery.com/packages/Pester
 [PSScriptAnalyzer]: https://www.powershellgallery.com/packages/PSScriptAnalyzer
 [InvokeBuild]: https://www.powershellgallery.com/packages/InvokeBuild
