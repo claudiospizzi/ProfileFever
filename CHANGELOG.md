@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 * Changed: Add additional default workspace path for D drive and throw if no workspace path is found
 * Changed: Optimize module loading time by change the dot-sourcing mode
+* Changed: Show the object and the actual data in the Show-Object function with bold font
 
 ## 5.3.1 - 2026-02-12
 
