@@ -46,6 +46,13 @@ function Show-Error
         {
             $errorRecord = $errorRecords[$i]
 
+            # Get the error record if the error is a CmdletInvocationException,
+            # which is a wrapper for the actual error record.
+            if ($errorRecord -is [System.Management.Automation.CmdletInvocationException])
+            {
+                $errorRecord = $errorRecord.ErrorRecord
+            }
+
             if ($null -ne $errorRecord)
             {
                 Write-Host "Error #$i" -ForegroundColor 'Red'
