@@ -41,8 +41,11 @@ function Update-Workspace
 
         # Specify the mode for orphaned projects. By default, the orphaned
         # projects are disabled.
+        # - Disabled: The orphaned projects are disabled in the Project Manager configuration.
+        # - Remove: The orphaned projects are removed from the Project Manager configuration.
+        # - Clean: Start fresh with a new configuration, removing all existing projects and adding only the detected ones.
         [Parameter(Mandatory = $false)]
-        [ValidateSet('Disable', 'Remove')]
+        [ValidateSet('Disable', 'Remove', 'Clean')]
         [System.String]
         $OrphanedProjectMode = 'Disable'
     )
@@ -55,21 +58,30 @@ function Update-Workspace
             {
                 $Path = @($Env:WORKSPACE_PATH -split ';') | Where-Object { -not [System.String]::IsNullOrWhiteSpace($_) }
             }
-            elseif (Test-Path -Path "$HOME\Workspace")
-            {
-                $Path = "$HOME\Workspace"
-            }
-            elseif (Test-Path -Path "D:\Workspace")
-            {
-                $Path = "D:\Workspace"
-            }
             else
+            {
+                $Path = @()
+                if (Test-Path -Path "$HOME\Profile")
+                {
+                    $Path += "$HOME\Profile"
+                }
+                if (Test-Path -Path "$HOME\Workspace")
+                {
+                    $Path += "$HOME\Workspace"
+                }
+                if (Test-Path -Path "D:\Workspace")
+                {
+                    $Path += "D:\Workspace"
+                }
+            }
+
+            if ($Path.Count -eq 0)
             {
                 throw 'No workspace path specified and no default path found. Please specify a workspace path or set the WORKSPACE_PATH environment variable.'
             }
         }
 
-        if (Test-Path -Path $ProjectManagerPath)
+        if ((Test-Path -Path $ProjectManagerPath) -and $OrphanedProjectMode -ne 'Clean')
         {
             $config = @(Get-Content -Path $ProjectManagerPath -Encoding 'UTF8' | ConvertFrom-Json)
         }
@@ -96,28 +108,43 @@ function Update-Workspace
             $detectedPaths +=
                 Get-ChildItem -Path $currentPath -Filter '*.code-workspace' -File |
                     Select-Object @{ N = 'BaseName'; E = { "Workspace $($_.BaseName)" } }, 'FullName', @{ N = 'Tags'; E = { @($currentPath.BaseName) } }
-            if (Test-Path -Path "$currentPath\.vscode")
+            if (Test-Path -Path "$($currentPath.FullName)\.vscode")
             {
                 $detectedPaths +=
-                    Get-ChildItem -Path "$currentPath\.vscode" -Filter '*.code-workspace' -File |
+                    Get-ChildItem -Path "$($currentPath.FullName)\.vscode" -Filter '*.code-workspace' -File |
                         Select-Object @{ N = 'BaseName'; E = { "Workspace $($_.BaseName)" } }, 'FullName', @{ N = 'Tags'; E = { @($currentPath.BaseName) } }
             }
 
-            # Add root git folders as projects
-            $detectedPaths +=
-                Get-ChildItem -Path $currentPath.FullName -Directory |
-                    Where-Object { Test-Path -Path "$($_.FullName)\.git" } |
-                        Select-Object 'BaseName', 'FullName', @{ N = 'Tags'; E = { @($currentPath.BaseName) } }
+            # Add root git folder as projects. If the root folder is not a git
+            # repository, add all child git folders as projects.
+            if (Test-Path -Path "$currentPath\.git")
+            {
+                $detectedPaths += [PSCustomObject] @{
+                    BaseName = $currentPath.BaseName
+                    FullName = $currentPath.FullName
+                    Tags     = @($currentPath.BaseName)
+                }
+            }
+            else
+            {
+                # Direct child git folders as projects. Child folders without a
+                # .git folder are not added as projects, but their child folders
+                # are checked for git repositories.
+                $detectedPaths +=
+                    Get-ChildItem -Path $currentPath.FullName -Directory |
+                        Where-Object { Test-Path -Path "$($_.FullName)\.git" } |
+                            Select-Object 'BaseName', 'FullName', @{ N = 'Tags'; E = { @($currentPath.BaseName) } }
 
-            # Add child git folders as projects
-            $detectedPaths +=
-                Get-ChildItem -Path $currentPath.FullName -Directory |
-                    Where-Object { -not (Test-Path -Path "$($_.FullName)\.git") } |
-                        ForEach-Object {
-                            $childPath = $_
-                            Get-ChildItem -Path $childPath.FullName -Directory |
-                                Select-Object 'BaseName', 'FullName', @{ N = 'Tags'; E = { @($currentPath.BaseName, $childPath.BaseName) } }
-                        }
+                # Add child git folders as projects
+                $detectedPaths +=
+                    Get-ChildItem -Path $currentPath.FullName -Directory |
+                        Where-Object { -not (Test-Path -Path "$($_.FullName)\.git") } |
+                            ForEach-Object {
+                                $childPath = $_
+                                Get-ChildItem -Path $childPath.FullName -Directory |
+                                    Select-Object 'BaseName', 'FullName', @{ N = 'Tags'; E = { @($currentPath.BaseName, $childPath.BaseName) } }
+                            }
+            }
 
             foreach ($detectedPath in $detectedPaths)
             {
