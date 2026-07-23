@@ -158,7 +158,7 @@ function Invoke-LauncherPSRemoting
                 # If no parameters were specified, just enter into a remote
                 # session to the target system.
 
-                Write-Host "[Launcher] Enter remote shell on $verbose  ..." -ForegroundColor 'Yellow'
+                Write-Host "[Launcher] Enter remote shell on $verbose ..." -ForegroundColor 'Yellow'
 
                 # Register the troubleshooting functions in the remote session.
                 Register-LauncherPSRemotingTroubleshootingFunction -Session $session

@@ -29,12 +29,12 @@ function Register-LauncherPSRemotingTroubleshootingFunction
         # Generate a stub module by getting the content of the troubleshooting
         # functions and the format data.
         $stubModule = ''
-        $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Troubleshooting\Measure-System.ps1" -Raw
-        $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Troubleshooting\Measure-Processor.ps1" -Raw
-        $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Troubleshooting\Measure-Memory.ps1" -Raw
-        $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Troubleshooting\Measure-Storage.ps1" -Raw
-        $stubModule += Get-Content -Path "$PSScriptRoot\..\..\Troubleshooting\Measure-Session.ps1" -Raw
-        $stubFormat = Get-Content -Path "$PSScriptRoot\..\..\..\ProfileFever.Xml.Format.ps1xml" -Raw
+        $stubModule += Get-Content -Path "$Script:PSModulePath\Functions\Troubleshooting\Measure-System.ps1" -Raw
+        $stubModule += Get-Content -Path "$Script:PSModulePath\Functions\Troubleshooting\Measure-Processor.ps1" -Raw
+        $stubModule += Get-Content -Path "$Script:PSModulePath\Functions\Troubleshooting\Measure-Memory.ps1" -Raw
+        $stubModule += Get-Content -Path "$Script:PSModulePath\Functions\Troubleshooting\Measure-Storage.ps1" -Raw
+        $stubModule += Get-Content -Path "$Script:PSModulePath\Functions\Troubleshooting\Measure-Session.ps1" -Raw
+        $stubFormat = Get-Content -Path "$Script:PSModulePath\ProfileFever.Xml.Format.ps1xml" -Raw
 
         # Register the stub module and the format data in the remote session.
         Invoke-Command -Session $Session -ScriptBlock {
