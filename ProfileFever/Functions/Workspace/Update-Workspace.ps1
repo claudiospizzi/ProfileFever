@@ -4,8 +4,9 @@
         by the extension Project Manager.
 
     .DESCRIPTION
-        By default the path $HOME\Workspace is used to prepare the project list.
-        It's possible to add multiple workspace paths to the configuration.
+        By default the paths $HOME\Profile, $HOME\Workspace and D:\Workspace are
+        used to prepare the project list. It's possible to add multiple
+        workspace paths to the configuration.
 
         The module dynamically detects if a subfolder of the workspace is a git
         repository or not. If not, it will recurse for one more level and add
@@ -29,7 +30,8 @@ function Update-Workspace
     param
     (
         # Path to the workspaces. If not specified, the $Env:WORKSPACE_PATH is
-        # used if set. Otherwise, the default path $HOME\Workspace is used.
+        # used if set. Otherwise, the default paths in $HOME\Profile,
+        # $HOME\Workspace and D:\Workspace are used.
         [Parameter(Mandatory = $false)]
         [System.String[]]
         $Path,
@@ -54,9 +56,11 @@ function Update-Workspace
     {
         if (-not $PSBoundParameters.ContainsKey('Path'))
         {
-            if ($Env:WORKSPACE_PATH)
+            if ($Env:WORKSPACE_PATH -and -not [System.String]::IsNullOrWhiteSpace($Env:WORKSPACE_PATH))
             {
                 $Path = @($Env:WORKSPACE_PATH -split ';') | Where-Object { -not [System.String]::IsNullOrWhiteSpace($_) }
+
+                Write-Verbose "Using workspace paths from the WORKSPACE_PATH environment variable: $($Path -join ', ')"
             }
             else
             {
@@ -73,12 +77,18 @@ function Update-Workspace
                 {
                     $Path += "D:\Workspace"
                 }
-            }
 
-            if ($Path.Count -eq 0)
-            {
-                throw 'No workspace path specified and no default path found. Please specify a workspace path or set the WORKSPACE_PATH environment variable.'
+                if ($Path.Count -eq 0)
+                {
+                    throw 'No workspace path specified and no default path found. Please specify a workspace path or set the WORKSPACE_PATH environment variable.'
+                }
+
+                Write-Verbose "Using default workspace paths: $($Path -join ', ')."
             }
+        }
+        else
+        {
+            Write-Verbose "Using workspace paths from the parameter: $($Path -join ', ')"
         }
 
         if ((Test-Path -Path $ProjectManagerPath) -and $OrphanedProjectMode -ne 'Clean')
